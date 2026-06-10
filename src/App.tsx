@@ -186,8 +186,8 @@ function App() {
         {/* Polaroid frame */}
         <div className="absolute right-6 md:right-[15%] bottom-12 md:bottom-16 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col">
           <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-             {/* You can replace this src with your real photo later */}
-            <img src="https://avatars.githubusercontent.com/u/1?v=4" alt="Photo" className="w-full h-full object-cover opacity-80 mix-blend-multiply" />
+             {/* Real photo generated using Google's Gemini Image Engine */}
+            <img src="/avatar.jpg" alt="Photo" className="w-full h-full object-cover opacity-90" />
           </div>
         </div>
 
