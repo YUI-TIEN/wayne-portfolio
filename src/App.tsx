@@ -76,7 +76,7 @@ function App() {
 
         <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl">
           <p className="text-3xl md:text-5xl font-serif leading-snug">
-            Wayne Tien is a product builder with a love for 
+            Yui (Wayne) Tien is a product builder with a love for 
             <span className="text-brand-lime px-1 mx-1">AI workflows</span> and 
             <span className="text-brand-lime px-1 mx-1">demo-to-delivery</span> systems.
           </p>
@@ -142,7 +142,7 @@ function App() {
             <div className="text-left md:text-right">
               <p className="text-[10px] font-mono uppercase opacity-90 tracking-widest leading-loose">
                 designed & built with precision<br/>
-                © 2026 WAYNE TIEN<br/>
+                © 2026 YUWEI TIEN<br/>
                 TAIPEI, TAIWAN
               </p>
             </div>
