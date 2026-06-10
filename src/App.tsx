@@ -61,6 +61,7 @@ const stack = [
 
 function App() {
   const [isDark, setIsDark] = useState(false)
+  const [activeTab, setActiveTab] = useState('work')
 
   useEffect(() => {
     if (isDark) {
@@ -153,76 +154,78 @@ function App() {
         ))}
       </section>
 
-      {/* Footer Part A with Folder Tabs */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-20 mt-12 -mb-[1px]">
-        <div className="flex items-end gap-1">
-          {['work', 'about', 'contact'].map((tab, idx) => {
-            const isActive = idx === 0; // 'work' is active
+      {/* Footer Container */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 mt-16 mb-12">
+        {/* Folder Tabs */}
+        <div className="flex items-end gap-[12px] -mb-[1px] relative z-20">
+          {['work', 'garden', 'about', 'contact'].map((tab) => {
+            const isActive = activeTab === tab;
             return (
               <a 
                 key={tab} 
-                href={`#${tab}`} 
+                href={`#${tab}`}
+                onClick={() => setActiveTab(tab)}
                 className={`${
                   isActive 
-                    ? 'bg-brand-orange text-white' 
-                    : 'bg-brand-peach text-brand-orange hover:opacity-90'
-                } px-5 py-2.5 text-xs font-mono rounded-t-lg transition-all`}
+                    ? 'bg-brand-orange text-brand-bg' 
+                    : 'bg-[#FCE3D6] text-brand-orange hover:bg-[#FAD9C8]'
+                } px-5 py-2.5 text-xs font-mono transition-all lowercase`}
               >
                 {tab}
               </a>
             );
           })}
         </div>
-      </div>
 
-      <footer id="contact" className="bg-brand-orange relative py-32">
+        <footer id="contact" className="bg-brand-orange relative py-32">
 
-        {/* Floating elements */}
-        {/* Tilted sticky note 1 */}
-        <div className="absolute top-16 right-[30%] md:right-[40%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
-          <span className="font-mono text-xs mb-2">say hello!</span>
-          <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
-            youwei0112@gmail.com
-          </a>
-        </div>
-
-        {/* Tilted sticky note 2 */}
-        <div className="absolute left-[10%] md:left-[15%] bottom-16 md:bottom-20 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
-          <span className="font-mono text-xs mb-2">connect with me</span>
-          <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
-            /in/yui-tien
-          </a>
-        </div>
-
-        {/* Polaroid frame */}
-        <div className="absolute right-6 md:right-[15%] bottom-12 md:bottom-16 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col">
-          <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-             {/* Real photo generated using Google's Gemini Image Engine */}
-            <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90" />
-          </div>
-        </div>
-
-        {/* Center Text */}
-        <div className="max-w-4xl mx-auto flex justify-center items-center h-full min-h-[120px]">
-          <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20">
-            designed and built with a lot of overthinking and late nights
-          </p>
-        </div>
-      </footer>
-
-      {/* Footer Part B */}
-      <div className="bg-white py-6 border-t border-neutral-100 w-full">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500">
-          <div>
-            copyright © 2026 YUI TIEN
-          </div>
-          <div className="text-neutral-600 hover:text-neutral-950 transition-colors">
-            <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer">
-              <GithubIcon size={16} />
+          {/* Floating elements */}
+          {/* Tilted sticky note 1 */}
+          <div className="absolute top-16 right-[30%] md:right-[40%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
+            <span className="font-mono text-xs mb-2">say hello!</span>
+            <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
+              youwei0112@gmail.com
             </a>
           </div>
-          <div>
-            ANALYTICS · SOURCE · LAST COMMIT: 01ec181
+
+          {/* Tilted sticky note 2 */}
+          <div className="absolute left-[10%] md:left-[15%] bottom-16 md:bottom-20 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
+            <span className="font-mono text-xs mb-2">connect with me</span>
+            <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
+              /in/yui-tien
+            </a>
+          </div>
+
+          {/* Polaroid frame */}
+          <div className="absolute right-6 md:right-[15%] bottom-12 md:bottom-16 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col">
+            <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
+               {/* Real photo generated using Google's Gemini Image Engine */}
+              <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90" />
+            </div>
+          </div>
+
+          {/* Center Text */}
+          <div className="max-w-4xl mx-auto flex justify-center items-center h-full min-h-[120px]">
+            <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20">
+              designed and built with a lot of overthinking and late nights
+            </p>
+          </div>
+        </footer>
+
+        {/* Footer Part B (Metadata Row) */}
+        <div className="py-6 w-full mt-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <div>
+              copyright © 2026 YUI TIEN
+            </div>
+            <div className="text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white transition-colors">
+              <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer">
+                <GithubIcon size={16} />
+              </a>
+            </div>
+            <div>
+              ANALYTICS · SOURCE · LAST COMMIT: 01ec181
+            </div>
           </div>
         </div>
       </div>
