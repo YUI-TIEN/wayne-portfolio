@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 
 const GithubIcon = ({ size = 16 }: { size?: number }) => (
@@ -62,7 +61,6 @@ const stack = [
 
 function App() {
   const [isDark, setIsDark] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     if (isDark) {
@@ -75,47 +73,41 @@ function App() {
   }, [isDark])
 
   return (
-    <div className="min-h-screen bg-white dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300">
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300">
       {/* Navigation */}
       <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
           <span className="text-neutral-400">[</span>
           <a href="#work" className="hover:text-brand-orange transition-colors">work</a>
           <a href="#about" className="hover:text-brand-orange transition-colors">about</a>
           <a href="#contact" className="hover:text-brand-orange transition-colors">contact</a>
+          <button 
+            onClick={() => setIsDark(!isDark)} 
+            className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
           <span className="text-neutral-400">]</span>
         </div>
-        <button 
-          onClick={() => setIsDark(!isDark)} 
-          className="absolute right-6 md:right-12 p-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer"
-          aria-label="Toggle theme"
-        >
-          {isDark ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
       </nav>
 
       {/* Hero Section */}
       <section className="flex flex-col items-center pt-16 pb-24 max-w-2xl mx-auto relative px-6 mt-8">
         {/* Decorative Notes */}
-        <motion.div 
-          initial={{ rotate: -10, opacity: 0, y: 10 }}
-          animate={{ rotate: -3, opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-brand-peach text-neutral-900 px-4 py-2 absolute -left-4 md:-left-20 top-0 shadow-sm font-mono text-xs z-20"
+        <div 
+          className="bg-brand-peach text-neutral-900 px-4 py-2 absolute -left-4 md:-left-20 top-[-20px] shadow-sm font-mono text-xs z-0 -rotate-6"
         >
           ⚙️ AI Operations
-        </motion.div>
+        </div>
         
-        <motion.div 
-          initial={{ rotate: 15, opacity: 0, y: -10 }}
-          animate={{ rotate: 6, opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-brand-orange text-white text-[11px] font-mono px-3 py-1 absolute right-2 md:-right-8 -top-8 z-20 shadow-sm"
+        <div 
+          className="bg-brand-orange text-white text-[11px] font-mono px-3 py-1 absolute bottom-[-16px] md:bottom-[-24px] right-2 md:right-[-40px] z-20 shadow-sm -rotate-12"
         >
           Open to projects Q2 2026
-        </motion.div>
+        </div>
 
-        <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl">
+        <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
           <p className="text-3xl md:text-5xl font-serif leading-snug">
             Yui (Wayne) Tien is a product builder with a love for 
             <span className="text-brand-lime px-1 mx-1">AI workflows</span> and 
@@ -125,30 +117,20 @@ function App() {
       </section>
 
       {/* Marquee Ribbon */}
-      <div 
-        className="w-full overflow-hidden py-3 flex whitespace-nowrap text-[11px] font-mono lowercase tracking-wider cursor-pointer"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <motion.div 
-          animate={{ x: ["0%", "-50%"] }} 
-          transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
-          whileHover={{ animationPlayState: "paused" }}
-          style={{ animationPlayState: isPaused ? "paused" : "running" }}
-          className="flex"
-        >
+      <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-[#f5f4f2] dark:bg-brand-ink/50 py-3 marquee-container">
+        <div className="marquee-scroll flex gap-8 whitespace-nowrap text-[11px] font-mono lowercase tracking-wider text-neutral-600 dark:text-neutral-400">
           {[...stack, ...stack, ...stack, ...stack].map((item, i) => (
-            <span key={i} className="mx-4 flex items-center">
-              {item} <span className="mx-4 text-neutral-300">•</span>
+            <span key={i} className="flex items-center gap-4">
+              {item} <span className="text-neutral-300 dark:text-neutral-700">•</span>
             </span>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Projects Grid */}
       <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full py-12">
         {projects.map((p, i) => (
-          <div key={i} className={`p-10 md:p-16 flex flex-col justify-start min-h-[450px] rounded-2xl ${p.bg}`}>
+          <div key={i} className={`p-10 md:p-16 flex flex-col justify-start min-h-[450px] rounded-none ${p.bg}`}>
             <div className="flex flex-wrap gap-2 mb-8">
               {p.tags.map(t => (
                 <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 backdrop-blur-sm ${p.tagBg}`}>
@@ -211,7 +193,7 @@ function App() {
 
         {/* Center Text */}
         <div className="max-w-4xl mx-auto flex justify-center items-center h-full min-h-[120px]">
-          <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-0">
+          <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20">
             designed and built with a lot of overthinking and late nights
           </p>
         </div>
