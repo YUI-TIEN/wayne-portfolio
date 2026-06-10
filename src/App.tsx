@@ -93,35 +93,37 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center pt-16 pb-24 max-w-2xl mx-auto relative px-6 mt-8">
-        {/* Decorative Notes */}
-        <div 
-          className="bg-brand-peach text-neutral-900 px-4 py-2 absolute -left-4 md:-left-20 top-[-20px] shadow-sm font-mono text-xs z-0 -rotate-6"
-        >
-          ⚙️ AI Operations
-        </div>
-        
-        <div 
-          className="bg-brand-orange text-white text-[11px] font-mono px-3 py-1 absolute bottom-[-16px] md:bottom-[-24px] right-2 md:right-[-40px] z-20 shadow-sm -rotate-12"
-        >
-          Open to projects Q2 2026
-        </div>
+      <section className="flex flex-col items-center justify-center min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
+        <div className="relative w-full max-w-xl">
+          {/* Decorative Notes */}
+          <div 
+            className="bg-brand-peach text-neutral-900 px-4 py-2 absolute -left-4 md:-left-20 top-[-30px] shadow-sm font-mono text-xs z-20 -rotate-6 whitespace-nowrap"
+          >
+            ⚙️ AI Operations
+          </div>
+          
+          <div 
+            className="bg-brand-orange text-white text-[11px] font-mono px-3 py-1 absolute bottom-[-24px] md:bottom-[-32px] right-2 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap"
+          >
+            Open to projects Q2 2026
+          </div>
 
-        <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
-          <p className="text-3xl md:text-5xl font-serif leading-snug">
-            Yui (Wayne) Tien is a product builder with a love for 
-            <span className="text-brand-lime px-1 mx-1">AI workflows</span> and 
-            <span className="text-brand-lime px-1 mx-1">demo-to-delivery</span> systems.
-          </p>
+          <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
+            <p className="text-3xl md:text-5xl font-serif leading-snug">
+              Yui (Wayne) Tien is a product builder with a love for 
+              <span className="text-brand-lime px-1 mx-1">AI workflows</span> and 
+              <span className="text-brand-lime px-1 mx-1">demo-to-delivery</span> systems.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Marquee Ribbon */}
-      <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-[#f5f4f2] dark:bg-brand-ink/50 py-3 marquee-container">
-        <div className="marquee-scroll flex gap-8 whitespace-nowrap text-[11px] font-mono lowercase tracking-wider text-neutral-600 dark:text-neutral-400">
+      <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-brand-blue py-3 marquee-container">
+        <div className="marquee-scroll flex gap-8 whitespace-nowrap text-[11px] font-mono lowercase tracking-wider text-white">
           {[...stack, ...stack, ...stack, ...stack].map((item, i) => (
             <span key={i} className="flex items-center gap-4">
-              {item} <span className="text-neutral-300 dark:text-neutral-700">•</span>
+              {item} <span className="text-brand-lime">•</span>
             </span>
           ))}
         </div>
@@ -155,7 +157,7 @@ function App() {
       <footer id="contact" className="bg-brand-orange relative overflow-hidden py-32 mt-12">
         {/* Folder Tabs */}
         <div className="absolute top-0 left-6 md:left-12 flex gap-1">
-          {['work', 'garden', 'about', 'contact'].map((tab) => (
+          {['work', 'about', 'contact'].map((tab) => (
             <a 
               key={tab} 
               href={`#${tab}`} 
@@ -170,16 +172,16 @@ function App() {
         {/* Tilted sticky note 1 */}
         <div className="absolute top-16 right-[30%] md:right-[40%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
           <span className="font-mono text-xs mb-2">say hello!</span>
-          <a href="mailto:hello@yui.me" className="text-brand-blue hover:underline font-mono text-xs truncate">
-            hello@ysabella.me
+          <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
+            youwei0112@gmail.com
           </a>
         </div>
 
         {/* Tilted sticky note 2 */}
         <div className="absolute left-[10%] md:left-[15%] bottom-16 md:bottom-20 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
           <span className="font-mono text-xs mb-2">connect with me</span>
-          <a href="https://linkedin.com/in/yuitien" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
-            /in/ysabellanicole
+          <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
+            /in/yui-tien
           </a>
         </div>
 
@@ -187,7 +189,7 @@ function App() {
         <div className="absolute right-6 md:right-[15%] bottom-12 md:bottom-16 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col">
           <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
              {/* Real photo generated using Google's Gemini Image Engine */}
-            <img src="/avatar.jpg" alt="Photo" className="w-full h-full object-cover opacity-90" />
+            <img src="/avatar.png" alt="Photo" className="w-full h-full object-cover opacity-90" />
           </div>
         </div>
 
@@ -206,7 +208,7 @@ function App() {
             copyright © 2026 YUI TIEN
           </div>
           <div className="text-neutral-600 hover:text-neutral-950 transition-colors">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer">
               <GithubIcon size={16} />
             </a>
           </div>
