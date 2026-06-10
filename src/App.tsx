@@ -158,7 +158,7 @@ function App() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 mt-16 mb-12">
         {/* Folder Tabs */}
         <div className="flex items-end gap-[12px] -mb-[1px] relative z-20">
-          {['work', 'garden', 'about', 'contact'].map((tab) => {
+          {['work', 'about', 'contact'].map((tab) => {
             const isActive = activeTab === tab;
             return (
               <a 
