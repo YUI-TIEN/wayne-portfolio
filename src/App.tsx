@@ -62,9 +62,10 @@ const stack = [
 interface MathCurveLoaderProps {
   type: 'rose' | 'lissajous';
   size: 'sm' | 'md' | 'lg';
+  colorClass?: string;
 }
 
-const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size }) => {
+const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, colorClass }) => {
   const [time, setTime] = useState(0);
   const requestRef = useRef<number>(0);
 
@@ -130,14 +131,14 @@ const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size }) => {
     >
       <g>
         {particles.map((p, idx) => (
-          <circle
-            key={idx}
-            cx={p.x}
-            cy={p.y}
-            r={p.radius}
-            className="fill-brand-lime"
-            style={{ opacity: p.opacity }}
-          />
+            <circle
+              key={idx}
+              cx={p.x}
+              cy={p.y}
+              r={p.radius}
+              className={colorClass || "fill-brand-lime"}
+              style={{ opacity: p.opacity }}
+            />
         ))}
       </g>
     </svg>
@@ -289,18 +290,6 @@ function App() {
             Open to projects Q2 2026
           </div>
 
-          {/* Option B: Hero Ambient Mathematical Monitor Note */}
-          <div 
-            className="hidden md:flex bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white border-2 border-black dark:border-white/20 p-2 absolute -right-24 -top-24 shadow-lg font-mono text-[8px] z-20 rotate-6 w-24 h-24 flex-col items-center justify-between hover:rotate-0 transition-all duration-300 cursor-pointer active:scale-95"
-          >
-            <div className="w-full h-16 bg-brand-ink flex items-center justify-center overflow-hidden border border-neutral-200 dark:border-neutral-800">
-              <MathCurveLoader type="lissajous" size="sm" />
-            </div>
-            <span className="text-[7px] text-neutral-500 uppercase tracking-wider">
-              Lissajous Osc.
-            </span>
-          </div>
-
           <div className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
             <p className="text-2xl md:text-5xl font-serif leading-snug">
               Yui (Wayne) Tien is a product builder with a love for 
@@ -404,6 +393,11 @@ function App() {
                 onClick={() => setIsFlipped(!isFlipped)}
                 className="relative w-32 h-40 md:w-48 md:h-56 perspective-1000 group cursor-pointer active:scale-95 transition-all duration-300 rotate-6 hover:rotate-2 origin-bottom-right"
               >
+                {/* Hover Hint Bubble */}
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[9px] font-mono py-1 px-2.5 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-40">
+                  flip it! 🔄
+                </div>
+
                 <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                   
                   {/* Front Side: Original Photo */}
@@ -413,13 +407,13 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Back Side: Live Math Loader */}
+                  {/* Back Side: Elegant Artistic Math Loader (Less programmy, white backing) */}
                   <div className="absolute inset-0 bg-white p-2.5 pb-2 md:p-3 md:pb-3 shadow-xl rotate-y-180 backface-hidden flex flex-col items-center justify-between border border-neutral-200">
-                    <div className="w-full h-[82%] bg-brand-ink flex items-center justify-center overflow-hidden border border-neutral-300">
-                      <MathCurveLoader type="rose" size="md" />
+                    <div className="w-full h-[82%] bg-[#FCFBF9] flex items-center justify-center overflow-hidden border border-neutral-200">
+                      <MathCurveLoader type="rose" size="md" colorClass="fill-brand-orange" />
                     </div>
-                    <span className="text-[7px] md:text-[8px] font-mono uppercase tracking-widest text-neutral-500 font-bold">
-                      SYSTEM CORE ACTIVE
+                    <span className="text-[9px] font-mono text-neutral-400 mt-1 lowercase italic">
+                      rose curve (玫瑰線)
                     </span>
                   </div>
 
@@ -448,23 +442,11 @@ function App() {
         </div>
       </div>
 
-      {/* Option C: Neo-Brutalist Loading Overlay */}
+      {/* Option C: Simple & Clean Loading Overlay */}
       {isProjectLoading && (
-        <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink z-[10000] flex flex-col items-center justify-center animate-fade-in select-none">
-          <div className="bg-brand-blue text-white p-8 md:p-10 rotate-1 shadow-2xl flex flex-col items-center border-4 border-black gap-6 max-w-xs w-full mx-6 transition-transform">
-            <div className="w-32 h-32 bg-brand-ink flex items-center justify-center border-2 border-white">
-              <MathCurveLoader type={loadingCurveType} size="lg" />
-            </div>
-            <div className="text-center font-mono uppercase">
-              <h3 className="text-sm font-bold tracking-wider mb-1.5 text-brand-lime">
-                COMPUTING TRAJECTORY...
-              </h3>
-              <p className="text-[9px] text-neutral-300 leading-relaxed">
-                {loadingCurveType === 'rose' 
-                  ? 'r = a * cos(7θ) • breathing scale active' 
-                  : 'x = sin(3t), y = sin(4t) • lissajous drift'}
-              </p>
-            </div>
+        <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
+          <div className="w-24 h-24 md:w-32 md:h-32">
+            <MathCurveLoader type={loadingCurveType} size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
           </div>
         </div>
       )}
