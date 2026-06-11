@@ -116,7 +116,7 @@ function App() {
   }, [isDark])
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none">
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
       <CustomCursor />
       {/* Navigation */}
       <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
@@ -138,25 +138,25 @@ function App() {
 
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
-        <div className="relative w-full max-w-xl">
+        <div className="relative w-full max-w-xl mt-8 md:mt-0">
           {/* Decorative Notes */}
           <div 
-            className="bg-brand-peach text-neutral-900 px-4 py-2 absolute -left-4 md:-left-20 top-[-30px] shadow-sm font-mono text-xs z-20 -rotate-6 whitespace-nowrap"
+            className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform"
           >
             ⚙️ AI Operations
           </div>
           
           <div 
-            className="bg-brand-orange text-white text-[11px] font-mono px-3 py-1 absolute bottom-[-24px] md:bottom-[-32px] right-2 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap"
+            className="bg-brand-orange text-white text-[9px] md:text-[11px] font-mono px-2 py-1 md:px-3 md:py-1 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform"
           >
             Open to projects Q2 2026
           </div>
 
-          <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
-            <p className="text-3xl md:text-5xl font-serif leading-snug">
+          <div className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
+            <p className="text-2xl md:text-5xl font-serif leading-snug">
               Yui (Wayne) Tien is a product builder with a love for 
-              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none">AI workflows</span> and 
-              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none">demo-to-delivery</span> systems.
+              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block">AI workflows</span> and 
+              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block">demo-to-delivery</span> systems.
             </p>
           </div>
         </div>
@@ -176,15 +176,15 @@ function App() {
       {/* Projects Grid */}
       <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full py-12">
         {projects.map((p, i) => (
-          <div key={i} className={`p-10 md:p-16 flex flex-col justify-start min-h-[450px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20`}>
-            <div className="flex flex-wrap gap-2 mb-8">
+          <div key={i} className={`p-8 md:p-16 flex flex-col justify-start min-h-[380px] md:min-h-[450px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
+            <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
               {p.tags.map(t => (
                 <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 backdrop-blur-sm ${p.tagBg}`}>
                   {t}
                 </span>
               ))}
             </div>
-            <h3 className="text-3xl md:text-5xl font-serif leading-tight mb-6">{p.title}</h3>
+            <h3 className="text-2xl md:text-5xl font-serif leading-tight mb-4 md:mb-6">{p.title}</h3>
             <p className="text-base md:text-lg opacity-90 leading-relaxed font-sans max-w-md">
               {p.copy}
             </p>
@@ -200,7 +200,7 @@ function App() {
       {/* Footer Container */}
       <div className="relative z-10 mt-16 w-full">
         {/* Folder Tabs */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[12px] -mb-[1px] relative z-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[8px] md:gap-[12px] -mb-[1px] relative z-20 overflow-x-auto no-scrollbar">
           {['work', 'about', 'contact'].map((tab) => {
             const isActive = activeTab === tab;
             return (
@@ -212,7 +212,7 @@ function App() {
                   isActive 
                     ? 'bg-brand-orange text-brand-bg' 
                     : 'bg-[#FCE3D6] text-brand-orange hover:bg-[#FAD9C8]'
-                } px-5 py-2.5 text-xs font-mono transition-all lowercase`}
+                } px-4 py-2 md:px-5 md:py-2.5 text-[10px] md:text-xs font-mono transition-all lowercase whitespace-nowrap active:scale-95 origin-bottom`}
               >
                 {tab}
               </a>
@@ -220,36 +220,36 @@ function App() {
           })}
         </div>
 
-        <footer id="contact" className="bg-brand-orange relative py-32 w-full overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full h-full min-h-[200px]">
+        <footer id="contact" className="bg-brand-orange relative py-40 md:py-32 w-full overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full h-full min-h-[250px] md:min-h-[200px]">
             {/* Floating elements */}
             {/* Tilted sticky note 1 */}
-            <div className="absolute top-0 right-[20%] md:right-[30%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300">
-              <span className="font-mono text-xs mb-2">say hello!</span>
-              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
+            <div className="absolute top-4 right-4 md:top-0 md:right-[30%] -rotate-6 w-32 h-20 md:w-48 md:h-28 bg-white p-3 md:p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
+              <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">say hello!</span>
+              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-2">
                 youwei0112@gmail.com
               </a>
             </div>
 
             {/* Tilted sticky note 2 */}
-            <div className="absolute left-[5%] md:left-[10%] bottom-0 md:bottom-4 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300">
-              <span className="font-mono text-xs mb-2">connect with me</span>
-              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
+            <div className="absolute left-4 bottom-4 md:bottom-4 md:left-[10%] rotate-3 w-32 h-20 md:w-48 md:h-28 bg-white p-3 md:p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
+              <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">connect with me</span>
+              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-2">
                 /in/yui-tien
               </a>
             </div>
 
             {/* Polaroid frame */}
-            <div className="absolute right-0 md:right-[5%] bottom-0 md:-bottom-8 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer">
+            <div className="absolute right-4 md:right-[5%] bottom-28 md:-bottom-8 rotate-6 w-28 h-32 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-8 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
               <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
                  {/* Real photo generated using Google's Gemini Image Engine */}
-                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110 active:scale-110" />
               </div>
             </div>
 
             {/* Center Text */}
-            <div className="flex justify-center items-center h-full min-h-[120px]">
-              <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20 mix-blend-overlay opacity-80">
+            <div className="flex justify-center items-center h-full min-h-[250px] md:min-h-[120px] pointer-events-none">
+              <p className="text-white font-mono text-[10px] md:text-xs text-center max-w-[200px] md:max-w-md px-4 relative z-20 mix-blend-overlay opacity-80 mt-12 md:mt-0">
                 designed and built with a lot of overthinking and late nights
               </p>
             </div>
