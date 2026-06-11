@@ -72,6 +72,12 @@ body, div, nav, section, footer, p, span, h1, h2, h3, a, button {
 ::view-transition-new(root) {
   animation: none !important;
   mix-blend-mode: normal !important;
+  height: 100% !important;
+  overflow: clip !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: auto !important;
 }
 
 ::view-transition-old(root) {

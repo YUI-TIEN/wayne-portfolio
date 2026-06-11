@@ -113,8 +113,11 @@ function App() {
       return;
     }
 
-    const x = event.clientX;
-    const y = event.clientY;
+    const rect = event.currentTarget.getBoundingClientRect();
+    // Fallback to button center if clientX/Y is 0 (common in some touch events/key presses)
+    const x = event.clientX || (rect.left + rect.width / 2);
+    const y = event.clientY || (rect.top + rect.height / 2);
+
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
