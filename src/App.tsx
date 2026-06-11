@@ -72,7 +72,7 @@ function App() {
 
   const triggerProjectLoad = (e: React.MouseEvent) => {
     e.preventDefault();
-    setLoadingCurveType(Math.random() > 0.5 ? 'rose' : 'lissajous');
+    setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose');
     setIsProjectLoading(true);
     setTimeout(() => {
       setIsProjectLoading(false);
