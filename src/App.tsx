@@ -220,46 +220,45 @@ function App() {
           })}
         </div>
 
-        <footer id="contact" className="bg-brand-orange relative py-20 md:py-32 w-full overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:block min-h-[450px] md:min-h-[200px]">
-            {/* Desktop-only Center Text (hidden on mobile, positioned in absolute center for desktop) */}
-            <div className="hidden md:flex absolute inset-0 justify-center items-center pointer-events-none">
-              <p className="text-white font-mono text-xs text-center max-w-md px-4 opacity-80 mix-blend-overlay">
-                designed and built with a lot of overthinking and late nights
-              </p>
-            </div>
+        <footer id="contact" className="bg-brand-orange relative py-16 md:py-24 w-full overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
+            
+            {/* Left Column: Sticky Notes (Desktop: Stacked vertically with gap, Mobile: Stacks cleanly) */}
+            <div className="w-full md:w-1/3 flex flex-col items-center md:items-start gap-6 md:gap-8 relative z-20">
+              {/* Tilted sticky note 1 */}
+              <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
+                <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">say hello!</span>
+                <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
+                  youwei0112@gmail.com
+                </a>
+              </div>
 
-            {/* Floating elements */}
-            {/* Tilted sticky note 1 */}
-            <div className="absolute top-4 left-4 md:top-12 md:left-[5%] md:right-auto md:bottom-auto -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
-              <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">say hello!</span>
-              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                youwei0112@gmail.com
-              </a>
-            </div>
-
-            {/* Tilted sticky note 2 */}
-            <div className="absolute top-[130px] right-4 md:bottom-12 md:left-[15%] md:top-auto md:right-auto rotate-3 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
-              <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">connect with me</span>
-              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                /in/yui-tien
-              </a>
-            </div>
-
-            {/* Polaroid frame */}
-            <div className="absolute bottom-4 left-4 md:top-12 md:right-[5%] md:bottom-auto md:left-auto rotate-6 w-32 h-40 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-10 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
-              <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-                 {/* Real photo generated using Google's Gemini Image Engine */}
-                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+              {/* Tilted sticky note 2 */}
+              <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 rotate-3 hover:-rotate-1 transition-transform duration-300 active:scale-95 cursor-pointer md:ml-8">
+                <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">connect with me</span>
+                <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
+                  /in/yui-tien
+                </a>
               </div>
             </div>
 
-            {/* Mobile-only Bottom Text (securely positioned below all absolute cards to avoid overlap) */}
-            <div className="mt-auto pt-[340px] md:hidden w-full flex justify-center items-center pointer-events-none">
-              <p className="text-white font-mono text-[10px] text-center max-w-[220px] opacity-80 mix-blend-overlay">
+            {/* Center Column: Text (Perfectly centered on both desktop and mobile, never blocked) */}
+            <div className="w-full md:w-1/3 flex justify-center items-center relative z-10 min-h-[80px] md:min-h-0">
+              <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-sm opacity-85 mix-blend-overlay leading-relaxed">
                 designed and built with a lot of overthinking and late nights
               </p>
             </div>
+
+            {/* Right Column: Polaroid */}
+            <div className="w-full md:w-1/3 flex justify-center md:justify-end relative z-20">
+              <div className="bg-white p-3 pb-10 md:pb-12 shadow-xl w-32 h-40 md:w-48 md:h-56 rotate-6 hover:rotate-2 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95 flex flex-col">
+                <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
+                   {/* Real photo generated using Google's Gemini Image Engine */}
+                  <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+                </div>
+              </div>
+            </div>
+
           </div>
         </footer>
 
