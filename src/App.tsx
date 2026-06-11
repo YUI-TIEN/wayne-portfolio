@@ -231,7 +231,7 @@ function App() {
 
             {/* Floating elements */}
             {/* Tilted sticky note 1 */}
-            <div className="absolute top-4 left-4 md:top-0 md:right-[30%] md:left-auto -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
+            <div className="absolute top-4 left-4 md:top-12 md:left-[5%] md:right-auto md:bottom-auto -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
               <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">say hello!</span>
               <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
                 youwei0112@gmail.com
@@ -239,7 +239,7 @@ function App() {
             </div>
 
             {/* Tilted sticky note 2 */}
-            <div className="absolute top-[130px] right-4 md:top-auto md:bottom-4 md:left-[10%] rotate-3 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
+            <div className="absolute top-[130px] right-4 md:bottom-12 md:left-[15%] md:top-auto md:right-auto rotate-3 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
               <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">connect with me</span>
               <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
                 /in/yui-tien
@@ -247,7 +247,7 @@ function App() {
             </div>
 
             {/* Polaroid frame */}
-            <div className="absolute bottom-4 left-4 md:left-auto md:right-[5%] md:bottom-[-8px] rotate-6 w-32 h-40 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-10 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
+            <div className="absolute bottom-4 left-4 md:top-12 md:right-[5%] md:bottom-auto md:left-auto rotate-6 w-32 h-40 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-10 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
               <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
                  {/* Real photo generated using Google's Gemini Image Engine */}
                 <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
