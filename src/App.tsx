@@ -155,9 +155,9 @@ function App() {
       </section>
 
       {/* Footer Container */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 mt-16 mb-12">
+      <div className="relative z-10 mt-16 w-full">
         {/* Folder Tabs */}
-        <div className="flex items-end gap-[12px] -mb-[1px] relative z-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[12px] -mb-[1px] relative z-20">
           {['work', 'about', 'contact'].map((tab) => {
             const isActive = activeTab === tab;
             return (
@@ -177,43 +177,44 @@ function App() {
           })}
         </div>
 
-        <footer id="contact" className="bg-brand-orange relative py-32">
-
-          {/* Floating elements */}
-          {/* Tilted sticky note 1 */}
-          <div className="absolute top-16 right-[30%] md:right-[40%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
-            <span className="font-mono text-xs mb-2">say hello!</span>
-            <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
-              youwei0112@gmail.com
-            </a>
-          </div>
-
-          {/* Tilted sticky note 2 */}
-          <div className="absolute left-[10%] md:left-[15%] bottom-16 md:bottom-20 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10">
-            <span className="font-mono text-xs mb-2">connect with me</span>
-            <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
-              /in/yui-tien
-            </a>
-          </div>
-
-          {/* Polaroid frame */}
-          <div className="absolute right-6 md:right-[15%] bottom-12 md:bottom-16 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col">
-            <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-               {/* Real photo generated using Google's Gemini Image Engine */}
-              <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90" />
+        <footer id="contact" className="bg-brand-orange relative py-32 w-full overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full h-full min-h-[200px]">
+            {/* Floating elements */}
+            {/* Tilted sticky note 1 */}
+            <div className="absolute top-0 right-[20%] md:right-[30%] -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300">
+              <span className="font-mono text-xs mb-2">say hello!</span>
+              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-xs truncate">
+                youwei0112@gmail.com
+              </a>
             </div>
-          </div>
 
-          {/* Center Text */}
-          <div className="max-w-4xl mx-auto flex justify-center items-center h-full min-h-[120px]">
-            <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20">
-              designed and built with a lot of overthinking and late nights
-            </p>
+            {/* Tilted sticky note 2 */}
+            <div className="absolute left-[5%] md:left-[10%] bottom-0 md:bottom-4 rotate-3 w-40 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300">
+              <span className="font-mono text-xs mb-2">connect with me</span>
+              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-xs truncate">
+                /in/yui-tien
+              </a>
+            </div>
+
+            {/* Polaroid frame */}
+            <div className="absolute right-0 md:right-[5%] bottom-0 md:-bottom-8 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right">
+              <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
+                 {/* Real photo generated using Google's Gemini Image Engine */}
+                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500" />
+              </div>
+            </div>
+
+            {/* Center Text */}
+            <div className="flex justify-center items-center h-full min-h-[120px]">
+              <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-md px-4 relative z-20 mix-blend-overlay opacity-80">
+                designed and built with a lot of overthinking and late nights
+              </p>
+            </div>
           </div>
         </footer>
 
         {/* Footer Part B (Metadata Row) */}
-        <div className="py-6 w-full mt-2">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 w-full">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
             <div>
               copyright © 2026 YUI TIEN
