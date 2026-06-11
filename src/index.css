@@ -55,3 +55,9 @@
 .marquee-scroll:hover {
   animation-play-state: paused;
 }
+
+@media (pointer: fine) {
+  body, a, button, [role="button"] {
+    cursor: none !important;
+  }
+}

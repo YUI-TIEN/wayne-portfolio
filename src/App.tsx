@@ -59,6 +59,48 @@ const stack = [
   'ui/ux engineering',
 ]
 
+function CustomCursor() {
+  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const [isPointer, setIsPointer] = useState(false);
+
+  useEffect(() => {
+    // Only apply custom cursor logic on devices that support hover (non-touch)
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    const moveCursor = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      const target = e.target as HTMLElement;
+      // Check if hovering over a clickable element or our custom hero hover blocks
+      const clickable = window.getComputedStyle(target).cursor === 'pointer' || 
+                        target.tagName.toLowerCase() === 'a' || 
+                        target.tagName.toLowerCase() === 'button' ||
+                        target.closest('a') || 
+                        target.closest('button');
+      setIsPointer(!!clickable);
+    };
+    
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, []);
+
+  // Hide on touch devices
+  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return null;
+
+  return (
+    <div 
+      className={`fixed pointer-events-none z-[9999] rounded-full mix-blend-difference transition-all duration-150 ease-out`}
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        transform: `translate(-50%, -50%) scale(${isPointer ? 2.5 : 1})`,
+        width: '16px',
+        height: '16px',
+        backgroundColor: 'white'
+      }}
+    />
+  );
+}
+
 function App() {
   const [isDark, setIsDark] = useState(false)
   const [activeTab, setActiveTab] = useState('work')
@@ -74,7 +116,8 @@ function App() {
   }, [isDark])
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300">
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none">
+      <CustomCursor />
       {/* Navigation */}
       <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center gap-4">
@@ -112,8 +155,8 @@ function App() {
           <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
             <p className="text-3xl md:text-5xl font-serif leading-snug">
               Yui (Wayne) Tien is a product builder with a love for 
-              <span className="text-brand-lime px-1 mx-1">AI workflows</span> and 
-              <span className="text-brand-lime px-1 mx-1">demo-to-delivery</span> systems.
+              <span className="text-brand-lime px-2 mx-1 py-1 rounded-sm hover:bg-brand-lime hover:text-brand-blue transition-all duration-300 cursor-pointer inline-block hover:-translate-y-1 hover:shadow-[4px_4px_0px_#F94E0A]">AI workflows</span> and 
+              <span className="text-brand-lime px-2 mx-1 py-1 rounded-sm hover:bg-brand-lime hover:text-brand-blue transition-all duration-300 cursor-pointer inline-block hover:-translate-y-1 hover:shadow-[4px_4px_0px_#F94E0A]">demo-to-delivery</span> systems.
             </p>
           </div>
         </div>
@@ -133,7 +176,7 @@ function App() {
       {/* Projects Grid */}
       <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full py-12">
         {projects.map((p, i) => (
-          <div key={i} className={`p-10 md:p-16 flex flex-col justify-start min-h-[450px] rounded-none ${p.bg}`}>
+          <div key={i} className={`p-10 md:p-16 flex flex-col justify-start min-h-[450px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20`}>
             <div className="flex flex-wrap gap-2 mb-8">
               {p.tags.map(t => (
                 <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 backdrop-blur-sm ${p.tagBg}`}>
@@ -197,10 +240,10 @@ function App() {
             </div>
 
             {/* Polaroid frame */}
-            <div className="absolute right-0 md:right-[5%] bottom-0 md:-bottom-8 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right">
+            <div className="absolute right-0 md:right-[5%] bottom-0 md:-bottom-8 rotate-6 w-40 h-48 md:w-48 md:h-56 bg-white p-3 pb-12 shadow-xl z-10 hidden sm:flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer">
               <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
                  {/* Real photo generated using Google's Gemini Image Engine */}
-                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500" />
+                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
               </div>
             </div>
 
