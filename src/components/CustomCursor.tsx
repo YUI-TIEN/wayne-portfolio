@@ -16,8 +16,8 @@ export const CustomCursor: React.FC = () => {
     const scale = { current: 1, target: 1 };
 
     // Linear interpolation speeds
-    const lerpFactor = 0.15;
-    const scaleLerpFactor = 0.15;
+    const lerpFactor = 0.25;
+    const scaleLerpFactor = 0.2;
 
     let isPointer = false;
     let animationId: number;
