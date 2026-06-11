@@ -220,36 +220,43 @@ function App() {
           })}
         </div>
 
-        <footer id="contact" className="bg-brand-orange relative py-40 md:py-32 w-full overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full h-full min-h-[250px] md:min-h-[200px]">
+        <footer id="contact" className="bg-brand-orange relative py-20 md:py-32 w-full overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:block min-h-[450px] md:min-h-[200px]">
+            {/* Desktop-only Center Text (hidden on mobile, positioned in absolute center for desktop) */}
+            <div className="hidden md:flex absolute inset-0 justify-center items-center pointer-events-none">
+              <p className="text-white font-mono text-xs text-center max-w-md px-4 opacity-80 mix-blend-overlay">
+                designed and built with a lot of overthinking and late nights
+              </p>
+            </div>
+
             {/* Floating elements */}
             {/* Tilted sticky note 1 */}
-            <div className="absolute top-4 right-4 md:top-0 md:right-[30%] -rotate-6 w-32 h-20 md:w-48 md:h-28 bg-white p-3 md:p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
+            <div className="absolute top-4 left-4 md:top-0 md:right-[30%] md:left-auto -rotate-6 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
               <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">say hello!</span>
-              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-2">
+              <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
                 youwei0112@gmail.com
               </a>
             </div>
 
             {/* Tilted sticky note 2 */}
-            <div className="absolute left-4 bottom-4 md:bottom-4 md:left-[10%] rotate-3 w-32 h-20 md:w-48 md:h-28 bg-white p-3 md:p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
+            <div className="absolute top-[130px] right-4 md:top-auto md:bottom-4 md:left-[10%] rotate-3 w-36 h-24 md:w-48 md:h-28 bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center z-10 hover:-rotate-2 transition-transform duration-300 active:scale-95 cursor-pointer">
               <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2">connect with me</span>
-              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-2">
+              <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
                 /in/yui-tien
               </a>
             </div>
 
             {/* Polaroid frame */}
-            <div className="absolute right-4 md:right-[5%] bottom-28 md:-bottom-8 rotate-6 w-28 h-32 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-8 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
+            <div className="absolute bottom-4 left-4 md:left-auto md:right-[5%] md:bottom-[-8px] rotate-6 w-32 h-40 md:w-48 md:h-56 bg-white p-2 md:p-3 pb-10 md:pb-12 shadow-xl z-10 flex flex-col hover:rotate-3 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95">
               <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
                  {/* Real photo generated using Google's Gemini Image Engine */}
-                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110 active:scale-110" />
+                <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
               </div>
             </div>
 
-            {/* Center Text */}
-            <div className="flex justify-center items-center h-full min-h-[250px] md:min-h-[120px] pointer-events-none">
-              <p className="text-white font-mono text-[10px] md:text-xs text-center max-w-[200px] md:max-w-md px-4 relative z-20 mix-blend-overlay opacity-80 mt-12 md:mt-0">
+            {/* Mobile-only Bottom Text (securely positioned below all absolute cards to avoid overlap) */}
+            <div className="mt-auto pt-[340px] md:hidden w-full flex justify-center items-center pointer-events-none">
+              <p className="text-white font-mono text-[10px] text-center max-w-[220px] opacity-80 mix-blend-overlay">
                 designed and built with a lot of overthinking and late nights
               </p>
             </div>
