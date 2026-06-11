@@ -62,9 +62,9 @@
   }
 }
 
-/* Smooth background/color fallback transitions */
-body, div, nav, section, footer, p, span, h1, h2, h3, a, button {
-  transition: background-color 450ms ease-in-out, border-color 450ms ease-in-out, color 450ms ease-in-out;
+/* Smooth background/color fallback transitions for root only (avoids breaking card hover transitions) */
+html, body {
+  transition: background-color 450ms ease-in-out, color 450ms ease-in-out;
 }
 
 /* Modern Circular Clip-path View Transition */
