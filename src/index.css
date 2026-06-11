@@ -102,3 +102,18 @@ html, body {
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+
+/* Accessibility Focus Indicators */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-brand-orange, #F94E0A) !important;
+  outline-offset: 4px !important;
+}
+
+.dark *:focus-visible {
+  outline: 2px solid var(--color-brand-lime, #C4FF3D) !important;
+  outline-offset: 4px !important;
+}

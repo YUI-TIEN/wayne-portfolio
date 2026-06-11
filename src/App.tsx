@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
+import { MathCurveLoader } from './components/MathCurveLoader'
+import { CustomCursor } from './components/CustomCursor'
 
 const GithubIcon = ({ size = 16 }: { size?: number }) => (
   <svg
@@ -59,133 +61,7 @@ const stack = [
   'ui/ux engineering',
 ]
 
-interface MathCurveLoaderProps {
-  type: 'rose' | 'lissajous';
-  size: 'sm' | 'md' | 'lg';
-  colorClass?: string;
-}
 
-const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, colorClass }) => {
-  const [time, setTime] = useState(0);
-  const requestRef = useRef<number>(0);
-
-  useEffect(() => {
-    const animate = (timestamp: number) => {
-      setTime(timestamp);
-      requestRef.current = requestAnimationFrame(animate);
-    };
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, []);
-
-  // 1. Breathing multiplier
-  const pulseDuration = type === 'rose' ? 4200 : 5400;
-  const detailScale = 0.5 + 0.5 * Math.sin((time / pulseDuration) * Math.PI * 2);
-
-  // 2. Self-rotation
-  const rotationDuration = type === 'rose' ? 28000 : 36000;
-  const rotation = type === 'rose' ? ((time % rotationDuration) / rotationDuration) * 360 : 0;
-
-  // 3. Formula point generator
-  const getPoint = (progress: number) => {
-    const t = progress * Math.PI * 2;
-    if (type === 'rose') {
-      const baseRadius = 7;
-      const detailAmplitude = 3;
-      const petals = 7;
-      const scale = 3.9;
-      const x = baseRadius * Math.cos(t) - detailAmplitude * detailScale * Math.cos(petals * t);
-      const y = baseRadius * Math.sin(t) - detailAmplitude * detailScale * Math.sin(petals * t);
-      return { x: 50 + x * scale, y: 50 + y * scale };
-    } else {
-      // Lissajous Curve
-      const amp = 24 + 6 * detailScale;
-      const x = Math.sin(3 * t + 1.57) * amp * 1.3;
-      const y = Math.sin(4 * t) * 0.92 * amp * 1.3;
-      return { x: 50 + x, y: 50 + y };
-    }
-  };
-
-  const particleCount = size === 'sm' ? 35 : size === 'md' ? 55 : 80;
-  const trailSpan = type === 'rose' ? 0.38 : 0.34;
-  const loopDuration = type === 'rose' ? 4600 : 6000;
-
-  const particles = Array.from({ length: particleCount }).map((_, i) => {
-    const baseProgress = (time / loopDuration) % 1;
-    const progress = (baseProgress + (i / particleCount) * trailSpan) % 1;
-    const pos = getPoint(progress);
-    const opacity = i / particleCount;
-    const radius = size === 'sm' 
-      ? 0.6 + (i / particleCount) * 0.8
-      : size === 'md'
-        ? 0.8 + (i / particleCount) * 1.2
-        : 1.0 + (i / particleCount) * 1.6;
-    return { ...pos, opacity, radius };
-  });
-
-  return (
-    <svg 
-      viewBox="0 0 100 100" 
-      className="w-full h-full select-none"
-      style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '50% 50%' }}
-    >
-      <g>
-        {particles.map((p, idx) => (
-            <circle
-              key={idx}
-              cx={p.x}
-              cy={p.y}
-              r={p.radius}
-              className={colorClass || "fill-brand-lime"}
-              style={{ opacity: p.opacity }}
-            />
-        ))}
-      </g>
-    </svg>
-  );
-};
-
-function CustomCursor() {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [isPointer, setIsPointer] = useState(false);
-
-  useEffect(() => {
-    // Only apply custom cursor logic on devices that support hover (non-touch)
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-
-    const moveCursor = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      const target = e.target as HTMLElement;
-      // Check if hovering over a clickable element or our custom hero hover blocks
-      const clickable = target.closest(".cursor-pointer") || 
-                        target.tagName.toLowerCase() === 'a' || 
-                        target.tagName.toLowerCase() === 'button' ||
-                        target.closest('a') || 
-                        target.closest('button');
-      setIsPointer(!!clickable);
-    };
-    
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
-  }, []);
-
-  // Hide on touch devices
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return null;
-
-  return (
-    <div 
-      className={`fixed pointer-events-none z-[9999] rounded-full mix-blend-difference transition-all duration-150 ease-out`}
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        transform: `translate(-50%, -50%) scale(${isPointer ? 2.5 : 1})`,
-        width: '16px',
-        height: '16px',
-        backgroundColor: 'white'
-      }}
-    />
-  );
-}
 
 function App() {
   const [isDark, setIsDark] = useState(false)
