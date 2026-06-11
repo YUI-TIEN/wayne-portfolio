@@ -105,6 +105,43 @@ function App() {
   const [isDark, setIsDark] = useState(false)
   const [activeTab, setActiveTab] = useState('work')
 
+  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const doc = document as any;
+    if (!doc.startViewTransition) {
+      setIsDark(!isDark);
+      return;
+    }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = doc.startViewTransition(() => {
+      setIsDark(prev => !prev);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 450,
+          easing: 'ease-in-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
+  };
+
   useEffect(() => {
     if (isDark) {
       document.body.classList.add('dark')
@@ -126,7 +163,7 @@ function App() {
           <a href="#about" className="hover:text-brand-orange transition-colors">about</a>
           <a href="#contact" className="hover:text-brand-orange transition-colors">contact</a>
           <button 
-            onClick={() => setIsDark(!isDark)} 
+            onClick={toggleTheme} 
             className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
             aria-label="Toggle theme"
           >
