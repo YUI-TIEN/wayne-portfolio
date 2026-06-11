@@ -155,8 +155,8 @@ function App() {
           <div className="bg-brand-blue text-white p-8 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm">
             <p className="text-3xl md:text-5xl font-serif leading-snug">
               Yui (Wayne) Tien is a product builder with a love for 
-              <span className="text-brand-lime px-2 mx-1 py-1 rounded-sm hover:bg-brand-lime hover:text-brand-blue transition-all duration-300 cursor-pointer inline-block hover:-translate-y-1 hover:shadow-[4px_4px_0px_#F94E0A]">AI workflows</span> and 
-              <span className="text-brand-lime px-2 mx-1 py-1 rounded-sm hover:bg-brand-lime hover:text-brand-blue transition-all duration-300 cursor-pointer inline-block hover:-translate-y-1 hover:shadow-[4px_4px_0px_#F94E0A]">demo-to-delivery</span> systems.
+              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-default">AI workflows</span> and 
+              <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-default">demo-to-delivery</span> systems.
             </p>
           </div>
         </div>
