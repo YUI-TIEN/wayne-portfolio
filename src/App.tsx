@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 
 const GithubIcon = ({ size = 16 }: { size?: number }) => (
@@ -59,6 +59,91 @@ const stack = [
   'ui/ux engineering',
 ]
 
+interface MathCurveLoaderProps {
+  type: 'rose' | 'lissajous';
+  size: 'sm' | 'md' | 'lg';
+}
+
+const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size }) => {
+  const [time, setTime] = useState(0);
+  const requestRef = useRef<number>(0);
+
+  useEffect(() => {
+    const animate = (timestamp: number) => {
+      setTime(timestamp);
+      requestRef.current = requestAnimationFrame(animate);
+    };
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []);
+
+  // 1. Breathing multiplier
+  const pulseDuration = type === 'rose' ? 4200 : 5400;
+  const detailScale = 0.5 + 0.5 * Math.sin((time / pulseDuration) * Math.PI * 2);
+
+  // 2. Self-rotation
+  const rotationDuration = type === 'rose' ? 28000 : 36000;
+  const rotation = type === 'rose' ? ((time % rotationDuration) / rotationDuration) * 360 : 0;
+
+  // 3. Formula point generator
+  const getPoint = (progress: number) => {
+    const t = progress * Math.PI * 2;
+    if (type === 'rose') {
+      const baseRadius = 7;
+      const detailAmplitude = 3;
+      const petals = 7;
+      const scale = 3.9;
+      const x = baseRadius * Math.cos(t) - detailAmplitude * detailScale * Math.cos(petals * t);
+      const y = baseRadius * Math.sin(t) - detailAmplitude * detailScale * Math.sin(petals * t);
+      return { x: 50 + x * scale, y: 50 + y * scale };
+    } else {
+      // Lissajous Curve
+      const amp = 24 + 6 * detailScale;
+      const x = Math.sin(3 * t + 1.57) * amp * 1.3;
+      const y = Math.sin(4 * t) * 0.92 * amp * 1.3;
+      return { x: 50 + x, y: 50 + y };
+    }
+  };
+
+  const particleCount = size === 'sm' ? 35 : size === 'md' ? 55 : 80;
+  const trailSpan = type === 'rose' ? 0.38 : 0.34;
+  const loopDuration = type === 'rose' ? 4600 : 6000;
+
+  const particles = Array.from({ length: particleCount }).map((_, i) => {
+    const baseProgress = (time / loopDuration) % 1;
+    const progress = (baseProgress + (i / particleCount) * trailSpan) % 1;
+    const pos = getPoint(progress);
+    const opacity = i / particleCount;
+    const radius = size === 'sm' 
+      ? 0.6 + (i / particleCount) * 0.8
+      : size === 'md'
+        ? 0.8 + (i / particleCount) * 1.2
+        : 1.0 + (i / particleCount) * 1.6;
+    return { ...pos, opacity, radius };
+  });
+
+  return (
+    <svg 
+      viewBox="0 0 100 100" 
+      className="w-full h-full select-none"
+      style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '50% 50%' }}
+    >
+      <g>
+        {particles.map((p, idx) => (
+          <circle
+            key={idx}
+            cx={p.x}
+            cy={p.y}
+            r={p.radius}
+            className="fill-brand-lime"
+            style={{ opacity: p.opacity }}
+          />
+        ))}
+      </g>
+    </svg>
+  );
+};
+
 function CustomCursor() {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isPointer, setIsPointer] = useState(false);
@@ -104,6 +189,18 @@ function CustomCursor() {
 function App() {
   const [isDark, setIsDark] = useState(false)
   const [activeTab, setActiveTab] = useState('work')
+  const [isFlipped, setIsFlipped] = useState(false)
+  const [isProjectLoading, setIsProjectLoading] = useState(false)
+  const [loadingCurveType, setLoadingCurveType] = useState<'rose' | 'lissajous'>('rose')
+
+  const triggerProjectLoad = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLoadingCurveType(Math.random() > 0.5 ? 'rose' : 'lissajous');
+    setIsProjectLoading(true);
+    setTimeout(() => {
+      setIsProjectLoading(false);
+    }, 1800);
+  };
 
   const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,6 +289,18 @@ function App() {
             Open to projects Q2 2026
           </div>
 
+          {/* Option B: Hero Ambient Mathematical Monitor Note */}
+          <div 
+            className="hidden md:flex bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white border-2 border-black dark:border-white/20 p-2 absolute -right-24 -top-24 shadow-lg font-mono text-[8px] z-20 rotate-6 w-24 h-24 flex-col items-center justify-between hover:rotate-0 transition-all duration-300 cursor-pointer active:scale-95"
+          >
+            <div className="w-full h-16 bg-brand-ink flex items-center justify-center overflow-hidden border border-neutral-200 dark:border-neutral-800">
+              <MathCurveLoader type="lissajous" size="sm" />
+            </div>
+            <span className="text-[7px] text-neutral-500 uppercase tracking-wider">
+              Lissajous Osc.
+            </span>
+          </div>
+
           <div className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
             <p className="text-2xl md:text-5xl font-serif leading-snug">
               Yui (Wayne) Tien is a product builder with a love for 
@@ -229,7 +338,7 @@ function App() {
               {p.copy}
             </p>
             <div className="mt-auto pt-12 flex items-end">
-              <a href="#" className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity">
+              <a href="#" onClick={triggerProjectLoad} className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity">
                 View Project <ArrowRight size={14} />
               </a>
             </div>
@@ -289,12 +398,31 @@ function App() {
               </p>
             </div>
 
-            {/* Right Column: Polaroid */}
-            <div className="w-full md:w-1/3 flex justify-center md:justify-end relative z-20">
-              <div className="bg-white p-3 pb-10 md:pb-12 shadow-xl w-32 h-40 md:w-48 md:h-56 rotate-6 hover:rotate-2 transition-transform duration-300 transform origin-bottom-right group cursor-pointer active:scale-95 flex flex-col">
-                <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-                   {/* Real photo generated using Google's Gemini Image Engine */}
-                  <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+            {/* Right Column: Polaroid (3D Card Flip Container) */}
+            <div className="w-full md:w-1/3 flex justify-center md:justify-end relative z-20 select-none">
+              <div 
+                onClick={() => setIsFlipped(!isFlipped)}
+                className="relative w-32 h-40 md:w-48 md:h-56 perspective-1000 group cursor-pointer active:scale-95 transition-all duration-300 rotate-6 hover:rotate-2 origin-bottom-right"
+              >
+                <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                  
+                  {/* Front Side: Original Photo */}
+                  <div className="absolute inset-0 bg-white p-2.5 pb-8 md:p-3 md:pb-12 shadow-xl backface-hidden flex flex-col border border-neutral-200">
+                    <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
+                      <img src={`${import.meta.env.BASE_URL}avatar.png`} alt="Photo" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+                    </div>
+                  </div>
+
+                  {/* Back Side: Live Math Loader */}
+                  <div className="absolute inset-0 bg-white p-2.5 pb-2 md:p-3 md:pb-3 shadow-xl rotate-y-180 backface-hidden flex flex-col items-center justify-between border border-neutral-200">
+                    <div className="w-full h-[82%] bg-brand-ink flex items-center justify-center overflow-hidden border border-neutral-300">
+                      <MathCurveLoader type="rose" size="md" />
+                    </div>
+                    <span className="text-[7px] md:text-[8px] font-mono uppercase tracking-widest text-neutral-500 font-bold">
+                      SYSTEM CORE ACTIVE
+                    </span>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -319,6 +447,27 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Option C: Neo-Brutalist Loading Overlay */}
+      {isProjectLoading && (
+        <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink z-[10000] flex flex-col items-center justify-center animate-fade-in select-none">
+          <div className="bg-brand-blue text-white p-8 md:p-10 rotate-1 shadow-2xl flex flex-col items-center border-4 border-black gap-6 max-w-xs w-full mx-6 transition-transform">
+            <div className="w-32 h-32 bg-brand-ink flex items-center justify-center border-2 border-white">
+              <MathCurveLoader type={loadingCurveType} size="lg" />
+            </div>
+            <div className="text-center font-mono uppercase">
+              <h3 className="text-sm font-bold tracking-wider mb-1.5 text-brand-lime">
+                COMPUTING TRAJECTORY...
+              </h3>
+              <p className="text-[9px] text-neutral-300 leading-relaxed">
+                {loadingCurveType === 'rose' 
+                  ? 'r = a * cos(7θ) • breathing scale active' 
+                  : 'x = sin(3t), y = sin(4t) • lissajous drift'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
