@@ -23,32 +23,64 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 
 const projects = [
   {
-    title: 'MorphusAI Website / Product 0-to-1',
-    tags: ['Product', 'UX', 'Content System'],
-    copy: 'Built the early company and product website experience from information architecture, UI/UX, visual language, product story, and launch-ready presentation flow.',
+    title: 'Personal Portfolio Site',
+    role: 'Owned',
+    tags: ['Frontend', 'Visual System', 'GitHub Pages'],
+    copy: 'Designed and built this site as a living artifact: expressive UI, responsive polish, dark mode, deployment details, and small interaction moments.',
+    artifacts: ['site build', 'visual identity', 'deployment'],
     bg: 'bg-brand-violet text-white',
-    tagBg: 'bg-black/20'
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-4 md:min-h-[520px]'
   },
   {
-    title: 'AI Character / Persona Workflows',
-    tags: ['Agents', 'Persona', 'Workflow'],
-    copy: 'Organized persona build operations across identity, style, knowledge, memory/context, and demo-readiness so roles can be reused instead of rebuilt each time.',
+    title: 'Agent Operating Contracts',
+    role: 'Owned',
+    tags: ['Rules', 'SOP', 'Safety'],
+    copy: 'Turned repeated agent mistakes into explicit operating contracts for replies, file delivery, PR authority, memory lookups, and risky external fetches.',
+    artifacts: ['contracts', 'checklists', 'field notes'],
     bg: 'bg-brand-teal text-white',
-    tagBg: 'bg-black/20'
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-2 md:min-h-[360px]'
   },
   {
-    title: 'Demo / POC Operating System',
-    tags: ['Codex', 'Claude', 'SOP'],
-    copy: 'Created setup notes, launch checklists, fallback paths, handoff notes, and SOP steps for coding, review, debugging, documentation, and prototype delivery.',
+    title: 'OpenClaw / WHIKI Agent OS',
+    role: 'Collaborated',
+    tags: ['Agent Ops', 'Discord', 'Memory'],
+    copy: 'Collaborated on a personal agent workflow across Discord routing, gateway behavior, skills, memory wake-up, profile state, and handoff discipline.',
+    artifacts: ['runtime triage', 'profile ops', 'memory flow'],
     bg: 'bg-brand-limeBg text-brand-ink-900',
-    tagBg: 'bg-black/10'
+    tagBg: 'bg-black/10',
+    layout: 'md:col-span-3 md:min-h-[440px]'
   },
   {
-    title: 'OpenClaw Profile & Agent Ops',
-    tags: ['Runtime', 'Discord', 'Tooling'],
-    copy: 'Managed OpenClaw-based profiles and roles across gateway, auth, Discord channels, providers, memory, and persona-state requirements.',
+    title: 'SHIKI Live Agent Runtime',
+    role: 'Collaborated',
+    tags: ['Live Ops', 'Persona', 'Debugging'],
+    copy: 'Helped make an AI character system demo-ready through persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff notes.',
+    artifacts: ['runbooks', 'smoke checks', 'debug logs'],
     bg: 'bg-brand-pink text-white',
-    tagBg: 'bg-black/20'
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-3 md:min-h-[500px]'
+  },
+  {
+    title: 'MorphusAI Demo Flow',
+    role: 'Collaborated',
+    tags: ['Product', 'UX', 'Story'],
+    copy: 'Supported company/product presentation work from information architecture and demo narrative to launch-facing copy and visual polish.',
+    artifacts: ['demo flow', 'landing copy', 'UX notes'],
+    bg: 'bg-brand-blue text-white',
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-2 md:min-h-[380px]'
+  },
+  {
+    title: 'Voice Adapter / TTS Migration',
+    role: 'Collaborated',
+    tags: ['TTS', 'Migration', 'Runbook'],
+    copy: 'Contributed to a migration path for local voice infrastructure: legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout notes.',
+    artifacts: ['adapter plan', 'benchmarks', 'rollout notes'],
+    bg: 'bg-brand-peach text-brand-ink-900',
+    tagBg: 'bg-black/10',
+    layout: 'md:col-span-4 md:min-h-[430px]'
   },
 ]
 
@@ -227,27 +259,56 @@ function App() {
       </section>
 
       {/* Projects Grid */}
-      <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
+      <section id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
+        <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+              selected work
+            </span>
+            <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
+              Contribution ledger, not ownership claims.
+            </h2>
+          </div>
+          <div className="max-w-sm text-xs md:text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+            <span className="font-mono text-neutral-900 dark:text-white">Owned</span> means led artifact.{' '}
+            <span className="font-mono text-neutral-900 dark:text-white">Collaborated</span> means product, workflow, debugging, ops, or implementation work inside a team-owned project.
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 auto-rows-auto">
         {projects.map((p, i) => (
-          <div key={i} className={`p-8 md:p-16 flex flex-col justify-start min-h-[380px] md:min-h-[450px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
-            <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
+          <div key={i} className={`${p.layout} p-8 md:p-12 lg:p-14 flex flex-col justify-start min-h-[360px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
+            <div className="flex items-start justify-between gap-4 mb-6 md:mb-8">
+              <div className="flex flex-wrap gap-2">
               {p.tags.map(t => (
                 <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 backdrop-blur-sm ${p.tagBg}`}>
                   {t}
                 </span>
               ))}
+              </div>
+              <span className={`shrink-0 text-[10px] font-mono uppercase tracking-wider px-2 py-1 ${p.tagBg}`}>
+                {p.role}
+              </span>
             </div>
-            <h3 className="text-2xl md:text-5xl font-serif leading-tight mb-4 md:mb-6">{p.title}</h3>
+            <h3 className="text-2xl md:text-4xl lg:text-5xl font-serif leading-tight mb-4 md:mb-6 text-wrap-balance">{p.title}</h3>
             <p className="text-base md:text-lg opacity-90 leading-relaxed font-sans max-w-md">
               {p.copy}
             </p>
-            <div className="mt-auto pt-12 flex items-end">
+            <div className="mt-8 flex flex-wrap gap-2">
+              {p.artifacts.map(a => (
+                <span key={a} className="text-[10px] font-mono lowercase tracking-wide opacity-80 border border-current/30 px-2 py-1">
+                  {a}
+                </span>
+              ))}
+            </div>
+            <div className="mt-auto pt-10 flex items-end">
               <a href="#" onClick={triggerProjectLoad} className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity">
                 View Project <ArrowRight size={14} />
               </a>
             </div>
           </div>
         ))}
+        </div>
       </section>
 
       {/* Footer Container */}
