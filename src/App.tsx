@@ -194,7 +194,7 @@ function App() {
       </div>
 
       {/* About Section */}
-      <section id="about" className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20 w-full">
+      <section id="about" className="max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-8">
           <div className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent hover:border-brand-orange transition-colors">
             <div>
@@ -227,7 +227,7 @@ function App() {
       </section>
 
       {/* Projects Grid */}
-      <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full py-12">
+      <section id="work" className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
         {projects.map((p, i) => (
           <div key={i} className={`p-8 md:p-16 flex flex-col justify-start min-h-[380px] md:min-h-[450px] rounded-none ${p.bg} transition-all duration-300 border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
             <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
