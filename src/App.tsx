@@ -23,9 +23,9 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 
 const projects = [
   {
-    title: 'OpenClaw / WHIKI Agent OS',
+    title: 'Personal Agent Operating System',
     role: 'Collaborated',
-    tags: ['Agent Ops', 'Discord', 'Memory'],
+    tags: ['Agent Ops', 'OpenClaw', 'WHIKI'],
     copy: 'Collaborated on a personal agent workflow across Discord routing, gateway behavior, skills, memory wake-up, profile state, and handoff discipline.',
     artifacts: ['runtime triage', 'profile ops', 'memory flow'],
     bg: 'bg-brand-limeBg text-brand-ink-900',
@@ -35,9 +35,9 @@ const projects = [
     copyClass: 'md:text-xl max-w-2xl',
   },
   {
-    title: 'SHIKI Live Agent Runtime',
+    title: 'AI Character Live Runtime',
     role: 'Collaborated',
-    tags: ['Live Ops', 'Persona', 'Debugging'],
+    tags: ['Live Ops', 'SHIKI', 'Persona'],
     copy: 'Helped make an AI character system demo-ready through persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff notes.',
     artifacts: ['runbooks', 'smoke checks', 'debug logs'],
     bg: 'bg-brand-pink text-white',
@@ -59,7 +59,7 @@ const projects = [
     copyClass: 'md:text-lg max-w-sm',
   },
   {
-    title: 'Voice Adapter / TTS Migration',
+    title: 'Local Voice Infrastructure Migration',
     role: 'Collaborated',
     tags: ['TTS', 'Migration', 'Runbook'],
     copy: 'Contributed to a migration path for local voice infrastructure: legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout notes.',
@@ -71,9 +71,9 @@ const projects = [
     copyClass: 'md:text-lg max-w-md',
   },
   {
-    title: 'MorphusAI Demo Flow',
+    title: 'AI Product Demo Flow',
     role: 'Collaborated',
-    tags: ['Product', 'UX', 'Story'],
+    tags: ['Product', 'MorphusAI', 'Story'],
     copy: 'Supported company/product presentation work from information architecture and demo narrative to launch-facing copy and visual polish.',
     artifacts: ['demo flow', 'landing copy', 'UX notes'],
     bg: 'bg-brand-blue text-white',
