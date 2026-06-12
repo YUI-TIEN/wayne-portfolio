@@ -23,26 +23,6 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 
 const projects = [
   {
-    title: 'Personal Portfolio Site',
-    role: 'Owned',
-    tags: ['Frontend', 'Visual System', 'GitHub Pages'],
-    copy: 'Designed and built this site as a living artifact: expressive UI, responsive polish, dark mode, deployment details, and small interaction moments.',
-    artifacts: ['site build', 'visual identity', 'deployment'],
-    bg: 'bg-brand-violet text-white',
-    tagBg: 'bg-black/20',
-    layout: 'md:col-span-4 md:min-h-[520px]'
-  },
-  {
-    title: 'Agent Operating Contracts',
-    role: 'Owned',
-    tags: ['Rules', 'SOP', 'Safety'],
-    copy: 'Turned repeated agent mistakes into explicit operating contracts for replies, file delivery, PR authority, memory lookups, and risky external fetches.',
-    artifacts: ['contracts', 'checklists', 'field notes'],
-    bg: 'bg-brand-teal text-white',
-    tagBg: 'bg-black/20',
-    layout: 'md:col-span-2 md:min-h-[360px]'
-  },
-  {
     title: 'OpenClaw / WHIKI Agent OS',
     role: 'Collaborated',
     tags: ['Agent Ops', 'Discord', 'Memory'],
@@ -50,7 +30,9 @@ const projects = [
     artifacts: ['runtime triage', 'profile ops', 'memory flow'],
     bg: 'bg-brand-limeBg text-brand-ink-900',
     tagBg: 'bg-black/10',
-    layout: 'md:col-span-3 md:min-h-[440px]'
+    layout: 'md:col-span-6 md:min-h-[560px]',
+    titleClass: 'md:text-6xl lg:text-7xl',
+    copyClass: 'md:text-xl max-w-2xl',
   },
   {
     title: 'SHIKI Live Agent Runtime',
@@ -60,17 +42,21 @@ const projects = [
     artifacts: ['runbooks', 'smoke checks', 'debug logs'],
     bg: 'bg-brand-pink text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-3 md:min-h-[500px]'
+    layout: 'md:col-span-4 md:min-h-[520px]',
+    titleClass: 'md:text-5xl lg:text-6xl',
+    copyClass: 'md:text-lg max-w-xl',
   },
   {
-    title: 'MorphusAI Demo Flow',
-    role: 'Collaborated',
-    tags: ['Product', 'UX', 'Story'],
-    copy: 'Supported company/product presentation work from information architecture and demo narrative to launch-facing copy and visual polish.',
-    artifacts: ['demo flow', 'landing copy', 'UX notes'],
-    bg: 'bg-brand-blue text-white',
+    title: 'Agent Operating Contracts',
+    role: 'Owned',
+    tags: ['Rules', 'SOP', 'Safety'],
+    copy: 'Turned repeated agent mistakes into explicit operating contracts for replies, file delivery, PR authority, memory lookups, and risky external fetches.',
+    artifacts: ['contracts', 'checklists', 'field notes'],
+    bg: 'bg-brand-teal text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-2 md:min-h-[380px]'
+    layout: 'md:col-span-2 md:min-h-[520px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-sm',
   },
   {
     title: 'Voice Adapter / TTS Migration',
@@ -80,7 +66,33 @@ const projects = [
     artifacts: ['adapter plan', 'benchmarks', 'rollout notes'],
     bg: 'bg-brand-peach text-brand-ink-900',
     tagBg: 'bg-black/10',
-    layout: 'md:col-span-4 md:min-h-[430px]'
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
+  },
+  {
+    title: 'MorphusAI Demo Flow',
+    role: 'Collaborated',
+    tags: ['Product', 'UX', 'Story'],
+    copy: 'Supported company/product presentation work from information architecture and demo narrative to launch-facing copy and visual polish.',
+    artifacts: ['demo flow', 'landing copy', 'UX notes'],
+    bg: 'bg-brand-blue text-white',
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
+  },
+  {
+    title: 'Personal Portfolio Site',
+    role: 'Owned',
+    tags: ['Frontend', 'Visual System', 'GitHub Pages'],
+    copy: 'Designed and built this site as a living artifact: expressive UI, responsive polish, dark mode, deployment details, and small interaction moments.',
+    artifacts: ['site build', 'visual identity', 'deployment'],
+    bg: 'bg-brand-violet text-white',
+    tagBg: 'bg-black/20',
+    layout: 'md:col-span-6 md:min-h-[300px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-base max-w-xl',
   },
 ]
 
@@ -290,8 +302,8 @@ function App() {
                 {p.role}
               </span>
             </div>
-            <h3 className="text-2xl md:text-4xl lg:text-5xl font-serif leading-tight mb-4 md:mb-6 text-wrap-balance">{p.title}</h3>
-            <p className="text-base md:text-lg opacity-90 leading-relaxed font-sans max-w-md">
+            <h3 className={`text-2xl ${p.titleClass} font-serif leading-tight mb-4 md:mb-6 text-wrap-balance`}>{p.title}</h3>
+            <p className={`text-base ${p.copyClass} opacity-90 leading-relaxed font-sans`}>
               {p.copy}
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
