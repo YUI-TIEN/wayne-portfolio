@@ -61,6 +61,12 @@ const stack = [
   'ui/ux engineering',
 ]
 
+const aboutNotes = [
+  'I sit between product, design, and agent operations.',
+  'I turn loose ideas into demos, docs, workflows, and shipped interfaces.',
+  'I like systems that are useful under pressure, not just impressive in screenshots.',
+]
+
 
 
 function App() {
@@ -209,6 +215,39 @@ function App() {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-8">
+          <div className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent hover:border-brand-orange transition-colors">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-8">about</p>
+              <h2 className="font-serif text-4xl md:text-6xl leading-tight max-w-lg">
+                Building the bridge from weird AI idea to usable product.
+              </h2>
+            </div>
+            <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-sm mt-10">
+              Based in Taiwan. Working across AI product, prototype systems, agent workflows, and launch-ready storytelling.
+            </p>
+          </div>
+
+          <div className="bg-brand-blue text-white p-8 md:p-12 min-h-[320px] relative overflow-hidden">
+            <div className="inline-flex md:absolute md:top-8 md:right-8 bg-brand-lime text-neutral-900 font-mono text-[10px] uppercase tracking-widest px-3 py-2 -rotate-3 mb-8 md:mb-0">
+              product / ops / ai
+            </div>
+            <p className="font-serif text-2xl md:text-4xl leading-relaxed max-w-3xl md:pr-36">
+              I help small teams make AI work feel concrete: clarifying the story, designing the interface, wiring the workflow, and documenting the operating system so the next demo is easier than the last one.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px mt-10 bg-white/20">
+              {aboutNotes.map((note) => (
+                <div key={note} className="bg-brand-blue p-4 min-h-[120px] flex items-end">
+                  <p className="font-mono text-[11px] leading-relaxed text-white/85">{note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Footer Container */}
