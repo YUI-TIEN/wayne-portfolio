@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
+import { ProjectPage } from './components/ProjectPage'
 
 const GithubIcon = ({ size = 16 }: { size?: number }) => (
   <svg
@@ -23,6 +24,7 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 
 const projects = [
   {
+    id: 'openclaw-ops',
     title: 'Personal Agent Operating System',
     role: 'Collaborated',
     tags: ['Agent Ops', 'OpenClaw', 'WHIKI'],
@@ -35,6 +37,7 @@ const projects = [
     copyClass: 'md:text-xl max-w-2xl',
   },
   {
+    id: 'persona-workflows',
     title: 'AI Character Live Runtime',
     role: 'Collaborated',
     tags: ['Live Ops', 'SHIKI', 'Persona'],
@@ -47,6 +50,7 @@ const projects = [
     copyClass: 'md:text-lg max-w-xl',
   },
   {
+    id: 'demo-os',
     title: 'Agent Operating Contracts',
     role: 'Owned',
     tags: ['Rules', 'SOP', 'Safety'],
@@ -59,6 +63,7 @@ const projects = [
     copyClass: 'md:text-lg max-w-sm',
   },
   {
+    id: 'voice-migration',
     title: 'Local Voice Infrastructure Migration',
     role: 'Collaborated',
     tags: ['TTS', 'Migration', 'Runbook'],
@@ -71,6 +76,7 @@ const projects = [
     copyClass: 'md:text-lg max-w-md',
   },
   {
+    id: 'morphus-website',
     title: 'AI Product Demo Flow',
     role: 'Collaborated',
     tags: ['Product', 'MorphusAI', 'Story'],
@@ -83,6 +89,7 @@ const projects = [
     copyClass: 'md:text-lg max-w-md',
   },
   {
+    id: 'portfolio-site',
     title: 'Personal Portfolio Site',
     role: 'Owned',
     tags: ['Frontend', 'Visual System', 'GitHub Pages'],
@@ -119,14 +126,28 @@ function App() {
   const [isFlipped, setIsFlipped] = useState(false)
   const [isProjectLoading, setIsProjectLoading] = useState(false)
   const [loadingCurveType, setLoadingCurveType] = useState<'rose' | 'lissajous'>('rose')
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
-  const triggerProjectLoad = (e: React.MouseEvent) => {
+  const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
     e.preventDefault();
     setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose');
     setIsProjectLoading(true);
     setTimeout(() => {
       setIsProjectLoading(false);
+      setSelectedProjectId(projectId);
+      window.scrollTo(0, 0);
     }, 1800);
+  };
+
+  const handleBackToHome = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose');
+    setIsProjectLoading(true);
+    setTimeout(() => {
+      setIsProjectLoading(false);
+      setSelectedProjectId(null);
+      window.scrollTo(0, 0);
+    }, 1200);
   };
 
   const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -178,6 +199,15 @@ function App() {
       document.documentElement.classList.remove('dark')
     }
   }, [isDark])
+
+  if (selectedProjectId && !isProjectLoading) {
+    return (
+      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
+        <CustomCursor />
+        <ProjectPage projectId={selectedProjectId} onBack={handleBackToHome} />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
@@ -314,7 +344,7 @@ function App() {
               ))}
             </div>
             <div className="mt-auto pt-10 flex items-end">
-              <a href="#" onClick={triggerProjectLoad} className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity">
+              <a href="#" onClick={(e) => triggerProjectLoad(e, p.id)} className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity">
                 View Project <ArrowRight size={14} />
               </a>
             </div>
