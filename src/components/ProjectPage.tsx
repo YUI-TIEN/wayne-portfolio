@@ -52,10 +52,10 @@ const openClawContent = {
     { rule: 'No stale memory usage', detail: 'Verify current state before acting on recalled information.' },
   ],
   outcomes: [
-    { icon: '📱', title: 'Work from anywhere', detail: 'Manage 3–5 parallel projects from a phone. The work interface is a conversation, not an IDE.' },
-    { icon: '🤖', title: 'Always-on agents', detail: 'Agents continue handling tasks, scheduling, self-reflection, and planning outside active hours.' },
-    { icon: '🔄', title: 'Seamless handoff', detail: 'New sessions take over ongoing work without context loss. No re-explanation, no repeated setup.' },
-    { icon: '🛡️', title: 'Self-healing ops', detail: 'Errors trigger triage flows and self-correction loops — not manual firefighting.' },
+    { title: 'Work from anywhere', detail: 'Manage 3–5 parallel projects from a phone. The work interface is a conversation, not an IDE.' },
+    { title: 'Always-on agents', detail: 'Agents continue handling tasks, scheduling, self-reflection, and planning outside active hours.' },
+    { title: 'Seamless handoff', detail: 'New sessions take over ongoing work without context loss. No re-explanation, no repeated setup.' },
+    { title: 'Self-healing ops', detail: 'Errors trigger triage flows and self-correction loops — not manual firefighting.' },
   ],
   quote: 'Working now feels mostly like chatting. Time that used to go to re-explaining context, chasing format errors, and manually fixing broken flows now goes to planning and higher-level decisions.',
 }
@@ -254,7 +254,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-neutral-200 dark:bg-neutral-700">
               {c.outcomes.map((o, i) => (
                 <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                  <span className="text-3xl block mb-6">{o.icon}</span>
+                  <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 mb-6 block">0{i + 1}</span>
                   <p className="font-serif text-2xl md:text-3xl text-neutral-900 dark:text-white mb-4 leading-tight">{o.title}</p>
                   <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">{o.detail}</p>
                 </div>
