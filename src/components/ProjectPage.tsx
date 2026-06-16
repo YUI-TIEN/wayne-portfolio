@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 interface ProjectPageProps {
   projectId: string
@@ -41,7 +41,7 @@ const openClawContent = {
       { num: '03', label: 'Execute', detail: 'Agent works within defined scope, avoids unrelated changes' },
       { num: '04', label: 'Verify', detail: 'Self-checks output against required format and style' },
       { num: '05', label: 'Correct', detail: 'Loops back and fixes before replying if something is off' },
-      { num: '06', label: 'Deliver', detail: 'Final result in Wayne\'s specified format — no follow-up needed' },
+      { num: '06', label: 'Deliver', detail: 'Final result in the specified format — no follow-up needed' },
     ]
   },
   rules: [
@@ -111,7 +111,6 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
 
         {/* ── HERO ─────────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-32">
-          {/* Eyebrow + tags */}
           <div className="flex flex-wrap items-center gap-3 mb-10">
             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{c.eyebrow}</span>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
@@ -122,7 +121,6 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
             ))}
           </div>
 
-          {/* Big headline */}
           <h1 className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-8">
             {c.headline}
           </h1>
@@ -131,7 +129,6 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
             {c.subheadline}
           </p>
 
-          {/* Stats row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
             {c.stats.map((s, i) => (
               <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
@@ -157,17 +154,14 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div>
-              <div className="flex items-center gap-3 mb-8">
-                <span className="w-2 h-2 rounded-full bg-neutral-300 dark:bg-neutral-600 inline-block" />
-                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">Before</p>
-              </div>
+              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none">Before</p>
               <ul className="space-y-6">
                 {c.before.map((item, i) => (
-                  <li key={i} className="flex gap-5 group">
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0 group-hover:text-neutral-400 transition-colors">
+                  <li key={i} className="flex gap-5">
+                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-600 dark:text-neutral-400 border-b border-neutral-100 dark:border-neutral-800 pb-6">
+                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800 pb-6">
                       {item}
                     </p>
                   </li>
@@ -176,14 +170,11 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
             </div>
 
             {/* After */}
-            <div className="md:pt-0">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="w-2 h-2 rounded-full bg-brand-orange inline-block" />
-                <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange">After</p>
-              </div>
+            <div>
+              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none">After</p>
               <ul className="space-y-6">
                 {c.after.map((item, i) => (
-                  <li key={i} className="flex gap-5 group">
+                  <li key={i} className="flex gap-5">
                     <span className="font-mono text-[10px] text-brand-orange/40 mt-1 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
@@ -200,14 +191,11 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         {/* ── WORKFLOW ─────────────────────────────────────────── */}
         <section className="bg-brand-blue py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-brand-lime mb-4">Representative Workflow</p>
-                <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight">
-                  One message in Discord.
-                </h2>
-              </div>
-              <p className="font-mono text-xs text-white/50 max-w-sm leading-relaxed">
+            <div className="mb-16">
+              <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight mb-6">
+                One message in Discord.
+              </h2>
+              <p className="font-mono text-xs text-white/50 max-w-md leading-relaxed">
                 {c.workflow.description}
               </p>
             </div>
@@ -226,7 +214,6 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
 
         {/* ── CONTROL RULES ────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">Control Rules</p>
           <div className="space-y-0">
             {c.rules.map((r, i) => (
               <div
@@ -250,15 +237,33 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         {/* ── OUTCOMES ─────────────────────────────────────────── */}
         <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">Outcomes</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-neutral-200 dark:bg-neutral-700">
-              {c.outcomes.map((o, i) => (
-                <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                  <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 mb-6 block">0{i + 1}</span>
-                  <p className="font-serif text-2xl md:text-3xl text-neutral-900 dark:text-white mb-4 leading-tight">{o.title}</p>
-                  <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">{o.detail}</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16">Outcomes</p>
+
+            {/* Asymmetric strip: large first item spanning full width, then 3 below */}
+            <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
+              {/* Hero outcome */}
+              <div className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
+                <div className="md:max-w-lg">
+                  <p className="font-serif text-4xl md:text-6xl text-neutral-900 dark:text-white leading-tight mb-4">
+                    {c.outcomes[0].title}
+                  </p>
+                  <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-sm">
+                    {c.outcomes[0].detail}
+                  </p>
                 </div>
-              ))}
+                <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 shrink-0 self-start md:self-end">01</span>
+              </div>
+
+              {/* Three remaining outcomes in a row */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
+                {c.outcomes.slice(1).map((o, i) => (
+                  <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
+                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mb-6 block">{String(i + 2).padStart(2, '0')}</span>
+                    <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-4 leading-tight">{o.title}</p>
+                    <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">{o.detail}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -266,33 +271,25 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         {/* ── QUOTE ────────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
           <div className="max-w-5xl">
-            <span className="font-serif text-7xl md:text-9xl text-neutral-100 dark:text-neutral-800 leading-none select-none block mb-0 -mb-8">"</span>
+            <span className="font-serif text-7xl md:text-9xl text-neutral-100 dark:text-neutral-800 leading-none select-none block -mb-8">"</span>
             <blockquote className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-neutral-900 dark:text-white">
               {c.quote}
             </blockquote>
             <p className="font-mono text-[11px] text-neutral-400 mt-10 uppercase tracking-widest">
-              — Wayne Tien, on working with the system daily
+              Wayne Tien, on working with the system daily
             </p>
           </div>
         </section>
 
         {/* ── FOOTER NAV ───────────────────────────────────────── */}
         <div className="border-t border-neutral-100 dark:border-neutral-800">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
             <button
               onClick={onBack}
               className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft size={12} /> All Projects
             </button>
-            <a
-              href="https://github.com/YUI-TIEN"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              GitHub <ArrowUpRight size={11} />
-            </a>
           </div>
         </div>
       </div>
