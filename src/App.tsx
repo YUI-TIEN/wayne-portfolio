@@ -4,6 +4,12 @@ import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
 import { ProjectPage } from './components/ProjectPage'
+import { Seo } from './seo/Seo'
+import { projectSeo } from './seo/projectSeo'
+import { profilePageSchema, projectCreativeWorkSchema } from './seo/schema'
+
+const SITE_TITLE = 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio'
+const SITE_DESCRIPTION = 'Yui (Wayne) Tien is a Taiwan-based product builder specializing in AI workflows, agent operations, and demo-to-delivery systems. Portfolio of agent operating systems, AI character runtimes, and product launch work.'
 
 
 const projects = [
@@ -162,6 +168,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
+      <Seo title={SITE_TITLE} description={SITE_DESCRIPTION} path="/" jsonLd={profilePageSchema} />
       <CustomCursor />
 
       {/* Navigation */}
@@ -192,11 +199,11 @@ function Home() {
             Open to projects Q2 2026
           </div>
           <div className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
-            <p className="text-2xl md:text-5xl font-serif leading-snug">
+            <h1 className="text-2xl md:text-5xl font-serif leading-snug font-normal">
               Yui (Wayne) Tien is a product builder with a love for{' '}
               <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block">AI workflows</span> and{' '}
               <span className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block">demo-to-delivery</span> systems.
-            </p>
+            </h1>
           </div>
         </div>
       </section>
@@ -243,6 +250,26 @@ function Home() {
             </div>
           </div>
         </div>
+
+        {/* Quick facts — plain-language summary for search and AI assistants */}
+        <dl className="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800 text-[11px] font-mono">
+          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2">Name</dt>
+            <dd className="text-neutral-900 dark:text-white">Yui Tien, also known as Wayne Tien</dd>
+          </div>
+          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2">Role</dt>
+            <dd className="text-neutral-900 dark:text-white">Product builder — AI workflows, agent operations, demo-to-delivery systems</dd>
+          </div>
+          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2">Location</dt>
+            <dd className="text-neutral-900 dark:text-white">Taiwan</dd>
+          </div>
+          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2">Contact</dt>
+            <dd className="text-neutral-900 dark:text-white">youwei0112@gmail.com</dd>
+          </div>
+        </dl>
       </section>
 
       {/* Projects Grid */}
@@ -416,8 +443,24 @@ function ProjectDetail() {
   // suppress unused warning — toggleTheme is available for future nav
   void isDark; void toggleTheme
 
+  const seo = projectSeo[projectId]
+  const project = projects.find(p => p.id === projectId)
+
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
+      {seo && (
+        <Seo
+          title={seo.title}
+          description={seo.description}
+          path={`/project/${projectId}`}
+          jsonLd={projectCreativeWorkSchema({
+            name: seo.title,
+            description: seo.description,
+            path: `/project/${projectId}`,
+            keywords: project?.tags ?? [],
+          })}
+        />
+      )}
       <CustomCursor />
       <ProjectPage projectId={projectId} onBack={handleBack} />
       {isLoading && (

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://waynetien.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/openclaw-ops</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/persona-workflows</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/demo-os</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/voice-migration</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/morphus-website</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://waynetien.com/project/portfolio-site</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>
