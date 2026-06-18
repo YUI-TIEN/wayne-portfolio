@@ -135,7 +135,7 @@ function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
+      <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
         <div className="relative w-full max-w-xl mt-8 md:mt-0">
           <div className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
             {t.hero.badge}
@@ -188,7 +188,7 @@ function Home() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px mt-10 bg-white/20">
               {t.about.notes.map((note) => (
-                <div key={note} className="bg-brand-blue p-4 min-h-[120px] flex items-end">
+                <div key={note} className="bg-brand-blue p-4 sm:min-h-[120px] flex items-end">
                   <p className="font-mono text-[11px] leading-relaxed text-white/85">{note}</p>
                 </div>
               ))}
