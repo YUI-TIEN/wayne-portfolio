@@ -51,7 +51,7 @@ const homeSeo = {
   'zh-tw': {
     title: 'Yui (Wayne) Tien | AI 產品與 Agent 工作流作品集',
     description:
-      'Yui (Wayne) Tien 是一位台灣的產品建構者，專長於 AI 工作流、agent 維運與演示到落地系統。作品集涵蓋 agent 作業系統、AI 角色執行系統與產品上線專案。',
+      'Yui (Wayne) Tien，台灣的產品建構者，平時忙 AI 工作流、agent 維運、把演示變成真正能用的系統。這裡放了 agent 作業系統、AI 角色執行系統，還有幫公司做產品上線的專案。',
   },
 }
 
@@ -68,7 +68,7 @@ const projectSeo = {
     'zh-tw': {
       title: '個人 Agent 作業系統 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 如何設計一套個人 agent 作業系統：Discord 原生任務路由、跨工具持續記憶、自我修正工作流，以及多 agent 運行環境的操作規範。',
+        'Wayne Tien 怎麼搞出一套個人 agent 作業系統：Discord 直接接任務、跨工具不斷記憶、自己會修正的工作流，還有多 agent 環境的操作規範。',
       keywords: ['Agent Ops', 'OpenClaw', 'WHIKI'],
     },
   },
@@ -82,7 +82,7 @@ const projectSeo = {
     'zh-tw': {
       title: 'AI 角色直播運行系統 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 協助讓 SHIKI AI 角色系統具備上線直播能力，包含人格就緒檢查、直播連結流程、OBS／執行環境除錯，以及操作交接文件。',
+        'Wayne Tien 幫 SHIKI 的 AI 角色系統弄到能上線直播：人格就緒檢查、直播連結流程、OBS 跟系統除錯，還有操作交接文件都包了。',
       keywords: ['Live Ops', 'SHIKI', 'Persona'],
     },
   },
@@ -96,7 +96,7 @@ const projectSeo = {
     'zh-tw': {
       title: 'Agent 操作規範系統 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 把 agent 反覆犯的錯誤整理成明確的操作規範，涵蓋回覆方式、檔案交付、PR 授權、記憶查詢，以及高風險外部存取行為。',
+        'Wayne Tien 把 agent 一直犯的錯整理成講清楚的操作規範：怎麼回覆、檔案怎麼交、PR 誰能合、記憶怎麼查，還有高風險的外部存取行為。',
       keywords: ['Rules', 'SOP', 'Safety'],
     },
   },
@@ -108,9 +108,9 @@ const projectSeo = {
       keywords: ['TTS', 'Migration', 'Runbook'],
     },
     'zh-tw': {
-      title: '本地語音基礎設施遷移 | Yui (Wayne) Tien',
+      title: '本地語音系統搬家 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 參與本地語音系統的遷移規劃：相容舊版的轉接層、speaker 對應設定、效能基準測試計畫，以及分階段上線策略。',
+        'Wayne Tien 一起規劃本地語音系統怎麼搬：相容舊版的轉接層、speaker 怎麼對應、效能要怎麼測，還有怎麼分批上線比較安全。',
       keywords: ['TTS', 'Migration', 'Runbook'],
     },
   },
@@ -124,7 +124,7 @@ const projectSeo = {
     'zh-tw': {
       title: 'AI 產品演示流程設計 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 支援 MorphusAI 產品的發表工作，從資訊架構、演示敘事規劃，到上線文案與視覺細節的打磨。',
+        'Wayne Tien 幫 MorphusAI 的產品發表打點：資訊架構怎麼排、演示怎麼講故事，連上線文案跟視覺細節都一起調。',
       keywords: ['Product', 'MorphusAI', 'Story'],
     },
   },
@@ -138,7 +138,7 @@ const projectSeo = {
     'zh-tw': {
       title: '個人作品集網站 | Yui (Wayne) Tien',
       description:
-        'Wayne Tien 從零設計並開發這個網站：富有表現力的介面、跨裝置的細節打磨、深色模式，以及部署架構，發布在 GitHub Pages 上。',
+        'Wayne Tien 自己從頭做的網站：有表現力的介面、各種裝置都顧到的細節、深色模式，還有部署架構，發布在 GitHub Pages 上。',
       keywords: ['Frontend', 'Visual System', 'GitHub Pages'],
     },
   },
