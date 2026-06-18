@@ -16,8 +16,8 @@ const SITE_TITLE: Record<Lang, string> = {
   'zh-tw': 'Yui (Wayne) Tien | AI 產品與 Agent 工作流作品集',
 }
 const SITE_DESCRIPTION: Record<Lang, string> = {
-  en: 'Yui (Wayne) Tien is a Taiwan-based product builder specializing in AI workflows, agent operations, and demo-to-delivery systems. Portfolio of agent operating systems, AI character runtimes, and product launch work.',
-  'zh-tw': 'Yui (Wayne) Tien，台灣的產品建構者，平時忙 AI 工作流、agent 維運、把演示變成真正能用的系統。這裡放了 agent 作業系統、AI 角色執行系統，還有幫公司做產品上線的專案。',
+  en: 'AI product builder from Taiwan — workflows, agent ops, demo-to-launch systems.',
+  'zh-tw': '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
 }
 
 // ── Shared theme state (hoisted so both Home and ProjectPage wrapper share it) ──
