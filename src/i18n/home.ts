@@ -287,10 +287,10 @@ const zhTw: HomeCopy = {
   hero: {
     badge: '⚙️ AI 維運',
     availability: '2026 第二季開始接案',
-    leadIn: 'Yui（Wayne）Tien，做產品的，特別喜歡搞',
+    leadIn: '我是 Yui，也可以叫我 Wayne，擅長建立',
     highlight1: 'AI 工作流',
     midText: '跟',
-    highlight2: '從演示到真的能用',
+    highlight2: '從 DEMO 到落地',
     trailing: '的系統。',
   },
   stack: [
