@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      // GitHub Pages SPA redirect: store path in sessionStorage, redirect to base
-      var path = window.location.pathname.replace('/wayne-portfolio', '') || '/';
+      // GitHub Pages SPA redirect: store path in sessionStorage, redirect to root
+      var path = window.location.pathname;
       var search = window.location.search;
       sessionStorage.setItem('spa_redirect', path + search);
-      window.location.replace('/wayne-portfolio/');
+      window.location.replace('/');
     </script>
   </head>
   <body></body>
