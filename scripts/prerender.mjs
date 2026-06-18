@@ -3,10 +3,11 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import handler from 'serve-handler'
 import puppeteer from 'puppeteer'
-import { routeSeo, SITE_URL } from './seoData.mjs'
+import { routeSeo, SITE_URL, LANGS } from './seoData.mjs'
 
 const DIST = path.resolve(import.meta.dirname, '..', 'dist')
 const PORT = 4173
+const DEFAULT_LANG = LANGS[0]
 
 // react-helmet-async's React 19 head-hoisting path does not reliably clear
 // the previous route's <title>/<meta>/<link> tags before the new route's
@@ -15,20 +16,21 @@ const PORT = 4173
 // Rather than depend on that runtime behavior, strip every Helmet-managed
 // tag from the prerendered snapshot and rewrite them from a static lookup
 // table (seoData.mjs), so each route's output HTML is unambiguous.
-const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description)")[^>]*>|<link rel="canonical"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
+const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
 
 function rewriteHead(html, route) {
   const seo = routeSeo[route]
   if (!seo) return html
 
   const stripped = html.replace(MANAGED_TAG, '')
-  const url = route === '/' ? `${SITE_URL}/` : `${SITE_URL}${route}`
+  const url = `${SITE_URL}${route}`
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
   const tags = [
     `<title>${esc(seo.title)}</title>`,
     `<meta name="description" content="${esc(seo.description)}">`,
     `<link rel="canonical" href="${url}">`,
+    ...seo.alternates.map(a => `<link rel="alternate" hreflang="${a.lang}" href="${SITE_URL}${a.path}">`),
     `<meta property="og:url" content="${url}">`,
     `<meta property="og:title" content="${esc(seo.title)}">`,
     `<meta property="og:description" content="${esc(seo.description)}">`,
@@ -55,6 +57,8 @@ async function main() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
 
+  let rootFallbackHtml = null
+
   try {
     for (const route of ROUTES) {
       const page = await browser.newPage()
@@ -65,10 +69,23 @@ async function main() {
       const html = rewriteHead(await page.content(), route)
       await page.close()
 
-      const outDir = route === '/' ? DIST : path.join(DIST, route)
+      const outDir = path.join(DIST, route)
       await mkdir(outDir, { recursive: true })
       await writeFile(path.join(outDir, 'index.html'), html, 'utf-8')
       console.log(`prerendered ${route} -> ${path.relative(DIST, outDir)}/index.html`)
+
+      // Bare "/" has no route entry of its own (RootRedirect sends browsers
+      // to /en/ via JS), but non-JS crawlers hit dist/index.html directly.
+      // Serve the default-language snapshot there too, with canonical
+      // pointing at /en/ so it isn't indexed as separate duplicate content.
+      if (route === `/${DEFAULT_LANG}/`) {
+        rootFallbackHtml = html
+      }
+    }
+
+    if (rootFallbackHtml) {
+      await writeFile(path.join(DIST, 'index.html'), rootFallbackHtml, 'utf-8')
+      console.log('prerendered / -> index.html (default-language fallback)')
     }
   } finally {
     await browser.close()

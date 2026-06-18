@@ -1,31 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://waynetien.com/</loc>
+    <loc>https://waynetien.com/en/</loc>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/openclaw-ops</loc>
-    <priority>0.8</priority>
+    <loc>https://waynetien.com/zh-tw/</loc>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/persona-workflows</loc>
+    <loc>https://waynetien.com/en/project/openclaw-ops</loc>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/openclaw-ops" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/openclaw-ops" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/demo-os</loc>
+    <loc>https://waynetien.com/zh-tw/project/openclaw-ops</loc>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/openclaw-ops" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/openclaw-ops" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/voice-migration</loc>
+    <loc>https://waynetien.com/en/project/persona-workflows</loc>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/persona-workflows" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/persona-workflows" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/morphus-website</loc>
+    <loc>https://waynetien.com/zh-tw/project/persona-workflows</loc>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/persona-workflows" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/persona-workflows" />
   </url>
   <url>
-    <loc>https://waynetien.com/project/portfolio-site</loc>
+    <loc>https://waynetien.com/en/project/demo-os</loc>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/demo-os" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/demo-os" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/zh-tw/project/demo-os</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/demo-os" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/demo-os" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/en/project/voice-migration</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/voice-migration" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/voice-migration" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/zh-tw/project/voice-migration</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/voice-migration" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/voice-migration" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/en/project/morphus-website</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/morphus-website" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/morphus-website" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/zh-tw/project/morphus-website</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/morphus-website" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/morphus-website" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/en/project/portfolio-site</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/portfolio-site" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/portfolio-site" />
+  </url>
+  <url>
+    <loc>https://waynetien.com/zh-tw/project/portfolio-site</loc>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://waynetien.com/en/project/portfolio-site" />
+    <xhtml:link rel="alternate" hreflang="zh-tw" href="https://waynetien.com/zh-tw/project/portfolio-site" />
   </url>
 </urlset>

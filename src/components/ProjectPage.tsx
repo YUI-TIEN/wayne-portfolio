@@ -1,101 +1,18 @@
 import { ArrowLeft } from 'lucide-react'
+import type { Lang } from '../i18n/locales'
+import { projectPageCopy } from '../i18n/projectPage'
 
 interface ProjectPageProps {
   projectId: string
+  lang: Lang
   onBack: (e: React.MouseEvent) => void
 }
 
-const openClawContent = {
-  label: 'OpenClaw Agent Operating System',
-  eyebrow: 'Personal Project · 2025–Present',
-  tags: ['Runtime', 'Discord', 'Multi-Agent', 'Memory', 'Tooling'],
-  headline: 'Turning fragile single-session helpers into a controllable work layer.',
-  subheadline: 'Persistent across tools. Obedient to workflow. Recoverable under failure. Operable through everyday conversation.',
-  role: 'Founder · System Designer · Agent Ops Engineer · Product Owner · Runtime Implementer',
-  stats: [
-    { value: '3–5', label: 'parallel projects' },
-    { value: '∞', label: 'session continuity' },
-    { value: '0', label: 'manual restarts needed' },
-    { value: '100%', label: 'Discord-native ops' },
-  ],
-  problem: 'AI agents were technically capable but operationally unreliable. Every tool switch, session restart, or computer reboot meant re-explaining project state from scratch. Outputs rarely matched required modification style, reporting format, or workflow rules. When things broke, fixes were reactive and one-off.',
-  before: [
-    'Switching from Claude Code to Codex to Antigravity required re-explaining the entire project context every single time.',
-    'Agents would ignore output format requirements, modification style rules, and reporting conventions.',
-    'Failures were handled reactively — break something, fix it manually, repeat.',
-    'Multi-agent tunnel and profile setups would bind incorrectly and interfere with each other.',
-    'No reliable memory meant every session started cold, losing continuity from previous work.',
-  ],
-  after: [
-    'New sessions pick up ongoing tasks without any re-explanation of project state.',
-    'Modifications, reports, and outputs consistently follow the required workflow and format.',
-    'Failures trigger triage, self-correction, and fallback paths — not manual intervention.',
-    'Profile routing is stable across agents, gateways, Discord channels, and providers.',
-    'Memory persists across tools, sessions, and platforms through an integrated memory hub.',
-  ],
-  workflow: {
-    description: 'Wayne sends one message in Discord. The system checks memory or receives relevant context automatically, executes the task, verifies the output matches requirements and format, self-corrects if needed, and returns the result in the specified structure.',
-    steps: [
-      { num: '01', label: 'Request', detail: 'One natural-language message in Discord' },
-      { num: '02', label: 'Context', detail: 'Memory system surfaces relevant project state automatically' },
-      { num: '03', label: 'Execute', detail: 'Agent works within defined scope, avoids unrelated changes' },
-      { num: '04', label: 'Verify', detail: 'Self-checks output against required format and style' },
-      { num: '05', label: 'Correct', detail: 'Loops back and fixes before replying if something is off' },
-      { num: '06', label: 'Deliver', detail: 'Final result in the specified format — no follow-up needed' },
-    ]
-  },
-  rules: [
-    { rule: 'No merges without approval', detail: 'Nothing gets merged until explicitly confirmed.' },
-    { rule: 'No gateway restarts without warning', detail: 'Require prior notification and approval.' },
-    { rule: 'No unrelated edits', detail: 'Agents stay within defined scope and don\'t touch adjacent areas.' },
-    { rule: 'No AI-created technical debt', detail: 'Shortcuts and placeholder code are explicitly prohibited.' },
-    { rule: 'No stale memory usage', detail: 'Verify current state before acting on recalled information.' },
-  ],
-  outcomes: [
-    { title: 'Work from anywhere', detail: 'Manage 3–5 parallel projects from a phone. The work interface is a conversation, not an IDE.' },
-    { title: 'Always-on agents', detail: 'Agents continue handling tasks, scheduling, self-reflection, and planning outside active hours.' },
-    { title: 'Seamless handoff', detail: 'New sessions take over ongoing work without context loss. No re-explanation, no repeated setup.' },
-    { title: 'Self-healing ops', detail: 'Errors trigger triage flows and self-correction loops — not manual firefighting.' },
-  ],
-  quote: 'Working now feels mostly like chatting. Time that used to go to re-explaining context, chasing format errors, and manually fixing broken flows now goes to planning and higher-level decisions.',
-}
+export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
+  const t = projectPageCopy[lang]
 
-const placeholderContent: Record<string, { label: string; headline: string; tags: string[]; eyebrow: string }> = {
-  'morphus-website': {
-    label: 'AI Product Demo Flow',
-    eyebrow: 'Collaborated · MorphusAI',
-    tags: ['Product', 'UX', 'Content System'],
-    headline: 'From information architecture to launch-ready presentation.',
-  },
-  'persona-workflows': {
-    label: 'AI Character Live Runtime',
-    eyebrow: 'Collaborated · SHIKI',
-    tags: ['Live Ops', 'Persona', 'Workflow'],
-    headline: 'Making AI characters demo-ready through persona ops and runtime debugging.',
-  },
-  'demo-os': {
-    label: 'Agent Operating Contracts',
-    eyebrow: 'Owned',
-    tags: ['Rules', 'SOP', 'Safety'],
-    headline: 'Turning repeated agent mistakes into explicit operating contracts.',
-  },
-  'voice-migration': {
-    label: 'Local Voice Infrastructure Migration',
-    eyebrow: 'Collaborated',
-    tags: ['TTS', 'Migration', 'Runbook'],
-    headline: 'Legacy-compatible adapter, speaker mapping, benchmark plan, canary rollout.',
-  },
-  'portfolio-site': {
-    label: 'Personal Portfolio Site',
-    eyebrow: 'Owned',
-    tags: ['Frontend', 'Visual System', 'GitHub Pages'],
-    headline: 'Designed and built as a living artifact — you\'re looking at it.',
-  },
-}
-
-export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
   if (projectId === 'openclaw-ops') {
-    const c = openClawContent
+    const c = t.openClaw
     return (
       <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
 
@@ -105,7 +22,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
             onClick={onBack}
             className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
           >
-            <ArrowLeft size={12} /> All Projects
+            <ArrowLeft size={12} /> {t.backToAllProjects}
           </button>
         </div>
 
@@ -142,7 +59,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         {/* ── PROBLEM ──────────────────────────────────────────── */}
         <section className="bg-brand-ink dark:bg-black py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10">The Problem</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10">{t.theProblem}</p>
             <p className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-white max-w-4xl">
               {c.problem}
             </p>
@@ -154,7 +71,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div>
-              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none">Before</p>
+              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none">{t.before}</p>
               <ul className="space-y-6">
                 {c.before.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -171,7 +88,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
 
             {/* After */}
             <div>
-              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none">After</p>
+              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none">{t.after}</p>
               <ul className="space-y-6">
                 {c.after.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -193,7 +110,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="mb-16">
               <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight mb-6">
-                One message in Discord.
+                {t.oneMessage}
               </h2>
               <p className="font-mono text-xs text-white/50 max-w-md leading-relaxed">
                 {c.workflow.description}
@@ -237,7 +154,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         {/* ── OUTCOMES ─────────────────────────────────────────── */}
         <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16">Outcomes</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16">{t.outcomes}</p>
 
             {/* Asymmetric strip: large first item spanning full width, then 3 below */}
             <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
@@ -276,7 +193,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
               {c.quote}
             </blockquote>
             <p className="font-mono text-[11px] text-neutral-400 mt-10 uppercase tracking-widest">
-              Wayne Tien, on working with the system daily
+              {c.quoteAttribution}
             </p>
           </div>
         </section>
@@ -288,7 +205,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
               onClick={onBack}
               className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft size={12} /> All Projects
+              <ArrowLeft size={12} /> {t.backToAllProjects}
             </button>
           </div>
         </div>
@@ -297,7 +214,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
   }
 
   // ── PLACEHOLDER ──────────────────────────────────────────────
-  const p = placeholderContent[projectId]
+  const p = t.placeholders[projectId]
   if (!p) return null
 
   return (
@@ -307,7 +224,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
           onClick={onBack}
           className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
         >
-          <ArrowLeft size={12} /> All Projects
+          <ArrowLeft size={12} /> {t.backToAllProjects}
         </button>
       </div>
 
@@ -315,9 +232,9 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         <div className="flex flex-wrap items-center gap-3 mb-10">
           <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{p.eyebrow}</span>
           <span className="text-neutral-300 dark:text-neutral-600">·</span>
-          {p.tags.map(t => (
-            <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-              {t}
+          {p.tags.map(tag => (
+            <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
+              {tag}
             </span>
           ))}
         </div>
@@ -325,7 +242,7 @@ export function ProjectPage({ projectId, onBack }: ProjectPageProps) {
         <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-20">{p.headline}</p>
 
         <div className="border border-dashed border-neutral-200 dark:border-neutral-700 p-16 flex items-center justify-center min-h-[300px]">
-          <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest">Case study in progress</p>
+          <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest">{t.caseStudyInProgress}</p>
         </div>
       </section>
     </div>
