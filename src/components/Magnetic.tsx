@@ -10,8 +10,9 @@ interface MagneticProps {
   scaleOnHover?: number;
 }
 
-const isCoarsePointer = () =>
-  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+const isMagneticDisabled = () =>
+  typeof window !== 'undefined' &&
+  (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 export function Magnetic({ children, className = '', strength = 0.35, scaleOnHover = 1.1 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -25,14 +26,14 @@ export function Magnetic({ children, className = '', strength = 0.35, scaleOnHov
   const springScale = useSpring(scale, { stiffness: 260, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isCoarsePointer() || !ref.current) return;
+    if (isMagneticDisabled() || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     x.set((e.clientX - rect.left - rect.width / 2) * strength);
     y.set((e.clientY - rect.top - rect.height / 2) * strength);
   };
 
   const handleMouseEnter = () => {
-    if (isCoarsePointer()) return;
+    if (isMagneticDisabled()) return;
     scale.set(scaleOnHover);
   };
 

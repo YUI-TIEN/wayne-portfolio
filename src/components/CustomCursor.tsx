@@ -4,8 +4,10 @@ export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only apply custom cursor logic on devices that support hover (non-touch)
+    // Only apply custom cursor logic on devices that support hover (non-touch),
+    // and skip entirely when the user prefers reduced motion.
     if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const cursor = cursorRef.current;
     if (!cursor) return;
@@ -73,8 +75,11 @@ export const CustomCursor: React.FC = () => {
     };
   }, []);
 
-  // Hide completely on touch devices
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+  // Hide completely on touch devices or when the user prefers reduced motion
+  if (
+    typeof window !== 'undefined' &&
+    (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  ) {
     return null;
   }
 

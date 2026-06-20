@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
@@ -11,6 +11,7 @@ import { profilePageSchema, projectCreativeWorkSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { homeCopy } from './i18n/home'
+import { ThemeProvider, useTheme } from './theme/ThemeContext'
 
 const SITE_TITLE: Record<Lang, string> = {
   en: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio',
@@ -23,38 +24,6 @@ const SITE_DESCRIPTION: Record<Lang, string> = {
   'zh-tw': '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
   ja: '台湾を拠点とするAIプロダクトビルダー — ワークフロー、エージェント運用、デモから実装までの仕組み。',
   ko: '대만 기반의 AI 프로덕트 빌더 — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
-}
-
-// ── Shared theme state (hoisted so both Home and ProjectPage wrapper share it) ──
-function useTheme() {
-  const [isDark, setIsDark] = useState(false)
-
-  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const doc = document as any
-    if (!doc.startViewTransition) {
-      setIsDark(d => !d)
-      return
-    }
-    const rect = event.currentTarget.getBoundingClientRect()
-    const x = event.clientX || (rect.left + rect.width / 2)
-    const y = event.clientY || (rect.top + rect.height / 2)
-    const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
-    const transition = doc.startViewTransition(() => setIsDark(d => !d))
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 450, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
-      )
-    })
-  }
-
-  useEffect(() => {
-    document.body.classList.toggle('dark', isDark)
-    document.documentElement.classList.toggle('dark', isDark)
-  }, [isDark])
-
-  return { isDark, toggleTheme }
 }
 
 // ── Scroll helper (no hash in URL) ──
@@ -153,7 +122,7 @@ function Home() {
           <div className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
             {t.hero.badge}
           </div>
-          <div className="bg-brand-orange text-white text-[9px] md:text-[11px] font-mono px-2 py-1 md:px-3 md:py-1 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform">
+          <div className="bg-brand-orange text-neutral-950 text-[9px] md:text-[11px] font-mono px-2 py-1 md:px-3 md:py-1 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform">
             {t.hero.availability}
           </div>
           <div className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
@@ -405,9 +374,6 @@ function ProjectDetail() {
     }, 1200)
   }
 
-  // suppress unused warning — toggleTheme is available for future nav
-  void isDark; void toggleTheme
-
   const seo = projectSeo[projectId]?.[lang]
   const project = homeCopy[lang].projects.find(p => p.id === projectId)
 
@@ -427,7 +393,7 @@ function ProjectDetail() {
         />
       )}
       <CustomCursor />
-      <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} />
+      <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
       {isLoading && (
         <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
           <div className="w-24 h-24 md:w-32 md:h-32">
@@ -467,10 +433,12 @@ function RootRedirect() {
 // ── Root ────────────────────────────────────────────────────────────────────
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<RootRedirect />} />
-      <Route path="/:lang/*" element={<LangLayout />} />
-    </Routes>
+    <ThemeProvider>
+      <Routes>
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="/:lang/*" element={<LangLayout />} />
+      </Routes>
+    </ThemeProvider>
   )
 }
 

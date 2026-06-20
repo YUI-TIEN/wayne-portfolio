@@ -22,7 +22,9 @@ function rewriteHead(html, route) {
   const seo = routeSeo[route]
   if (!seo) return html
 
-  const stripped = html.replace(MANAGED_TAG, '')
+  const lang = route.split('/')[1]
+  const withLang = html.replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
+  const stripped = withLang.replace(MANAGED_TAG, '')
   const url = `${SITE_URL}${route}`
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 

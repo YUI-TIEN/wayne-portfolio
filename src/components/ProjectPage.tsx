@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { projectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
@@ -7,10 +7,24 @@ interface ProjectPageProps {
   projectId: string
   lang: Lang
   onBack: (e: React.MouseEvent) => void
+  isDark: boolean
+  onToggleTheme: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
+export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: ProjectPageProps) {
   const t = projectPageCopy[lang]
+
+  const themeToggle = (
+    <Magnetic strength={0.35} scaleOnHover={1.2}>
+      <button
+        onClick={onToggleTheme}
+        className="p-1 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer flex items-center"
+        aria-label="Toggle theme"
+      >
+        {isDark ? <Sun size={14} /> : <Moon size={14} />}
+      </button>
+    </Magnetic>
+  )
 
   if (projectId === 'openclaw-ops') {
     const c = t.openClaw
@@ -18,7 +32,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
       <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
 
         {/* Top Nav */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
           <Magnetic strength={0.3} scaleOnHover={1.08}>
             <button
               onClick={onBack}
@@ -27,6 +41,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
               <ArrowLeft size={12} /> {t.backToAllProjects}
             </button>
           </Magnetic>
+          {themeToggle}
         </div>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
@@ -224,7 +239,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
         <Magnetic strength={0.3} scaleOnHover={1.08}>
           <button
             onClick={onBack}
@@ -233,6 +248,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
             <ArrowLeft size={12} /> {t.backToAllProjects}
           </button>
         </Magnetic>
+        {themeToggle}
       </div>
 
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
