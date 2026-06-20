@@ -70,7 +70,7 @@ function LangSwitcher({ lang }: { lang: Lang }) {
 
   const switchTo = (next: Lang) => {
     if (next === lang) return
-    const rest = location.pathname.replace(/^\/(en|zh-tw)/, '')
+    const rest = location.pathname.replace(new RegExp(`^/(${LANGS.join('|')})`), '')
     localStorage.setItem('preferred-lang', next)
     navigate(`/${next}${rest}`)
   }
