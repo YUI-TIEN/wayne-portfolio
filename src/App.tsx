@@ -15,10 +15,14 @@ import { homeCopy } from './i18n/home'
 const SITE_TITLE: Record<Lang, string> = {
   en: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio',
   'zh-tw': 'Yui (Wayne) Tien | AI 產品與 Agent 工作流作品集',
+  ja: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ',
+  ko: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오',
 }
 const SITE_DESCRIPTION: Record<Lang, string> = {
   en: 'AI product builder from Taiwan — workflows, agent ops, demo-to-launch systems.',
   'zh-tw': '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
+  ja: '台湾を拠点とするAIプロダクトビルダー — ワークフロー、エージェント運用、デモから実装までの仕組み。',
+  ko: '대만 기반의 AI 프로덕트 빌더 — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
 }
 
 // ── Shared theme state (hoisted so both Home and ProjectPage wrapper share it) ──
