@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 're
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
+import { Magnetic } from './components/Magnetic'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -119,17 +120,25 @@ function Home() {
       <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center gap-4">
           <span className="text-neutral-400">[</span>
-          <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors">{t.nav.work}</button>
-          <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors">{t.nav.about}</button>
-          <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors">{t.nav.contact}</button>
+          <Magnetic strength={0.3} scaleOnHover={1.15}>
+            <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors">{t.nav.work}</button>
+          </Magnetic>
+          <Magnetic strength={0.3} scaleOnHover={1.15}>
+            <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors">{t.nav.about}</button>
+          </Magnetic>
+          <Magnetic strength={0.3} scaleOnHover={1.15}>
+            <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors">{t.nav.contact}</button>
+          </Magnetic>
           <LangSwitcher lang={lang} />
-          <button
-            onClick={toggleTheme}
-            className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
+          <Magnetic strength={0.35} scaleOnHover={1.2}>
+            <button
+              onClick={toggleTheme}
+              className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          </Magnetic>
           <span className="text-neutral-400">]</span>
         </div>
       </nav>
@@ -259,13 +268,15 @@ function Home() {
                 ))}
               </div>
               <div className="mt-auto pt-10 flex items-end">
-                <a
-                  href="#"
-                  onClick={(e) => triggerProjectLoad(e, p.id)}
-                  className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity"
-                >
-                  {t.work.viewProject} <ArrowRight size={14} />
-                </a>
+                <Magnetic strength={0.4} scaleOnHover={1.1}>
+                  <a
+                    href="#"
+                    onClick={(e) => triggerProjectLoad(e, p.id)}
+                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity"
+                  >
+                    {t.work.viewProject} <ArrowRight size={14} />
+                  </a>
+                </Magnetic>
               </div>
             </div>
           ))}
@@ -279,17 +290,18 @@ function Home() {
           {(['work', 'about', 'contact'] as const).map((tab) => {
             const isActive = activeTab === tab
             return (
-              <button
-                key={tab}
-                onClick={() => { setActiveTab(tab); scrollTo(tab === 'contact' ? 'contact' : tab) }}
-                className={`${
-                  isActive
-                    ? 'bg-brand-orange text-brand-bg'
-                    : 'bg-[#FCE3D6] text-brand-orange hover:bg-[#FAD9C8]'
-                } px-4 py-2 md:px-5 md:py-2.5 text-[10px] md:text-xs font-mono transition-all lowercase whitespace-nowrap active:scale-95 origin-bottom`}
-              >
-                {t.nav[tab]}
-              </button>
+              <Magnetic key={tab} strength={0.3} scaleOnHover={1.08}>
+                <button
+                  onClick={() => { setActiveTab(tab); scrollTo(tab === 'contact' ? 'contact' : tab) }}
+                  className={`${
+                    isActive
+                      ? 'bg-brand-orange text-brand-bg'
+                      : 'bg-[#FCE3D6] text-brand-orange hover:bg-[#FAD9C8]'
+                  } px-4 py-2 md:px-5 md:py-2.5 text-[10px] md:text-xs font-mono transition-all lowercase whitespace-nowrap active:scale-95 origin-bottom`}
+                >
+                  {t.nav[tab]}
+                </button>
+              </Magnetic>
             )
           })}
         </div>
@@ -297,18 +309,22 @@ function Home() {
         <footer id="contact" className="bg-brand-orange relative py-16 md:py-24 w-full overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
             <div className="w-full md:w-1/3 flex flex-col items-center md:items-start gap-6 md:gap-8 relative z-20">
-              <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
-                <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">{t.footer.sayHello}</span>
-                <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                  youwei0112@gmail.com
-                </a>
-              </div>
-              <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 rotate-3 hover:-rotate-1 transition-transform duration-300 active:scale-95 cursor-pointer md:ml-8">
-                <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">{t.footer.connectWithMe}</span>
-                <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                  /in/yui-tien
-                </a>
-              </div>
+              <Magnetic strength={0.2} scaleOnHover={1.04}>
+                <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
+                  <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">{t.footer.sayHello}</span>
+                  <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
+                    youwei0112@gmail.com
+                  </a>
+                </div>
+              </Magnetic>
+              <Magnetic strength={0.2} scaleOnHover={1.04} className="md:ml-8">
+                <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 rotate-3 hover:-rotate-1 transition-transform duration-300 active:scale-95 cursor-pointer">
+                  <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500">{t.footer.connectWithMe}</span>
+                  <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
+                    /in/yui-tien
+                  </a>
+                </div>
+              </Magnetic>
             </div>
 
             <div className="w-full md:w-1/3 flex justify-center items-center relative z-10 min-h-[80px] md:min-h-0">

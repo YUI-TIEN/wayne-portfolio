@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { projectPageCopy } from '../i18n/projectPage'
+import { Magnetic } from './Magnetic'
 
 interface ProjectPageProps {
   projectId: string
@@ -18,12 +19,14 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
 
         {/* Top Nav */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft size={12} /> {t.backToAllProjects}
-          </button>
+          <Magnetic strength={0.3} scaleOnHover={1.08}>
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+            >
+              <ArrowLeft size={12} /> {t.backToAllProjects}
+            </button>
+          </Magnetic>
         </div>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
@@ -201,12 +204,14 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
         {/* ── FOOTER NAV ───────────────────────────────────────── */}
         <div className="border-t border-neutral-100 dark:border-neutral-800">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              <ArrowLeft size={12} /> {t.backToAllProjects}
-            </button>
+            <Magnetic strength={0.3} scaleOnHover={1.08}>
+              <button
+                onClick={onBack}
+                className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+              >
+                <ArrowLeft size={12} /> {t.backToAllProjects}
+              </button>
+            </Magnetic>
           </div>
         </div>
       </div>
@@ -220,12 +225,14 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-        >
-          <ArrowLeft size={12} /> {t.backToAllProjects}
-        </button>
+        <Magnetic strength={0.3} scaleOnHover={1.08}>
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+          >
+            <ArrowLeft size={12} /> {t.backToAllProjects}
+          </button>
+        </Magnetic>
       </div>
 
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
