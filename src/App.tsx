@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
@@ -19,6 +19,16 @@ const SITE_TITLE: Record<Lang, string> = {
   ja: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ',
   ko: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오',
 }
+// Elegant CJK webfont per language, injected only for that language so EN
+// visitors never download CJK font weights. See src/index.css for the
+// :lang()-scoped font-family rules these back, and scripts/prerender.mjs
+// for the equivalent injected into prerendered (non-JS) snapshots.
+const CJK_FONT_HREF: Partial<Record<Lang, string>> = {
+  'zh-tw': 'https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap',
+  ja: 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap',
+  ko: 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap',
+}
+
 const SITE_DESCRIPTION: Record<Lang, string> = {
   en: 'AI product builder from Taiwan — workflows, agent ops, demo-to-launch systems.',
   'zh-tw': '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
@@ -408,6 +418,27 @@ function ProjectDetail() {
 // ── Language-scoped layout: validates :lang param and provides context ──────
 function LangLayout() {
   const { lang: langParam } = useParams<{ lang: string }>()
+
+  useEffect(() => {
+    if (!isLang(langParam)) return
+    document.documentElement.lang = langParam
+
+    const href = CJK_FONT_HREF[langParam]
+    const existing = document.getElementById('cjk-fonts') as HTMLLinkElement | null
+    if (!href) {
+      existing?.remove()
+      return
+    }
+    if (existing) {
+      existing.href = href
+    } else {
+      const link = document.createElement('link')
+      link.id = 'cjk-fonts'
+      link.rel = 'stylesheet'
+      link.href = href
+      document.head.appendChild(link)
+    }
+  }, [langParam])
 
   if (!isLang(langParam)) {
     return <Navigate to={`/${DEFAULT_LANG}`} replace />

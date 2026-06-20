@@ -20,6 +20,25 @@
   --color-brand-bg: #f5f4f2;
 }
 
+/*
+ * Cormorant Garamond / Plus Jakarta Sans / JetBrains Mono have no CJK glyphs,
+ * so CJK text already falls through to *some* fallback — without this it's
+ * whatever the OS happens to ship (MS Mincho, SimSun, etc.), which looks
+ * dated and differs per platform. Add a matching elegant webfont per
+ * language, scoped with :lang() so it only kicks in for that locale's CJK
+ * glyphs. Western fonts stay first in the stack, so Latin text/numbers
+ * embedded in zh-tw/ja/ko copy (brand names, "AI", etc.) keeps rendering in
+ * the original Western font rather than the CJK font's own Latin glyphs.
+ */
+:lang(zh-tw) .font-serif { font-family: "Cormorant Garamond", "Noto Serif TC", serif; }
+:lang(zh-tw) .font-sans, :lang(zh-tw) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans TC", system-ui, sans-serif; }
+
+:lang(ja) .font-serif { font-family: "Cormorant Garamond", "Noto Serif JP", serif; }
+:lang(ja) .font-sans, :lang(ja) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans JP", system-ui, sans-serif; }
+
+:lang(ko) .font-serif { font-family: "Cormorant Garamond", "Noto Serif KR", serif; }
+:lang(ko) .font-sans, :lang(ko) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans KR", system-ui, sans-serif; }
+
 @layer base {
   html {
     scroll-behavior: smooth;

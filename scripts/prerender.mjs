@@ -9,6 +9,15 @@ const DIST = path.resolve(import.meta.dirname, '..', 'dist')
 const PORT = 4173
 const DEFAULT_LANG = LANGS[0]
 
+// Elegant CJK webfont per language, loaded only on that language's pages
+// (mirrors the dynamic <link> injection in src/App.tsx for client-side nav).
+// See src/index.css for the :lang()-scoped font-family rules these back.
+const CJK_FONT_HREF = {
+  'zh-tw': 'https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap',
+  ja: 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap',
+  ko: 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap',
+}
+
 // react-helmet-async's React 19 head-hoisting path does not reliably clear
 // the previous route's <title>/<meta>/<link> tags before the new route's
 // tags are committed (confirmed: duplicates exist even at domcontentloaded,
@@ -16,7 +25,7 @@ const DEFAULT_LANG = LANGS[0]
 // Rather than depend on that runtime behavior, strip every Helmet-managed
 // tag from the prerendered snapshot and rewrite them from a static lookup
 // table (seoData.mjs), so each route's output HTML is unambiguous.
-const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
+const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
 
 function rewriteHead(html, route) {
   const seo = routeSeo[route]
@@ -40,6 +49,7 @@ function rewriteHead(html, route) {
     `<meta property="twitter:title" content="${esc(seo.title)}">`,
     `<meta property="twitter:description" content="${esc(seo.description)}">`,
     ...seo.jsonLd.map(schema => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`),
+    ...(CJK_FONT_HREF[lang] ? [`<link id="cjk-fonts" rel="stylesheet" href="${CJK_FONT_HREF[lang]}">`] : []),
   ].join('\n    ')
 
   return stripped.replace('</head>', `    ${tags}\n  </head>`)
