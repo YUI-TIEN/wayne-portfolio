@@ -2,7 +2,7 @@ import { ArrowLeft, Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { projectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
-import { ScrambleText } from './ScrambleText'
+import { ScrambleText, ScrambleStagger } from './ScrambleText'
 
 interface ProjectPageProps {
   projectId: string
@@ -46,6 +46,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         </div>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
+        <ScrambleStagger delay={0.08}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-32">
           <div className="flex flex-wrap items-center gap-3 mb-10">
             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={c.eyebrow} /></span>
@@ -74,8 +75,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             ))}
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── PROBLEM ──────────────────────────────────────────── */}
+        <ScrambleStagger delay={0.16}>
         <section className="bg-brand-ink dark:bg-black py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10"><ScrambleText text={t.theProblem} /></p>
@@ -84,8 +87,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </p>
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── BEFORE / AFTER ───────────────────────────────────── */}
+        <ScrambleStagger delay={0.2}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
@@ -123,8 +128,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </div>
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── WORKFLOW ─────────────────────────────────────────── */}
+        <ScrambleStagger delay={0.26}>
         <section className="bg-brand-blue py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="mb-16">
@@ -147,8 +154,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </div>
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── CONTROL RULES ────────────────────────────────────── */}
+        <ScrambleStagger delay={0.32}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
           <div className="space-y-0">
             {c.rules.map((r, i) => (
@@ -169,8 +178,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             ))}
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── OUTCOMES ─────────────────────────────────────────── */}
+        <ScrambleStagger delay={0.38}>
         <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></p>
@@ -203,8 +214,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </div>
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── QUOTE ────────────────────────────────────────────── */}
+        <ScrambleStagger delay={0.44}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
           <div className="max-w-5xl">
             <span className="font-serif text-7xl md:text-9xl text-neutral-100 dark:text-neutral-800 leading-none select-none block -mb-8">"</span>
@@ -216,8 +229,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </p>
           </div>
         </section>
+        </ScrambleStagger>
 
         {/* ── FOOTER NAV ───────────────────────────────────────── */}
+        <ScrambleStagger delay={0.5}>
         <div className="border-t border-neutral-100 dark:border-neutral-800">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
             <Magnetic strength={0.3} scaleOnHover={1.08}>
@@ -230,6 +245,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             </Magnetic>
           </div>
         </div>
+        </ScrambleStagger>
       </div>
     )
   }
@@ -252,6 +268,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {themeToggle}
       </div>
 
+      <ScrambleStagger delay={0.08}>
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
         <div className="flex flex-wrap items-center gap-3 mb-10">
           <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
@@ -269,6 +286,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest"><ScrambleText text={t.caseStudyInProgress} /></p>
         </div>
       </section>
+      </ScrambleStagger>
     </div>
   )
 }

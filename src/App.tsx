@@ -4,7 +4,7 @@ import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
-import { ScrambleText } from './components/ScrambleText'
+import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -128,6 +128,7 @@ function Home() {
       </nav>
 
       {/* Hero Section */}
+      <ScrambleStagger delay={0.08}>
       <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
         <div className="relative w-full max-w-xl mt-8 md:mt-0">
           <div className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
@@ -156,8 +157,10 @@ function Home() {
           ))}
         </div>
       </div>
+      </ScrambleStagger>
 
       {/* About Section */}
+      <ScrambleStagger delay={0.16}>
       <section id="about" className="max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-8">
           <div className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
@@ -209,8 +212,10 @@ function Home() {
           </div>
         </dl>
       </section>
+      </ScrambleStagger>
 
       {/* Projects Grid */}
+      <ScrambleStagger delay={0.24}>
       <section id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
         <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>
@@ -266,8 +271,10 @@ function Home() {
           ))}
         </div>
       </section>
+      </ScrambleStagger>
 
       {/* Footer Container */}
+      <ScrambleStagger delay={0.32}>
       <div className="relative z-10 mt-16 w-full">
         {/* Folder Tabs */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[8px] md:gap-[12px] -mb-[1px] relative z-20 overflow-x-auto no-scrollbar">
@@ -352,6 +359,7 @@ function Home() {
           </div>
         </div>
       </div>
+      </ScrambleStagger>
 
       {isLoading && (
         <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
