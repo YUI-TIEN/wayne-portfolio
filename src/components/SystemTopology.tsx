@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
 import { Magnetic } from './Magnetic'
+import gsap from 'gsap'
 import type { TopologyContent } from '../i18n/projectPage'
 import type { Lang } from '../i18n/locales'
 
@@ -12,60 +12,78 @@ interface SystemTopologyProps {
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// Tool nodes: rest position (% of box, centre-based), scattered offset (px),
-// scatter rotation (deg), and accent colour.
+// Everything lives in one SVG coordinate space (viewBox 400x300) so the spokes
+// connect to the nodes exactly. Hub sits at the centre; tools orbit it.
+const VB = { w: 400, h: 300 }
+const HUB = { x: 200, y: 150, r: 38 }
 const NODES = [
-  { id: 'claude', label: 'Claude Code', x: 19, y: 24, sx: -34, sy: 30, rot: -9, color: '#3B5BFC' },
-  { id: 'codex', label: 'Codex', x: 81, y: 21, sx: 46, sy: -24, rot: 8, color: '#5B1FF0' },
-  { id: 'antigravity', label: 'Antigravity', x: 17, y: 77, sx: -40, sy: -18, rot: 7, color: '#206A6E' },
-  { id: 'discord', label: 'Discord', x: 83, y: 78, sx: 42, sy: 28, rot: -7, color: '#5865f2' },
+  { id: 'claude', label: 'Claude Code', x: 74, y: 62, color: '#3B5BFC', labelDy: -18, sx: -34, sy: 30, rot: -10 },
+  { id: 'codex', label: 'Codex', x: 326, y: 62, color: '#5B1FF0', labelDy: -18, sx: 34, sy: -24, rot: 9 },
+  { id: 'antigravity', label: 'Antigravity', x: 74, y: 238, color: '#206A6E', labelDy: 28, sx: -30, sy: -18, rot: 8 },
+  { id: 'discord', label: 'Discord', x: 326, y: 238, color: '#5865f2', labelDy: 28, sx: 30, sy: 26, rot: -8 },
 ]
 
-// Illustrates the core before/after of the project: scattered, disconnected
-// tools (each losing context on its own) snap into a unified hub-and-spoke
-// around a single Memory Hub, with the links drawing in. Defaults to the
-// unified state so prerender / no-JS / reduced-motion users see the resolved
-// system; the scatter->unify morph is progressive enhancement played once on
-// scroll into view.
+// Before/after of the project: scattered, disconnected tools (each losing
+// context on its own) snap into a hub-and-spoke around one Memory Hub, the
+// links draw in, and a pulse runs along each spoke into the hub to show the
+// tools now feed a shared memory. Defaults to the connected state so prerender
+// / no-JS / reduced-motion users see the resolved system.
 export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const groupRefs = useRef<(SVGGElement | null)[]>([])
   const lineRefs = useRef<(SVGLineElement | null)[]>([])
+  const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const playedRef = useRef(false)
   const langInitRef = useRef(true)
 
   const [unified, setUnified] = useState(true)
 
+  const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
+
   const snapToUnified = () => {
     tlRef.current?.kill()
-    nodeRefs.current.forEach((n) => n && gsap.set(n, { x: 0, y: 0, rotate: 0, opacity: 1 }))
+    groupRefs.current.forEach((g, i) => {
+      if (g) gsap.set(g, { x: 0, y: 0, rotation: 0, opacity: 1, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
+    })
     lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 0, opacity: 1 }))
+    pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
     setUnified(true)
   }
 
   const play = () => {
     tlRef.current?.kill()
     setUnified(false)
-    // scattered start
-    nodeRefs.current.forEach((n, i) => {
-      if (!n) return
-      gsap.set(n, { x: NODES[i].sx, y: NODES[i].sy, rotate: NODES[i].rot, opacity: 0.45 })
+    groupRefs.current.forEach((g, i) => {
+      if (g) gsap.set(g, { x: NODES[i].sx, y: NODES[i].sy, rotation: NODES[i].rot, opacity: 0.4, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
     })
     lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 1, opacity: 0 }))
+    pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
 
     const tl = gsap.timeline()
-    tl.to(nodeRefs.current, {
-      x: 0,
-      y: 0,
-      rotate: 0,
-      opacity: 1,
-      duration: 0.9,
-      ease: 'power3.out',
-      stagger: 0.08,
-    })
-    tl.to(lineRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.6, ease: 'power2.out', stagger: 0.08 }, '-=0.3')
+    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08 })
+    tl.to(lineRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.55, ease: 'power2.out', stagger: 0.08 }, '-=0.35')
     tl.call(() => setUnified(true))
+
+    // Pulse along each spoke into the hub (data flowing into shared memory).
+    const proxy = { t: 0 }
+    tl.set(pulseRefs.current, { opacity: 1 }, '+=0.05')
+    tl.to(proxy, {
+      t: 1,
+      duration: 1.0,
+      ease: 'power1.inOut',
+      repeat: 1,
+      onUpdate: () => {
+        const t = proxy.t
+        pulseRefs.current.forEach((p, i) => {
+          if (!p) return
+          const n = NODES[i]
+          p.setAttribute('cx', String(n.x + (HUB.x - n.x) * t))
+          p.setAttribute('cy', String(n.y + (HUB.y - n.y) * t))
+        })
+      },
+    })
+    tl.to(pulseRefs.current, { opacity: 0, duration: 0.2 })
     tlRef.current = tl
   }
 
@@ -99,60 +117,88 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   }, [lang])
 
   return (
-    <div className="max-w-3xl">
+    <div className="w-full max-w-2xl">
       <div
         ref={rootRef}
-        className="relative w-full h-[320px] md:h-[400px] border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900 overflow-hidden"
+        className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
       >
-        {/* Connector lines (hub -> each node), normalized via pathLength */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
+        <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="img" aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}>
+          {/* Spokes (drawn first, behind everything) */}
           {NODES.map((n, i) => (
             <line
-              key={n.id}
+              key={`l-${n.id}`}
               ref={(el) => { lineRefs.current[i] = el }}
-              x1="50"
-              y1="50"
+              x1={HUB.x}
+              y1={HUB.y}
               x2={n.x}
               y2={n.y}
               stroke={n.color}
-              strokeWidth="1.75"
+              strokeWidth={3}
+              strokeLinecap="round"
               pathLength={1}
               strokeDasharray="1"
-              strokeDashoffset="0"
-              vectorEffect="non-scaling-stroke"
+              strokeDashoffset={0}
               opacity={1}
             />
           ))}
-        </svg>
 
-        {/* Memory Hub (centre) */}
-        <div
-          className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
-          style={{ left: '50%', top: '50%' }}
-        >
-          <span className="w-16 h-16 md:w-20 md:h-20 bg-brand-orange flex items-center justify-center text-white shadow-[4px_4px_0px_rgba(0,0,0,0.25)]">
-            <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-wider text-center leading-tight px-1">
-              {copy.hub}
-            </span>
-          </span>
-        </div>
+          {/* Flow pulses (hidden by default) */}
+          {NODES.map((n, i) => (
+            <circle
+              key={`p-${n.id}`}
+              ref={(el) => { pulseRefs.current[i] = el }}
+              cx={n.x}
+              cy={n.y}
+              r={4.5}
+              fill={n.color}
+              opacity={0}
+            />
+          ))}
 
-        {/* Tool nodes */}
-        {NODES.map((n, i) => (
-          <div
-            key={n.id}
-            ref={(el) => { nodeRefs.current[i] = el }}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${n.x}%`, top: `${n.y}%` }}
+          {/* Hub */}
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 12} fill="#F94E0A" opacity={0.12} />
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 5} fill="none" stroke="#F94E0A" strokeWidth={1.5} opacity={0.4} />
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
+          <text
+            x={HUB.x}
+            y={HUB.y}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="font-mono"
+            fill="#fff"
+            fontSize={hubLines.length > 1 ? 13 : 14}
+            style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
           >
-            <span
-              className="block font-mono text-[10px] md:text-xs px-2.5 py-1.5 bg-white dark:bg-neutral-800 border-2 whitespace-nowrap shadow-[3px_3px_0px_rgba(0,0,0,0.15)]"
-              style={{ borderColor: n.color, color: n.color }}
-            >
-              {n.label}
-            </span>
-          </div>
-        ))}
+            {hubLines.length > 1 ? (
+              hubLines.map((line, li) => (
+                <tspan key={li} x={HUB.x} dy={li === 0 ? '-0.15em' : '1.15em'}>
+                  {line}
+                </tspan>
+              ))
+            ) : (
+              <tspan x={HUB.x} dy="0.02em">{hubLines[0]}</tspan>
+            )}
+          </text>
+
+          {/* Tool nodes */}
+          {NODES.map((n, i) => (
+            <g key={`n-${n.id}`} ref={(el) => { groupRefs.current[i] = el }}>
+              <circle cx={n.x} cy={n.y} r={9} fill={n.color} />
+              <circle cx={n.x} cy={n.y} r={3.5} fill="#FCFBF9" />
+              <text
+                x={n.x}
+                y={n.y + n.labelDy}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                className="font-mono"
+                fill={n.color}
+                fontSize={13}
+              >
+                {n.label}
+              </text>
+            </g>
+          ))}
+        </svg>
 
         {/* State caption */}
         <div className="absolute left-3 bottom-3">
