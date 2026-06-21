@@ -1,5 +1,15 @@
 import type { Lang } from './locales'
 
+export interface OpsDemoContent {
+  prompt: string
+  working: string
+  correctionNote: string
+  reply: string
+  illustrative: string
+  run: string
+  replay: string
+}
+
 export interface OpenClawContent {
   label: string
   eyebrow: string
@@ -15,6 +25,7 @@ export interface OpenClawContent {
     description: string
     steps: { num: string; label: string; detail: string }[]
   }
+  demo: OpsDemoContent
   rules: { rule: string; detail: string }[]
   outcomes: { title: string; detail: string }[]
   quote: string
@@ -79,6 +90,15 @@ const openClawEn: OpenClawContent = {
       { num: '06', label: 'Deliver', detail: 'Final result in the specified format — no follow-up needed' },
     ],
   },
+  demo: {
+    prompt: 'Refactor the auth module — follow the existing style.',
+    working: 'agent working',
+    correctionNote: 'output format off — self-correcting',
+    reply: 'Done. 3 files, 12 lines changed, reported in the PR template — no follow-up needed.',
+    illustrative: 'Illustrative — not a real screenshot',
+    run: 'Run it',
+    replay: 'Replay',
+  },
   rules: [
     { rule: 'No merges without approval', detail: 'Nothing gets merged until explicitly confirmed.' },
     { rule: 'No gateway restarts without warning', detail: 'Require prior notification and approval.' },
@@ -134,6 +154,15 @@ const openClawZhTw: OpenClawContent = {
       { num: '05', label: '修正', detail: '發現不對就回頭修，修好才回覆' },
       { num: '06', label: '交件', detail: '用指定格式把最終結果交回來——不用再追問' },
     ],
+  },
+  demo: {
+    prompt: '幫我重構 auth 模組，照現有風格走。',
+    working: 'agent 處理中',
+    correctionNote: '輸出格式不符 — 自己修正中',
+    reply: '完成。3 個檔案、12 行變更，已照 PR 模板回報——不用再追問。',
+    illustrative: '示意 demo · 非真實截圖',
+    run: '跑一次',
+    replay: '重播',
   },
   rules: [
     { rule: '沒核准不合併', detail: '任何變更沒明確確認過，就不會被合併。' },
@@ -191,6 +220,15 @@ const openClawJa: OpenClawContent = {
       { num: '06', label: '納品', detail: '指定された形式で最終結果を提供——追加の確認は不要' },
     ],
   },
+  demo: {
+    prompt: 'authモジュールをリファクタして — 既存のスタイルに合わせて。',
+    working: 'agent 処理中',
+    correctionNote: '出力フォーマット不一致 — 自己修正中',
+    reply: '完了。3ファイル・12行の変更、PRテンプレートで報告済み——追加確認は不要。',
+    illustrative: 'イメージdemo · 実際のスクリーンショットではありません',
+    run: '実行',
+    replay: '再生',
+  },
   rules: [
     { rule: '承認なしにマージしない', detail: '明確に確認されるまで、何もマージされません。' },
     { rule: '警告なしにgatewayを再起動しない', detail: '事前の通知と承認が必要です。' },
@@ -246,6 +284,15 @@ const openClawKo: OpenClawContent = {
       { num: '05', label: '수정', detail: '문제가 있으면 답변 전에 되돌아가 수정' },
       { num: '06', label: '전달', detail: '지정된 형식으로 최종 결과 전달 — 추가 확인 불필요' },
     ],
+  },
+  demo: {
+    prompt: 'auth 모듈 리팩터링해줘 — 기존 스타일에 맞춰서.',
+    working: 'agent 처리 중',
+    correctionNote: '출력 형식 불일치 — 자가 수정 중',
+    reply: '완료. 3개 파일, 12줄 변경, PR 템플릿으로 보고함 — 추가 확인 불필요.',
+    illustrative: '예시 demo · 실제 스크린샷 아님',
+    run: '실행',
+    replay: '다시 재생',
   },
   rules: [
     { rule: '승인 없이 머지하지 않음', detail: '명확히 확인되기 전까지 아무것도 머지되지 않습니다.' },

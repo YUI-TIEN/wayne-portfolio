@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/locales'
 import { projectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
+import { OpsDemo } from './OpsDemo'
 
 interface ProjectPageProps {
   projectId: string
@@ -134,13 +135,18 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         <ScrambleStagger delay={0.26}>
         <section className="bg-brand-blue py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="mb-16">
+            <div className="mb-10 md:mb-12">
               <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight mb-6">
                 <ScrambleText text={t.oneMessage} />
               </h2>
               <p className="font-mono text-xs text-white/50 max-w-md leading-relaxed">
                 <ScrambleText text={c.workflow.description} />
               </p>
+            </div>
+
+            {/* Interactive, illustrative view of the loop running end-to-end */}
+            <div className="mb-12 md:mb-16">
+              <OpsDemo demo={c.demo} steps={c.workflow.steps} lang={lang} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
