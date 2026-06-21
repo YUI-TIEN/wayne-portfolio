@@ -76,7 +76,11 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
       // delimiter: ' ' keeps whitespace intact and scrambles per-word instead
       // of per-character — without it, spaces get swapped for letters too,
       // so multi-word text turns into one unbroken run and blows out its box.
-      scrambleText: { text, chars: SCRAMBLE_CHARS[lang], revealDelay: 0.2, speed: 0.55, delimiter: ' ' },
+      // tweenLength: false avoids ramping the scrambled length down from the
+      // OLD text's length — without it, switching EN (long) -> ja/zh/ko
+      // (much shorter) holds the long English-length scramble for most of
+      // the tween and balloons the layout. Use the new text's length right away.
+      scrambleText: { text, chars: SCRAMBLE_CHARS[lang], revealDelay: 0.2, speed: 0.55, delimiter: ' ', tweenLength: false },
     })
     return () => {
       tween.kill()
