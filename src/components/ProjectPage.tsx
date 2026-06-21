@@ -2,6 +2,7 @@ import { ArrowLeft, Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { projectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
+import { ScrambleText } from './ScrambleText'
 
 interface ProjectPageProps {
   projectId: string
@@ -38,7 +39,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
               onClick={onBack}
               className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft size={12} /> {t.backToAllProjects}
+              <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
             </button>
           </Magnetic>
           {themeToggle}
@@ -47,28 +48,28 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {/* ── HERO ─────────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-32">
           <div className="flex flex-wrap items-center gap-3 mb-10">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{c.eyebrow}</span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={c.eyebrow} /></span>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            {c.tags.map(t => (
-              <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-                {t}
+            {c.tags.map((tag, ti) => (
+              <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
+                <ScrambleText text={tag} />
               </span>
             ))}
           </div>
 
           <h1 className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-8">
-            {c.headline}
+            <ScrambleText text={c.headline} />
           </h1>
 
           <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-16">
-            {c.subheadline}
+            <ScrambleText text={c.subheadline} />
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
             {c.stats.map((s, i) => (
               <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-                <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2">{s.value}</p>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{s.label}</p>
+                <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2"><ScrambleText text={s.value} /></p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
               </div>
             ))}
           </div>
@@ -77,9 +78,9 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {/* ── PROBLEM ──────────────────────────────────────────── */}
         <section className="bg-brand-ink dark:bg-black py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10">{t.theProblem}</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10"><ScrambleText text={t.theProblem} /></p>
             <p className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-white max-w-4xl">
-              {c.problem}
+              <ScrambleText text={c.problem} />
             </p>
           </div>
         </section>
@@ -89,7 +90,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div>
-              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none">{t.before}</p>
+              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></p>
               <ul className="space-y-6">
                 {c.before.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -97,7 +98,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800 pb-6">
-                      {item}
+                      <ScrambleText text={item} />
                     </p>
                   </li>
                 ))}
@@ -106,7 +107,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
 
             {/* After */}
             <div>
-              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none">{t.after}</p>
+              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none"><ScrambleText text={t.after} /></p>
               <ul className="space-y-6">
                 {c.after.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -114,7 +115,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-6 font-medium">
-                      {item}
+                      <ScrambleText text={item} />
                     </p>
                   </li>
                 ))}
@@ -128,19 +129,19 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <div className="mb-16">
               <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight mb-6">
-                {t.oneMessage}
+                <ScrambleText text={t.oneMessage} />
               </h2>
               <p className="font-mono text-xs text-white/50 max-w-md leading-relaxed">
-                {c.workflow.description}
+                <ScrambleText text={c.workflow.description} />
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
               {c.workflow.steps.map((step, i) => (
                 <div key={i} className="bg-brand-blue p-8 hover:bg-white/5 transition-colors">
-                  <p className="font-mono text-[10px] text-brand-lime/60 mb-4">{step.num}</p>
-                  <p className="font-serif text-2xl text-white mb-3">{step.label}</p>
-                  <p className="font-mono text-xs text-white/50 leading-relaxed">{step.detail}</p>
+                  <p className="font-mono text-[10px] text-brand-lime/60 mb-4"><ScrambleText text={step.num} /></p>
+                  <p className="font-serif text-2xl text-white mb-3"><ScrambleText text={step.label} /></p>
+                  <p className="font-mono text-xs text-white/50 leading-relaxed"><ScrambleText text={step.detail} /></p>
                 </div>
               ))}
             </div>
@@ -159,10 +160,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <p className="font-mono text-xs md:text-sm uppercase tracking-wider text-brand-orange font-medium md:w-64 shrink-0">
-                  {r.rule}
+                  <ScrambleText text={r.rule} />
                 </p>
                 <p className="font-sans text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  {r.detail}
+                  <ScrambleText text={r.detail} />
                 </p>
               </div>
             ))}
@@ -172,7 +173,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {/* ── OUTCOMES ─────────────────────────────────────────── */}
         <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16">{t.outcomes}</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></p>
 
             {/* Asymmetric strip: large first item spanning full width, then 3 below */}
             <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
@@ -180,10 +181,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
               <div className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
                 <div className="md:max-w-lg">
                   <p className="font-serif text-4xl md:text-6xl text-neutral-900 dark:text-white leading-tight mb-4">
-                    {c.outcomes[0].title}
+                    <ScrambleText text={c.outcomes[0].title} />
                   </p>
                   <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-sm">
-                    {c.outcomes[0].detail}
+                    <ScrambleText text={c.outcomes[0].detail} />
                   </p>
                 </div>
                 <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 shrink-0 self-start md:self-end">01</span>
@@ -194,8 +195,8 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
                 {c.outcomes.slice(1).map((o, i) => (
                   <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
                     <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mb-6 block">{String(i + 2).padStart(2, '0')}</span>
-                    <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-4 leading-tight">{o.title}</p>
-                    <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">{o.detail}</p>
+                    <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-4 leading-tight"><ScrambleText text={o.title} /></p>
+                    <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed"><ScrambleText text={o.detail} /></p>
                   </div>
                 ))}
               </div>
@@ -208,10 +209,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <div className="max-w-5xl">
             <span className="font-serif text-7xl md:text-9xl text-neutral-100 dark:text-neutral-800 leading-none select-none block -mb-8">"</span>
             <blockquote className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-neutral-900 dark:text-white">
-              {c.quote}
+              <ScrambleText as="span" text={c.quote} />
             </blockquote>
             <p className="font-mono text-[11px] text-neutral-400 mt-10 uppercase tracking-widest">
-              {c.quoteAttribution}
+              <ScrambleText text={c.quoteAttribution} />
             </p>
           </div>
         </section>
@@ -224,7 +225,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
                 onClick={onBack}
                 className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
               >
-                <ArrowLeft size={12} /> {t.backToAllProjects}
+                <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
               </button>
             </Magnetic>
           </div>
@@ -245,7 +246,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             onClick={onBack}
             className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
           >
-            <ArrowLeft size={12} /> {t.backToAllProjects}
+            <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
           </button>
         </Magnetic>
         {themeToggle}
@@ -253,19 +254,19 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
 
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
         <div className="flex flex-wrap items-center gap-3 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{p.eyebrow}</span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
           <span className="text-neutral-300 dark:text-neutral-600">·</span>
-          {p.tags.map(tag => (
-            <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-              {tag}
+          {p.tags.map((tag, ti) => (
+            <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
+              <ScrambleText text={tag} />
             </span>
           ))}
         </div>
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-10">{p.label}</h1>
-        <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-20">{p.headline}</p>
+        <h1 className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-10"><ScrambleText text={p.label} /></h1>
+        <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-20"><ScrambleText text={p.headline} /></p>
 
         <div className="border border-dashed border-neutral-200 dark:border-neutral-700 p-16 flex items-center justify-center min-h-[300px]">
-          <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest">{t.caseStudyInProgress}</p>
+          <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest"><ScrambleText text={t.caseStudyInProgress} /></p>
         </div>
       </section>
     </div>
