@@ -10,6 +10,12 @@ export interface OpsDemoContent {
   replay: string
 }
 
+export interface TopologyContent {
+  hub: string
+  fragmented: string
+  unified: string
+}
+
 export interface OpenClawContent {
   label: string
   eyebrow: string
@@ -26,6 +32,7 @@ export interface OpenClawContent {
     steps: { num: string; label: string; detail: string }[]
   }
   demo: OpsDemoContent
+  topology: TopologyContent
   rules: { rule: string; detail: string }[]
   outcomes: { title: string; detail: string }[]
   quote: string
@@ -99,6 +106,7 @@ const openClawEn: OpenClawContent = {
     run: 'Run it',
     replay: 'Replay',
   },
+  topology: { hub: 'Memory Hub', fragmented: 'Before · fragmented', unified: 'After · unified' },
   rules: [
     { rule: 'No merges without approval', detail: 'Nothing gets merged until explicitly confirmed.' },
     { rule: 'No gateway restarts without warning', detail: 'Require prior notification and approval.' },
@@ -164,6 +172,7 @@ const openClawZhTw: OpenClawContent = {
     run: '跑一次',
     replay: '重播',
   },
+  topology: { hub: '記憶中樞', fragmented: '以前 · 各自為政', unified: '現在 · 串成一套' },
   rules: [
     { rule: '沒核准不合併', detail: '任何變更沒明確確認過，就不會被合併。' },
     { rule: '沒講就不重啟 gateway', detail: '要先通知、拿到核准才能動。' },
@@ -229,6 +238,7 @@ const openClawJa: OpenClawContent = {
     run: '実行',
     replay: '再生',
   },
+  topology: { hub: 'メモリハブ', fragmented: 'Before · 分断', unified: 'After · 統合' },
   rules: [
     { rule: '承認なしにマージしない', detail: '明確に確認されるまで、何もマージされません。' },
     { rule: '警告なしにgatewayを再起動しない', detail: '事前の通知と承認が必要です。' },
@@ -294,6 +304,7 @@ const openClawKo: OpenClawContent = {
     run: '실행',
     replay: '다시 재생',
   },
+  topology: { hub: '메모리 허브', fragmented: 'Before · 분절', unified: 'After · 통합' },
   rules: [
     { rule: '승인 없이 머지하지 않음', detail: '명확히 확인되기 전까지 아무것도 머지되지 않습니다.' },
     { rule: '경고 없이 게이트웨이를 재시작하지 않음', detail: '사전 통지와 승인이 필요합니다.' },

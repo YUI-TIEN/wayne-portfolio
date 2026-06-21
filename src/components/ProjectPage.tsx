@@ -4,6 +4,7 @@ import { projectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { OpsDemo } from './OpsDemo'
+import { SystemTopology } from './SystemTopology'
 
 interface ProjectPageProps {
   projectId: string
@@ -93,6 +94,11 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {/* ── BEFORE / AFTER ───────────────────────────────────── */}
         <ScrambleStagger delay={0.2}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
+          {/* Scattered tools -> unified hub visual */}
+          <div className="mb-14 md:mb-20 flex justify-center">
+            <SystemTopology copy={c.topology} lang={lang} />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div>
