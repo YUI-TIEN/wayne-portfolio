@@ -5,6 +5,8 @@ import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { OpsDemo } from './OpsDemo'
 import { SystemTopology } from './SystemTopology'
+import { StatValue } from './StatValue'
+import { ContextLoss } from './ContextLoss'
 
 interface ProjectPageProps {
   projectId: string
@@ -71,7 +73,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
             {c.stats.map((s, i) => (
               <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-                <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2"><ScrambleText text={s.value} /></p>
+                <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2"><StatValue value={s.value} /></p>
                 <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
               </div>
             ))}
@@ -87,6 +89,9 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
             <p className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-white max-w-4xl">
               <ScrambleText text={c.problem} />
             </p>
+            <div className="mt-12 md:mt-16 pt-10 border-t border-white/10">
+              <ContextLoss coldStart={c.coldStart} lang={lang} />
+            </div>
           </div>
         </section>
         </ScrambleStagger>
