@@ -7,6 +7,8 @@ import { OpsDemo } from './OpsDemo'
 import { SystemTopology } from './SystemTopology'
 import { StatValue } from './StatValue'
 import { ContextLoss } from './ContextLoss'
+import { GuardGate } from './GuardGate'
+import { OutcomeIcon } from './OutcomeIcon'
 
 interface ProjectPageProps {
   projectId: string
@@ -176,6 +178,11 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         {/* ── CONTROL RULES ────────────────────────────────────── */}
         <ScrambleStagger delay={0.32}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
+          {/* Guardrails evaluating actions */}
+          <div className="mb-14 md:mb-16">
+            <GuardGate caption={c.gateCaption} lang={lang} />
+          </div>
+
           <div className="space-y-0">
             {c.rules.map((r, i) => (
               <div
@@ -208,6 +215,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
               {/* Hero outcome */}
               <div className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
                 <div className="md:max-w-lg">
+                  <span className="block mb-6"><OutcomeIcon index={0} size={36} /></span>
                   <p className="font-serif text-4xl md:text-6xl text-neutral-900 dark:text-white leading-tight mb-4">
                     <ScrambleText text={c.outcomes[0].title} />
                   </p>
@@ -222,7 +230,10 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
                 {c.outcomes.slice(1).map((o, i) => (
                   <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mb-6 block">{String(i + 2).padStart(2, '0')}</span>
+                    <div className="flex items-center justify-between mb-6">
+                      <OutcomeIcon index={i + 1} size={26} />
+                      <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600">{String(i + 2).padStart(2, '0')}</span>
+                    </div>
                     <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-4 leading-tight"><ScrambleText text={o.title} /></p>
                     <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed"><ScrambleText text={o.detail} /></p>
                   </div>
