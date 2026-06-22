@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Magnetic } from './Magnetic'
 import gsap from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin'
 import { skipsScrollAnimation } from './motionGuards'
 import type { TopologyContent } from '../i18n/projectPage'
 import type { Lang } from '../i18n/locales'
 
-gsap.registerPlugin(MotionPathPlugin)
+gsap.registerPlugin(MotionPathPlugin, MorphSVGPlugin)
 
 interface SystemTopologyProps {
   copy: TopologyContent
@@ -25,7 +26,7 @@ const LOGOS: Record<string, string> = {
     'M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z',
 }
 
-const VB = { w: 400, h: 300 }
+const VB = { w: 460, h: 300 }
 const TILE = 44
 const H = TILE / 2
 // Before positions: scattered, randomly rotated, no two at the same height,
@@ -45,19 +46,58 @@ const BEFORE_ROT = [-9, 6, -5, 8]
 // vertical spine and bend into the hub along similar tangents, so they read
 // as one coordinated bundle arriving at the same point rather than a tangle
 // of mismatched-angle wires crossing each other visually.
-const AFTER_X = 140
+const AFTER_X = 120
 const AFTER_Y = [76, 132, 188, 244]
-const HUB = { x: 320, y: 160, r: 28 }
+const HUB = { x: 370, y: 160, r: 28 }
 
-// Cubic-bezier path data for each wire: starts at the tile's right edge,
-// curves out to a shared control column, then sweeps into the hub from a
-// consistent tangent direction (always arriving moving rightward).
+// Wire start point: past the tile's label text (not the tile's right edge),
+// so the curve never visually originates from underneath the opaque label.
+// Labels run ~13px font, max label "Antigravity" is ~78px wide at x=H+10.
+const WIRE_START_X = AFTER_X + H + 10 + 84
+
+// Cubic-bezier path data for each wire: starts past the label, curves out
+// to a shared control column, then sweeps into the hub from a consistent
+// tangent direction (always arriving moving rightward).
 const wirePath = (y: number) => {
-  const startX = AFTER_X + H
-  const ctrl1X = startX + 70
+  const ctrl1X = WIRE_START_X + 50
   const ctrl2X = HUB.x - HUB.r - 60
   const endX = HUB.x - HUB.r
-  return `M ${startX} ${y} C ${ctrl1X} ${y}, ${ctrl2X} ${HUB.y}, ${endX} ${HUB.y}`
+  return `M ${WIRE_START_X} ${y} C ${ctrl1X} ${y}, ${ctrl2X} ${HUB.y}, ${endX} ${HUB.y}`
+}
+
+// Hub core rendered as a <path> (a circle described via 4 cubic-bezier arcs)
+// instead of a native <circle> so MorphSVGPlugin can distort it on click —
+// MorphSVG animates the `d` attribute, which only <path> has.
+const hubCircle = (cx: number, cy: number, r: number) => {
+  const k = r * 0.5523
+  return `M ${cx - r} ${cy} C ${cx - r} ${cy - k}, ${cx - k} ${cy - r}, ${cx} ${cy - r} C ${cx + k} ${cy - r}, ${cx + r} ${cy - k}, ${cx + r} ${cy} C ${cx + r} ${cy + k}, ${cx + k} ${cy + r}, ${cx} ${cy + r} C ${cx - k} ${cy + r}, ${cx - r} ${cy + k}, ${cx - r} ${cy} Z`
+}
+
+// A gentle "poked" distortion of the same circle: one side pulled inward
+// toward the originating tile, giving a squash that reads as "absorbing an
+// impact from that direction" rather than a generic uniform pulse.
+const hubPoked = (cx: number, cy: number, r: number, fromAngle: number) => {
+  const k = r * 0.5523
+  const pokeX = cx + Math.cos(fromAngle) * r * 0.32
+  const pokeY = cy + Math.sin(fromAngle) * r * 0.32
+  const dent = (x: number, y: number) => {
+    const dx = x - pokeX
+    const dy = y - pokeY
+    const d = Math.hypot(dx, dy)
+    const pull = Math.max(0, 1 - d / (r * 1.4)) * r * 0.22
+    if (pull <= 0) return [x, y]
+    const nx = d === 0 ? 0 : dx / d
+    const ny = d === 0 ? 0 : dy / d
+    return [x - nx * pull, y - ny * pull]
+  }
+  const pts: [number, number][] = [
+    [cx - r, cy], [cx - r, cy - k], [cx - k, cy - r], [cx, cy - r],
+    [cx + k, cy - r], [cx + r, cy - k], [cx + r, cy],
+    [cx + r, cy + k], [cx + k, cy + r], [cx, cy + r],
+    [cx - k, cy + r], [cx - r, cy + k],
+  ]
+  const [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11] = pts.map(([x, y]) => dent(x, y))
+  return `M ${p0[0]} ${p0[1]} C ${p1[0]} ${p1[1]}, ${p2[0]} ${p2[1]}, ${p3[0]} ${p3[1]} C ${p4[0]} ${p4[1]}, ${p5[0]} ${p5[1]}, ${p6[0]} ${p6[1]} C ${p7[0]} ${p7[1]}, ${p8[0]} ${p8[1]}, ${p9[0]} ${p9[1]} C ${p10[0]} ${p10[1]}, ${p11[0]} ${p11[1]}, ${p0[0]} ${p0[1]} Z`
 }
 
 type Glyph = { type: 'logo'; key: string } | { type: 'text'; text: string; size: number }
@@ -88,14 +128,30 @@ const NODES: Node[] = [
 // as straight rays at four different angles, so they read as one
 // coordinated bundle arriving at the hub instead of a tangle of crossing
 // lines. Defaults to the settled "after" layout for prerender / no-JS /
-// reduced-motion; the migration plays once on scroll into view. Hovering an
-// aligned tile sends one extra pulse along its wire.
+// reduced-motion; the migration plays once on scroll into view.
+//
+// Interaction model (the part that makes this more than decoration): the
+// hub continuously leans a couple px toward whichever tile the cursor is
+// nearest, via gsap.quickTo() (the right tool for a value updated on every
+// mousemove — reuses one tween instead of creating one per frame), so it
+// reads as paying attention rather than a static endpoint the wires happen
+// to touch. Clicking a tile sends a brighter pulse AND, when it lands,
+// morphs the hub's own outline (MorphSVGPlugin, animating the <path> `d`)
+// into a one-sided "poke" dented toward that tile's direction, tinted in
+// that tile's color, before morphing back to a plain circle — a distinct,
+// per-tool visual signature for "this is the data that just arrived,"
+// instead of every tool producing the same generic flash.
 export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
   const wireRefs = useRef<(SVGPathElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
   const hubPulseRef = useRef<SVGCircleElement | null>(null)
+  const hubWrapRef = useRef<SVGGElement | null>(null)
+  const hubCoreRef = useRef<SVGPathElement | null>(null)
+  const quickXRef = useRef<gsap.QuickToFunc | null>(null)
+  const quickYRef = useRef<gsap.QuickToFunc | null>(null)
+  const morphTweenRef = useRef<gsap.core.Tween | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const hoverPulseRef = useRef<gsap.core.Tween | null>(null)
   const playedRef = useRef(false)
@@ -104,6 +160,60 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
   const [unified, setUnified] = useState(true)
 
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
+
+  // LEAN_MAX: how far (px, in viewBox units) the hub can drift toward the
+  // cursor. Kept small — this is a subtle "attention" cue, not the hub
+  // chasing the pointer around the canvas.
+  const LEAN_MAX = 5
+
+  const handlePointerMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (skipsScrollAnimation() || !hubWrapRef.current) return
+    if (!quickXRef.current || !quickYRef.current) {
+      quickXRef.current = gsap.quickTo(hubWrapRef.current, 'x', { duration: 0.5, ease: 'power3' })
+      quickYRef.current = gsap.quickTo(hubWrapRef.current, 'y', { duration: 0.5, ease: 'power3' })
+    }
+    const svg = e.currentTarget
+    const rect = svg.getBoundingClientRect()
+    const px = ((e.clientX - rect.left) / rect.width) * VB.w
+    const py = ((e.clientY - rect.top) / rect.height) * VB.h
+    const dx = px - HUB.x
+    const dy = py - HUB.y
+    const dist = Math.hypot(dx, dy) || 1
+    const lean = Math.min(LEAN_MAX, dist * 0.04)
+    quickXRef.current(((dx / dist) * lean))
+    quickYRef.current(((dy / dist) * lean))
+  }
+
+  const handlePointerLeave = () => {
+    if (!quickXRef.current || !quickYRef.current) return
+    quickXRef.current(0)
+    quickYRef.current(0)
+  }
+
+  // Morphs the hub outline into a one-sided dent toward the clicked tile's
+  // direction, tinted in that tile's color, then morphs back to a plain
+  // circle — a per-tool visual signature instead of a generic flash.
+  const sendClickBurst = (i: number) => {
+    if (skipsScrollAnimation() || !unified || !hubCoreRef.current) return
+    sendWirePulse(i, { duration: 0.4, peak: 1 })
+    const angle = Math.atan2(HUB.y - AFTER_Y[i], HUB.x - WIRE_START_X)
+    const poked = hubPoked(HUB.x, HUB.y, HUB.r, angle + Math.PI)
+    morphTweenRef.current?.kill()
+    gsap.set(hubCoreRef.current, { fill: NODES[i].color })
+    morphTweenRef.current = gsap.to(hubCoreRef.current, {
+      morphSVG: poked,
+      duration: 0.18,
+      ease: 'power2.out',
+      onComplete: () => {
+        gsap.to(hubCoreRef.current, {
+          morphSVG: hubCircle(HUB.x, HUB.y, HUB.r),
+          fill: '#F94E0A',
+          duration: 0.45,
+          ease: 'elastic.out(1, 0.6)',
+        })
+      },
+    })
+  }
 
   const flashHub = () => {
     if (!hubPulseRef.current) return
@@ -118,7 +228,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     const pulse = pulseRefs.current[i]
     const wire = wireRefs.current[i]
     if (!pulse || !wire) return
-    gsap.set(pulse, { opacity: opts.peak, attr: { cx: AFTER_X + H, cy: AFTER_Y[i] } })
+    gsap.set(pulse, { opacity: opts.peak, attr: { cx: WIRE_START_X, cy: AFTER_Y[i] } })
     return gsap.to(pulse, {
       motionPath: { path: wire, align: wire, alignOrigin: [0.5, 0.5] },
       duration: opts.duration,
@@ -203,11 +313,54 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
         ref={rootRef}
         className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
       >
-        <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="img" aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}>
-          {/* Curved wires from each aligned tile into the hub — a shared
-              bundle of tangents instead of straight rays at four different
-              angles, so they read as one coordinated connection arriving
-              at the hub rather than a tangle of crossing lines. */}
+        <svg
+          viewBox={`0 0 ${VB.w} ${VB.h}`}
+          className="w-full h-auto block"
+          role="img"
+          aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}
+          onMouseMove={handlePointerMove}
+          onMouseLeave={handlePointerLeave}
+        >
+          {/* Tool tiles — drawn FIRST so the curved wires (drawn after) are
+              never hidden underneath a tile's opaque label text. Outer <g>
+              holds the static AFTER column position and is never touched by
+              GSAP; inner <g> is the one GSAP animates (x/y/rotation start at
+              the BEFORE offset, settle at 0/0/0). GSAP's x/y/rotation
+              overwrite an SVG element's `transform` attribute entirely
+              rather than composing with it — animating the same <g> that
+              carried the static translate(AFTER_X, ...) caused every tile to
+              collapse toward the SVG origin once GSAP wrote its own matrix
+              over it. Splitting the static placement from the animated
+              offset into two nested groups fixes that. */}
+          {NODES.map((n, i) => (
+            <g key={`n-${n.id}`} transform={`translate(${AFTER_X}, ${AFTER_Y[i]})`}>
+              <g
+                ref={(el) => { groupRefs.current[i] = el }}
+                onMouseEnter={() => sendHoverPulse(i)}
+                onClick={() => sendClickBurst(i)}
+                style={{ cursor: 'pointer' }}
+              >
+                <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
+                <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />
+                {n.glyph.type === 'logo' ? (
+                  <path d={LOGOS[n.glyph.key]} fill="#fff" transform="translate(-12 -12)" />
+                ) : (
+                  <text textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
+                    {n.glyph.text}
+                  </text>
+                )}
+                <text x={H + 10} dominantBaseline="central" className="font-mono" fill={n.color} fontSize={13}>
+                  {n.label}
+                </text>
+              </g>
+            </g>
+          ))}
+
+          {/* Curved wires from each aligned tile into the hub, drawn AFTER
+              the tiles so they always render on top of the label text — a
+              shared bundle of tangents instead of straight rays at four
+              different angles, so they read as one coordinated connection
+              arriving at the hub rather than a tangle of crossing lines. */}
           {NODES.map((n, i) => (
             <path
               key={`w-${n.id}`}
@@ -227,50 +380,24 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
           {/* Wire pulses */}
           {NODES.map((n, i) => (
-            <circle key={`p-${n.id}`} ref={(el) => { pulseRefs.current[i] = el }} cx={AFTER_X + H} cy={AFTER_Y[i]} r={3.5} fill={n.color} opacity={0} />
+            <circle key={`p-${n.id}`} ref={(el) => { pulseRefs.current[i] = el }} cx={WIRE_START_X} cy={AFTER_Y[i]} r={3.5} fill={n.color} opacity={0} />
           ))}
 
-          {/* Hub */}
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
-          <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
-          <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-            {hubLines.map((line, li) => (
-              <tspan key={li} x={HUB.x} dy={li === 0 ? (hubLines.length > 1 ? '-0.6em' : '0.32em') : '1.15em'}>{line}</tspan>
-            ))}
-          </text>
-
-          {/* Tool tiles — outer <g> holds the static AFTER column position and
-              is never touched by GSAP; inner <g> is the one GSAP animates
-              (x/y/rotation start at the BEFORE offset, settle at 0/0/0).
-              GSAP's x/y/rotation overwrite an SVG element's `transform`
-              attribute entirely rather than composing with it — animating
-              the same <g> that carried the static translate(AFTER_X, ...)
-              caused every tile to collapse toward the SVG origin once GSAP
-              wrote its own matrix over it. Splitting the static placement
-              from the animated offset into two nested groups fixes that. */}
-          {NODES.map((n, i) => (
-            <g key={`n-${n.id}`} transform={`translate(${AFTER_X}, ${AFTER_Y[i]})`}>
-              <g
-                ref={(el) => { groupRefs.current[i] = el }}
-                onMouseEnter={() => sendHoverPulse(i)}
-                style={{ cursor: 'pointer' }}
-              >
-                <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
-                <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />
-                {n.glyph.type === 'logo' ? (
-                  <path d={LOGOS[n.glyph.key]} fill="#fff" transform="translate(-12 -12)" />
-                ) : (
-                  <text textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
-                    {n.glyph.text}
-                  </text>
-                )}
-                <text x={H + 10} dominantBaseline="central" className="font-mono" fill={n.color} fontSize={13}>
-                  {n.label}
-                </text>
-              </g>
-            </g>
-          ))}
+          {/* Hub — leans subtly toward whichever tile the cursor is nearest
+              (quickTo-driven, see handlePointerMove) and flashes/morphs in
+              that tile's color on click (see sendClickBurst), so it reads
+              as something paying attention and actually receiving data,
+              not a static endpoint the wires happen to touch. */}
+          <g ref={hubWrapRef} style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}>
+            <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
+            <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
+            <path ref={hubCoreRef} d={hubCircle(HUB.x, HUB.y, HUB.r)} fill="#F94E0A" />
+            <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              {hubLines.map((line, li) => (
+                <tspan key={li} x={HUB.x} dy={li === 0 ? (hubLines.length > 1 ? '-0.6em' : '0.32em') : '1.15em'}>{line}</tspan>
+              ))}
+            </text>
+          </g>
         </svg>
       </div>
 
