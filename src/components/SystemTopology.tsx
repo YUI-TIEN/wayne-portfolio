@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Magnetic } from './Magnetic'
 import gsap from 'gsap'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { skipsScrollAnimation } from './motionGuards'
 import type { TopologyContent } from '../i18n/projectPage'
 import type { Lang } from '../i18n/locales'
+
+gsap.registerPlugin(MotionPathPlugin)
 
 interface SystemTopologyProps {
   copy: TopologyContent
@@ -35,12 +38,27 @@ const BEFORE_DX = [-150, -180, -160, -185]
 const BEFORE_DY = [-40, -10, 20, 55]
 const BEFORE_ROT = [-9, 6, -5, 8]
 // After layout: same four tools, perfectly aligned in a single file, each
-// with a short straight connector into the hub — orderly because it IS the
-// same data now reachable through one path instead of four separate silos.
-// Centered in the viewBox so the settled state fills the canvas.
+// with a curved connector into the hub — orderly because it IS the same
+// data now reachable through one path instead of four separate silos.
+// Centered in the viewBox so the settled state fills the canvas. Curves
+// (instead of straight rays at four different angles) fan out from a shared
+// vertical spine and bend into the hub along similar tangents, so they read
+// as one coordinated bundle arriving at the same point rather than a tangle
+// of mismatched-angle wires crossing each other visually.
 const AFTER_X = 140
 const AFTER_Y = [76, 132, 188, 244]
 const HUB = { x: 320, y: 160, r: 28 }
+
+// Cubic-bezier path data for each wire: starts at the tile's right edge,
+// curves out to a shared control column, then sweeps into the hub from a
+// consistent tangent direction (always arriving moving rightward).
+const wirePath = (y: number) => {
+  const startX = AFTER_X + H
+  const ctrl1X = startX + 70
+  const ctrl2X = HUB.x - HUB.r - 60
+  const endX = HUB.x - HUB.r
+  return `M ${startX} ${y} C ${ctrl1X} ${y}, ${ctrl2X} ${HUB.y}, ${endX} ${HUB.y}`
+}
 
 type Glyph = { type: 'logo'; key: string } | { type: 'text'; text: string; size: number }
 
@@ -61,17 +79,21 @@ const NODES: Node[] = [
 // Concept: a before/after timeline, not a hub-and-spoke network diagram.
 // Left side: four tools scattered at uneven heights with small random
 // rotation/offset — disconnected, lying around independently. Right side:
-// the same four tools snap into a single aligned column, each with a short
-// straight wire into one Memory Hub. The transformation IS the point: tiles
+// the same four tools snap into a single aligned column, each with a curved
+// wire into one Memory Hub. The transformation IS the point: tiles
 // physically travel from scattered-left to ordered-right while their wire
 // draws in, so "fragmented -> unified" is shown as a literal migration, not
-// implied by a network topology. Defaults to the settled "after" layout for
-// prerender / no-JS / reduced-motion; the migration plays once on scroll
-// into view. Hovering an aligned tile sends one extra pulse along its wire.
+// implied by a network topology. Wires curve (via MotionPathPlugin-driven
+// pulses riding the same bezier as the visible stroke) instead of running
+// as straight rays at four different angles, so they read as one
+// coordinated bundle arriving at the hub instead of a tangle of crossing
+// lines. Defaults to the settled "after" layout for prerender / no-JS /
+// reduced-motion; the migration plays once on scroll into view. Hovering an
+// aligned tile sends one extra pulse along its wire.
 export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
-  const wireRefs = useRef<(SVGLineElement | null)[]>([])
+  const wireRefs = useRef<(SVGPathElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
   const hubPulseRef = useRef<SVGCircleElement | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
@@ -94,10 +116,11 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
   const sendWirePulse = (i: number, opts: { duration: number; peak: number }) => {
     const pulse = pulseRefs.current[i]
-    if (!pulse) return
-    gsap.set(pulse, { opacity: opts.peak, attr: { cx: AFTER_X + H + 4, cy: AFTER_Y[i] } })
+    const wire = wireRefs.current[i]
+    if (!pulse || !wire) return
+    gsap.set(pulse, { opacity: opts.peak, attr: { cx: AFTER_X + H, cy: AFTER_Y[i] } })
     return gsap.to(pulse, {
-      attr: { cx: HUB.x - HUB.r },
+      motionPath: { path: wire, align: wire, alignOrigin: [0.5, 0.5] },
       duration: opts.duration,
       ease: 'power1.inOut',
       onComplete: () => {
@@ -133,8 +156,10 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
 
     const tl = gsap.timeline()
-    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.7, ease: 'power3.out', stagger: 0.1 })
-    tl.to(wireRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.45, ease: 'power2.out', stagger: 0.08 }, '-=0.3')
+    // Spring-like settle (gentle overshoot, not a hard stop) so the tiles
+    // feel like they have physical weight arriving into place.
+    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: 'elastic.out(1, 0.75)', stagger: 0.12 })
+    tl.to(wireRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.45, ease: 'power2.out', stagger: 0.08 }, '-=0.45')
     tl.call(() => setUnified(true))
     NODES.forEach((_, i) => {
       tl.call(() => sendWirePulse(i, { duration: 0.5, peak: 1 }), [], '+=0.08')
@@ -179,15 +204,16 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
         className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
       >
         <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="img" aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}>
-          {/* Wires from each aligned tile into the hub */}
+          {/* Curved wires from each aligned tile into the hub — a shared
+              bundle of tangents instead of straight rays at four different
+              angles, so they read as one coordinated connection arriving
+              at the hub rather than a tangle of crossing lines. */}
           {NODES.map((n, i) => (
-            <line
+            <path
               key={`w-${n.id}`}
               ref={(el) => { wireRefs.current[i] = el }}
-              x1={AFTER_X + H}
-              y1={AFTER_Y[i]}
-              x2={HUB.x - HUB.r}
-              y2={HUB.y}
+              d={wirePath(AFTER_Y[i])}
+              fill="none"
               stroke={n.color}
               strokeWidth={2}
               strokeLinecap="round"
