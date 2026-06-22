@@ -218,7 +218,11 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
       ease: 'power1.inOut',
       onComplete: () => {
         gsap.to(pulse, { opacity: 0, duration: 0.2 })
-        onArrive ? onArrive() : flashHub(NODES[i].color)
+        if (onArrive) {
+          onArrive()
+        } else {
+          flashHub(NODES[i].color)
+        }
       },
     })
   }

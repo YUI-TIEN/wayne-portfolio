@@ -102,7 +102,6 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
     return () => {
       tween.kill()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, lang, section.delay])
 
   // Safety net: even word-scrambled text can momentarily run wider than the

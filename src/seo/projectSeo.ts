@@ -62,24 +62,6 @@ export const projectSeo: Record<string, Record<Lang, ProjectSeo>> = {
       description: 'Wayne Tien이 SHIKI의 AI 캐릭터 시스템을 데모 가능하게 만든 방법 — 페르소나 준비 점검, 스트림 연동 플로우, OBS/런타임 디버깅, 운영자 인수인계 문서.',
     },
   },
-  'demo-os': {
-    en: {
-      title: 'Agent Operating Contracts | Yui (Wayne) Tien',
-      description: 'Wayne Tien turned repeated AI agent mistakes into explicit operating contracts covering replies, file delivery, PR authority, memory lookups, and risky external fetches.',
-    },
-    'zh-tw': {
-      title: 'Agent 操作規範系統 | Yui (Wayne) Tien',
-      description: 'Wayne Tien 把 agent 一直犯的錯整理成講清楚的操作規範：怎麼回覆、檔案怎麼交、PR 誰能合、記憶怎麼查，還有高風險的外部存取行為。',
-    },
-    ja: {
-      title: 'エージェント運用規約 | Yui (Wayne) Tien',
-      description: 'Wayne Tienが繰り返されるAIエージェントのミスを、返信・ファイル納品・PR権限・メモリ参照・リスクのある外部アクセスに関する明確な運用規約に変えた方法。',
-    },
-    ko: {
-      title: '에이전트 운영 규약 | Yui (Wayne) Tien',
-      description: 'Wayne Tien이 반복되는 AI 에이전트의 실수를 답변, 파일 전달, PR 권한, 메모리 조회, 위험한 외부 접근에 대한 명확한 운영 규약으로 바꾼 방법.',
-    },
-  },
   'voice-migration': {
     en: {
       title: 'Local Voice Infrastructure Migration | Yui (Wayne) Tien',

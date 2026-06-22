@@ -49,6 +49,22 @@ export interface PlaceholderContent {
   eyebrow: string
 }
 
+export interface CaseStudyContent {
+  label: string
+  eyebrow: string
+  tags: string[]
+  headline: string
+  subheadline: string
+  role: string
+  stats: { value: string; label: string }[]
+  problem: string
+  before: string[]
+  after: string[]
+  contributions: string[]
+  outcomes: { title: string; detail: string }[]
+  note?: string
+}
+
 export interface ProjectPageCopy {
   backToAllProjects: string
   theProblem: string
@@ -59,6 +75,7 @@ export interface ProjectPageCopy {
   caseStudyInProgress: string
   openClaw: OpenClawContent
   placeholders: Record<string, PlaceholderContent>
+  caseStudies: Record<string, CaseStudyContent>
 }
 
 const openClawEn: OpenClawContent = {
@@ -346,12 +363,6 @@ const placeholdersEn: Record<string, PlaceholderContent> = {
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: 'Making AI characters demo-ready through persona ops and runtime debugging.',
   },
-  'demo-os': {
-    label: 'Agent Operating Contracts',
-    eyebrow: 'Owned',
-    tags: ['Rules', 'SOP', 'Safety'],
-    headline: 'Turning repeated agent mistakes into explicit operating contracts.',
-  },
   'voice-migration': {
     label: 'Local Voice Infrastructure Migration',
     eyebrow: 'Collaborated',
@@ -378,12 +389,6 @@ const placeholdersZhTw: Record<string, PlaceholderContent> = {
     eyebrow: '一起做的 · SHIKI',
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: '靠人格維運跟系統除錯，把 AI 角色弄到能上線。',
-  },
-  'demo-os': {
-    label: 'Agent 操作規範系統',
-    eyebrow: '我主導的',
-    tags: ['Rules', 'SOP', 'Safety'],
-    headline: '把 agent 一直犯的錯，變成講清楚的操作規範。',
   },
   'voice-migration': {
     label: '本地語音系統搬家',
@@ -412,12 +417,6 @@ const placeholdersJa: Record<string, PlaceholderContent> = {
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: 'ペルソナ運用とランタイムデバッグで、AIキャラクターをデモ可能な状態に。',
   },
-  'demo-os': {
-    label: 'エージェント運用規約',
-    eyebrow: '主導',
-    tags: ['Rules', 'SOP', 'Safety'],
-    headline: 'エージェントが繰り返すミスを、明確な運用規約に変換。',
-  },
   'voice-migration': {
     label: 'ローカル音声基盤の移行',
     eyebrow: '共同',
@@ -445,12 +444,6 @@ const placeholdersKo: Record<string, PlaceholderContent> = {
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: '페르소나 운영과 런타임 디버깅으로 AI 캐릭터를 데모 가능한 상태로.',
   },
-  'demo-os': {
-    label: '에이전트 운영 규약',
-    eyebrow: '주도',
-    tags: ['Rules', 'SOP', 'Safety'],
-    headline: '에이전트가 반복하는 실수를 명확한 운영 규약으로.',
-  },
   'voice-migration': {
     label: '로컬 음성 인프라 마이그레이션',
     eyebrow: '협업',
@@ -465,6 +458,158 @@ const placeholdersKo: Record<string, PlaceholderContent> = {
   },
 }
 
+const caseStudiesEn: Record<string, CaseStudyContent> = {
+  'morphus-website': {
+    label: 'AI Product Demo Flow',
+    eyebrow: 'Owned · MorphusAI',
+    tags: ['Product', 'MVP', 'POC', 'Demo'],
+    headline: 'Turning raw product ideas into demo-ready MVPs.',
+    subheadline: 'A repeatable working style for moving from idea, to prototype, to POC, to a demo that people can actually understand.',
+    role: 'Product Builder · Information Architecture · UX Flow · Visual Polish · Demo Script',
+    stats: [
+      { value: '0→1', label: 'idea to MVP' },
+      { value: 'POC', label: 'delivery target' },
+      { value: 'AI', label: 'collaboration layer' },
+      { value: 'Full', label: 'flow ownership' },
+    ],
+    problem: 'The bottleneck was not only building the product. It was turning vague early ideas into a concrete MVP fast enough to test, explain, and sell as a coherent demo.',
+    before: [
+      'Raw concepts were difficult to compress into a presentable POC.',
+      'Demo quality depended too much on manual translation from idea to flow, copy, UI, and story.',
+      'MVPs were harder to generate at the level of completeness needed for meaningful feedback.',
+    ],
+    after: [
+      'AI collaboration became part of the execution workflow, not just a writing helper.',
+      'Early ideas could move into usable MVPs and POCs much faster.',
+      'Demo flows became clearer, more complete, and easier to present.',
+    ],
+    contributions: [
+      'Structured the product story from raw idea to demo arc.',
+      'Designed information architecture, UX flow, copy, and visual polish.',
+      'Built working POC/MVP artifacts to make abstract product ideas inspectable.',
+      'Prepared demo scripts and presentation flow for external explanation.',
+    ],
+    outcomes: [
+      { title: 'Faster POC creation', detail: 'Reduced the time between initial concept and testable MVP by using agents across product thinking, interface work, and implementation.' },
+      { title: 'More complete demos', detail: 'Moved from isolated ideas toward coherent demos with clearer flows, stronger polish, and enough implementation depth to evaluate.' },
+      { title: 'Reusable workflow', detail: 'The process itself became a product-building system: ideate, prototype, refine, package, demo.' },
+    ],
+  },
+  'persona-workflows': {
+    label: 'AI Character Live Runtime',
+    eyebrow: 'Led · SHIKI',
+    tags: ['AI Vtuber', 'Persona', 'Live Ops', 'Runtime'],
+    headline: 'Building AI characters that can perform live without getting tired.',
+    subheadline: 'A live runtime for AI Vtuber-style characters that can stream, publish videos and shorts, remember viewers, follow scripts, and run fully automated shows.',
+    role: 'Project Lead · Persona Designer · Runtime Debugger · Live Flow Owner · Tooling Integrator',
+    stats: [
+      { value: '4', label: 'active AI Vtubers' },
+      { value: '3000+', label: 'watch hours' },
+      { value: '24h', label: 'stream potential' },
+      { value: 'Auto', label: 'live performance' },
+    ],
+    problem: 'Human Vtuber performance is constrained by fatigue, scheduling, memory, and consistency. The challenge was making AI characters feel alive while also being stable enough for real livestream operation.',
+    before: [
+      'Characters could exist as concepts, but live operation required many fragile manual pieces.',
+      'Persona, tooling, runtime behavior, and livestream flow were not yet unified into a stable performance system.',
+      'Long-running shows needed better consistency than a human operator could maintain manually.',
+    ],
+    after: [
+      'Four active AI Vtuber-style characters now run across livestreams, videos, and shorts.',
+      'The system has accumulated more than 3000 watch hours from real users.',
+      'AI characters can run stable fully automated livestream performances.',
+      'A confidential collaboration with a listed Taiwanese game company validated that the AI virtual talent could perform better live than a human-played Vtuber in the tested context.',
+    ],
+    contributions: [
+      'Led project management and execution across persona, runtime, and live workflow.',
+      'Designed character personas and operating behavior.',
+      'Debugged runtime issues and livestream flow stability.',
+      'Defined character settings, tool connections, and automated show behavior.',
+      'Coordinated the system toward demo-ready and production-like livestream performance.',
+    ],
+    outcomes: [
+      { title: 'Validated with real viewers', detail: 'The system is not only a lab demo: active characters have produced thousands of hours of watch time.' },
+      { title: 'Always-on performance', detail: 'Unlike human performers, AI characters can stream continuously, follow scripts precisely, and remember viewer context.' },
+      { title: 'Commercial collaboration', detail: 'Built and tested a confidential all-AI virtual entertainer with a known Taiwanese public game company.' },
+    ],
+    note: 'Specific character identities and partner names are intentionally omitted for confidentiality.',
+  },
+  'voice-migration': {
+    label: 'Local Voice Infrastructure Migration',
+    eyebrow: 'Led · Voice Runtime',
+    tags: ['Voice', 'TTS', 'Migration', 'Latency'],
+    headline: 'Moving voice generation from cloud cost to local speed.',
+    subheadline: 'A migration from cloud-hosted voice models to local inference, keeping voice quality while improving speed, cost, and multilingual flexibility.',
+    role: 'Architecture Planner · Adapter Implementer · API Compatibility Owner · Rollout Lead',
+    stats: [
+      { value: 'Local', label: 'cloud migration' },
+      { value: 'Lower', label: 'runtime cost' },
+      { value: 'Faster', label: 'response goal' },
+      { value: 'Multi', label: 'language output' },
+    ],
+    problem: 'The original cloud voice stack had strong quality but created cost, latency, and language constraints. It could output Chinese well, but could not flex into multilingual character performance with the same voice identity.',
+    before: [
+      'Voice generation depended on a cloud-hosted model and ongoing usage cost.',
+      'Quality was good, but the system was constrained to Chinese output.',
+      'Training and setup required much heavier source material.',
+      'Latency, speaker mapping, legacy API compatibility, and rollout risk all had to be controlled.',
+    ],
+    after: [
+      'Voice generation runs locally with quality held at the original target or better.',
+      'The system is faster and cheaper to operate.',
+      'The same voice line can be applied across multiple languages.',
+      'A Chinese-trained voice can now produce English with Taiwanese accent characteristics.',
+    ],
+    contributions: [
+      'Planned the migration architecture from cloud to local runtime.',
+      'Adjusted interfaces and compatibility layers around the existing API contract.',
+      'Handled speaker mapping, latency constraints, quality checks, and rollout planning.',
+      'Owned the migration work outside the voice model training and behavior tuning itself.',
+    ],
+    outcomes: [
+      { title: 'Cost reduced', detail: 'Local inference removed the cloud usage dependency for the voice runtime.' },
+      { title: 'Latency improved', detail: 'Moving generation closer to the runtime improved responsiveness for interactive character use.' },
+      { title: 'Multilingual voice identity', detail: 'The local model can preserve the same character voice across languages, expanding use cases beyond the original Chinese-only output.' },
+    ],
+  },
+  'portfolio-site': {
+    label: 'Personal Portfolio Site',
+    eyebrow: 'Owned',
+    tags: ['Frontend', 'Agent Build', 'Visual System', 'Meta Case Study'],
+    headline: 'A portfolio site that is also a proof of how I build.',
+    subheadline: 'The site itself is a case study: built from zero with AI agents, but shaped by product, frontend, visual, and interaction judgment until it stops feeling AI-generated.',
+    role: 'Owner · Frontend Builder · Visual Director · Agent Orchestrator',
+    stats: [
+      { value: '0→1', label: 'site build' },
+      { value: 'Agent', label: 'execution method' },
+      { value: 'No', label: 'template dependency' },
+      { value: 'Meta', label: 'case study' },
+    ],
+    problem: 'Most portfolios are static templates, PDFs, or lightly customized website builders. This needed to show not only finished work, but the ability to direct agents into producing a complete, interactive, polished product.',
+    before: [
+      'A conventional portfolio would only list work, not demonstrate product-building ability.',
+      'AI-generated websites often carry obvious template patterns, generic copy, and weak interaction details.',
+      'The risk was making something that looked assisted by AI rather than directed with taste and technical control.',
+    ],
+    after: [
+      'The portfolio became a working artifact with responsive layout, project cards, dark mode, animation, and interaction details.',
+      'The site communicates personal brand and product-builder positioning without relying on a stock template.',
+      'The build process demonstrates the ability to use AI agents because the owner understands design, code, and product deeply enough to direct them.',
+    ],
+    contributions: [
+      'Defined the positioning around AI/product builder capability.',
+      'Directed the visual language, grid, dark mode, project cards, and interaction polish.',
+      'Built the site from zero through agent collaboration instead of a no-code template or PDF.',
+      'Framed the page itself as a meta case study of agent-led product execution.',
+    ],
+    outcomes: [
+      { title: 'Portfolio as proof', detail: 'The site does not only describe capability; it demonstrates interactive frontend and agent orchestration capability directly.' },
+      { title: 'No obvious AI taste', detail: 'The design goal was to use agents without leaving the generic visual and copy patterns people associate with AI-generated sites.' },
+      { title: 'From zero to artifact', detail: 'The project shows a complete path from blank page to deployed personal brand system.' },
+    ],
+  },
+}
+
 const en: ProjectPageCopy = {
   backToAllProjects: 'All Projects',
   theProblem: 'The Problem',
@@ -475,6 +620,7 @@ const en: ProjectPageCopy = {
   caseStudyInProgress: 'Case study in progress',
   openClaw: openClawEn,
   placeholders: placeholdersEn,
+  caseStudies: caseStudiesEn,
 }
 
 const zhTw: ProjectPageCopy = {
@@ -487,6 +633,7 @@ const zhTw: ProjectPageCopy = {
   caseStudyInProgress: '這個案例還在整理，晚點回來看',
   openClaw: openClawZhTw,
   placeholders: placeholdersZhTw,
+  caseStudies: caseStudiesEn,
 }
 
 const ja: ProjectPageCopy = {
@@ -499,6 +646,7 @@ const ja: ProjectPageCopy = {
   caseStudyInProgress: 'ケーススタディ準備中',
   openClaw: openClawJa,
   placeholders: placeholdersJa,
+  caseStudies: caseStudiesEn,
 }
 
 const ko: ProjectPageCopy = {
@@ -511,6 +659,7 @@ const ko: ProjectPageCopy = {
   caseStudyInProgress: '케이스 스터디 준비 중',
   openClaw: openClawKo,
   placeholders: placeholdersKo,
+  caseStudies: caseStudiesEn,
 }
 
 export const projectPageCopy: Record<Lang, ProjectPageCopy> = { en, 'zh-tw': zhTw, ja, ko }
