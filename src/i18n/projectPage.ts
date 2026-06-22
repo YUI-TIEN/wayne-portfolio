@@ -14,6 +14,7 @@ export interface TopologyContent {
   hub: string
   fragmented: string
   unified: string
+  replay: string
 }
 
 export interface OpenClawContent {
@@ -108,7 +109,7 @@ const openClawEn: OpenClawContent = {
     run: 'Run it',
     replay: 'Replay',
   },
-  topology: { hub: 'Memory Hub', fragmented: 'Before · fragmented', unified: 'After · unified' },
+  topology: { hub: 'Memory Hub', fragmented: 'Before · fragmented', unified: 'After · unified', replay: 'Replay' },
   coldStart: 'every tool switch = re-explaining from scratch',
   gateCaption: 'every action is checked against the rules before it runs',
   rules: [
@@ -176,7 +177,7 @@ const openClawZhTw: OpenClawContent = {
     run: '跑一次',
     replay: '重播',
   },
-  topology: { hub: '記憶中樞', fragmented: '以前 · 各自為政', unified: '現在 · 串成一套' },
+  topology: { hub: '記憶中樞', fragmented: '以前 · 各自為政', unified: '現在 · 串成一套', replay: '重播' },
   coldStart: '每次換工具 = 從頭再解釋一遍',
   gateCaption: '每個動作執行前都先過一遍規則',
   rules: [
@@ -244,7 +245,7 @@ const openClawJa: OpenClawContent = {
     run: '実行',
     replay: '再生',
   },
-  topology: { hub: 'メモリハブ', fragmented: 'Before · 分断', unified: 'After · 統合' },
+  topology: { hub: 'メモリハブ', fragmented: 'Before · 分断', unified: 'After · 統合', replay: '再生' },
   coldStart: 'ツールを変えるたびに、ゼロから説明し直し',
   gateCaption: 'すべてのアクションは実行前にルールで検査される',
   rules: [
@@ -312,7 +313,7 @@ const openClawKo: OpenClawContent = {
     run: '실행',
     replay: '다시 재생',
   },
-  topology: { hub: '메모리 허브', fragmented: 'Before · 분절', unified: 'After · 통합' },
+  topology: { hub: '메모리 허브', fragmented: 'Before · 분절', unified: 'After · 통합', replay: '다시 재생' },
   coldStart: '툴을 바꿀 때마다 처음부터 다시 설명',
   gateCaption: '모든 동작은 실행 전에 규칙으로 검사됩니다',
   rules: [
