@@ -48,22 +48,31 @@ const NODES: Node[] = [
   { id: 'discord', label: 'Discord', x: 326, y: 236, color: '#5865F2', glyph: { type: 'logo', key: 'discord' }, labelDy: 40, sx: 30, sy: 26, rot: -8 },
 ]
 
+// Ambient per-spoke pulse cadence (seconds) once settled — staggered and
+// slightly irregular so all four don't breathe in lockstep, which is what
+// made the previous version feel static/diagram-like rather than "alive".
+const AMBIENT_INTERVAL = [2.6, 3.4, 3.0, 3.8]
+
 // Before/after of the project: scattered, disconnected tool apps snap into a
-// hub-and-spoke around one Memory Hub, the links draw in, and a pulse runs
-// along each spoke into the hub. After settling, the hub keeps a slow idle
-// "heartbeat" pulse so it reads as a live system rather than a static
-// diagram, and hovering any tool node sends one extra pulse down its spoke
-// so visitors can poke at the connection themselves. Defaults to the
-// connected state for prerender / no-JS / reduced-motion; the morph plays
-// once on scroll into view.
+// hub-and-spoke around one Memory Hub with a back-ease overshoot, the links
+// draw in, and a synchronized pulse runs along each spoke into the hub. After
+// settling, each spoke independently sends a small ambient data pulse on its
+// own staggered cadence (so the system reads as continuously alive, not just
+// once on entrance), the hub keeps a slow idle "breathing" scale, and
+// hovering a tool node sends an immediate bright pulse + brief hub glow so
+// visitors can poke at the connection themselves. Defaults to the connected
+// state for prerender / no-JS / reduced-motion; the morph plays once on
+// scroll into view, ambient pulses only run for users who get motion.
 export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
   const lineRefs = useRef<(SVGLineElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
-  const hubRef = useRef<SVGCircleElement | null>(null)
+  const hubRef = useRef<SVGGElement | null>(null)
+  const hubGlowRef = useRef<SVGCircleElement | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const heartbeatRef = useRef<gsap.core.Tween | null>(null)
+  const ambientTweensRef = useRef<(gsap.core.Tween | null)[]>([])
   const hoverPulseRef = useRef<gsap.core.Tween | null>(null)
   const playedRef = useRef(false)
   const langInitRef = useRef(true)
@@ -72,68 +81,103 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
 
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
 
-  const startHeartbeat = () => {
-    if (skipsScrollAnimation() || !hubRef.current || heartbeatRef.current) return
-    heartbeatRef.current = gsap.to(hubRef.current, {
-      scale: 1.06,
-      duration: 1.1,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      transformOrigin: `${HUB.x}px ${HUB.y}px`,
+  const pulseHub = (strength: number) => {
+    if (!hubGlowRef.current) return
+    gsap.to(hubGlowRef.current, {
+      opacity: strength,
+      duration: 0.18,
+      ease: 'power1.out',
+      onComplete: () => {
+        gsap.to(hubGlowRef.current, { opacity: 0, duration: 0.5, ease: 'power1.in' })
+      },
     })
   }
 
-  const stopHeartbeat = () => {
-    heartbeatRef.current?.kill()
-    heartbeatRef.current = null
-    if (hubRef.current) gsap.set(hubRef.current, { scale: 1 })
-  }
-
-  const sendHoverPulse = (i: number) => {
-    if (skipsScrollAnimation() || !unified) return
+  const flowAlongSpoke = (i: number, opts: { duration: number; peak: number }) => {
     const pulse = pulseRefs.current[i]
     const n = NODES[i]
     if (!pulse) return
-    hoverPulseRef.current?.kill()
-    gsap.set(pulse, { opacity: 1, attr: { cx: n.x, cy: n.y } })
+    gsap.set(pulse, { opacity: opts.peak, attr: { cx: n.x, cy: n.y } })
     const proxy = { t: 0 }
-    hoverPulseRef.current = gsap.to(proxy, {
+    return gsap.to(proxy, {
       t: 1,
-      duration: 0.7,
+      duration: opts.duration,
       ease: 'power1.inOut',
       onUpdate: () => {
         pulse.setAttribute('cx', String(n.x + (HUB.x - n.x) * proxy.t))
         pulse.setAttribute('cy', String(n.y + (HUB.y - n.y) * proxy.t))
       },
-      onComplete: () => gsap.to(pulse, { opacity: 0, duration: 0.2 }),
+      onComplete: () => {
+        gsap.to(pulse, { opacity: 0, duration: 0.25 })
+        pulseHub(0.35)
+      },
     })
+  }
+
+  const startAmbient = () => {
+    if (skipsScrollAnimation()) return
+    stopAmbient()
+    heartbeatRef.current = gsap.to(hubRef.current, {
+      scale: 1.05,
+      duration: 1.6,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: `${HUB.x}px ${HUB.y}px`,
+    })
+    NODES.forEach((_, i) => {
+      const fire = () => {
+        flowAlongSpoke(i, { duration: 0.85, peak: 0.85 })
+        ambientTweensRef.current[i] = gsap.delayedCall(AMBIENT_INTERVAL[i], fire)
+      }
+      // Stagger initial fire so all four don't pulse on the same beat.
+      ambientTweensRef.current[i] = gsap.delayedCall(0.4 + i * 0.5, fire)
+    })
+  }
+
+  const stopAmbient = () => {
+    heartbeatRef.current?.kill()
+    heartbeatRef.current = null
+    if (hubRef.current) gsap.set(hubRef.current, { scale: 1 })
+    ambientTweensRef.current.forEach((t) => t?.kill())
+    ambientTweensRef.current = []
+  }
+
+  const sendHoverPulse = (i: number) => {
+    if (skipsScrollAnimation() || !unified) return
+    hoverPulseRef.current?.kill()
+    hoverPulseRef.current = flowAlongSpoke(i, { duration: 0.55, peak: 1 }) ?? null
+    pulseHub(0.5)
   }
 
   const snapToUnified = () => {
     tlRef.current?.kill()
     groupRefs.current.forEach((g, i) => {
-      if (g) gsap.set(g, { x: 0, y: 0, rotation: 0, opacity: 1, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
+      if (g) gsap.set(g, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
     })
     lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 0, opacity: 1 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
     setUnified(true)
-    startHeartbeat()
+    startAmbient()
   }
 
   const play = () => {
     tlRef.current?.kill()
-    stopHeartbeat()
+    stopAmbient()
     setUnified(false)
     groupRefs.current.forEach((g, i) => {
-      if (g) gsap.set(g, { x: NODES[i].sx, y: NODES[i].sy, rotation: NODES[i].rot, opacity: 0.4, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
+      if (g) gsap.set(g, { x: NODES[i].sx, y: NODES[i].sy, rotation: NODES[i].rot, opacity: 0.4, scale: 0.92, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
     })
     lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 1, opacity: 0 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
+    if (hubGlowRef.current) gsap.set(hubGlowRef.current, { opacity: 0 })
 
     const tl = gsap.timeline()
-    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08 })
-    tl.to(lineRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.55, ease: 'power2.out', stagger: 0.08 }, '-=0.35')
+    // Snap into place with a slight overshoot so the hub-and-spoke formation
+    // feels like it "locks in" rather than just drifting to a stop.
+    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1.08, duration: 0.55, ease: 'power3.out', stagger: 0.08 })
+    tl.to(groupRefs.current, { scale: 1, duration: 0.25, ease: 'back.out(2.4)', stagger: 0.08 }, '-=0.15')
+    tl.to(lineRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.55, ease: 'power2.out', stagger: 0.08 }, '-=0.5')
     tl.call(() => setUnified(true))
 
     const proxy = { t: 0 }
@@ -152,9 +196,11 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
           p.setAttribute('cy', String(n.y + (HUB.y - n.y) * t))
         })
       },
+      onRepeat: () => pulseHub(0.6),
     })
     tl.to(pulseRefs.current, { opacity: 0, duration: 0.2 })
-    tl.call(() => startHeartbeat())
+    tl.call(() => pulseHub(0.7))
+    tl.call(() => startAmbient())
     tlRef.current = tl
   }
 
@@ -176,7 +222,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
     return () => {
       io.disconnect()
       tlRef.current?.kill()
-      stopHeartbeat()
+      stopAmbient()
       hoverPulseRef.current?.kill()
     }
   }, [])
@@ -222,6 +268,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
 
           {/* Hub */}
           <g ref={hubRef} style={{ transformBox: 'fill-box' }}>
+            <circle ref={hubGlowRef} cx={HUB.x} cy={HUB.y} r={HUB.r + 18} fill="#F94E0A" opacity={0} />
             <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 12} fill="#F94E0A" opacity={0.12} />
             <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 5} fill="none" stroke="#F94E0A" strokeWidth={1.5} opacity={0.4} />
             <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
