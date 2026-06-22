@@ -147,6 +147,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
   const wireRefs = useRef<(SVGPathElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
   const hubPulseRef = useRef<SVGCircleElement | null>(null)
+  const hubGlowRef = useRef<SVGCircleElement | null>(null)
   const hubCoreRef = useRef<SVGPathElement | null>(null)
   const morphTweenRef = useRef<gsap.core.Tween | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
@@ -168,13 +169,21 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
   const morphHubTo = (i: number) => {
     if (!hubCoreRef.current) return
+    const color = NODES[i].color
     const angle = Math.atan2(HUB.y - AFTER_Y[i], HUB.x - WIRE_START_X)
     const poked = hubPoked(HUB.x, HUB.y, HUB.r, angle + Math.PI)
     morphTweenRef.current?.kill()
-    flashHub()
+    flashHub(color)
+    // The soft halo behind the hub and the ripple ring both default to the
+    // brand orange in JSX (so the very first paint matches the solid hub
+    // before any click ever happens); from here on they follow whichever
+    // tile last wrote, same as the hub fill, instead of staying stuck on
+    // orange forever.
+    if (hubGlowRef.current) gsap.set(hubGlowRef.current, { attr: { fill: color } })
+    if (hubPulseRef.current) gsap.set(hubPulseRef.current, { attr: { stroke: color } })
     morphTweenRef.current = gsap.to(hubCoreRef.current, {
       morphSVG: poked,
-      fill: NODES[i].color,
+      fill: color,
       duration: 0.18,
       ease: 'power2.out',
       onComplete: () => {
@@ -189,11 +198,11 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     })
   }
 
-  const flashHub = () => {
+  const flashHub = (color: string) => {
     if (!hubPulseRef.current) return
     gsap.fromTo(
       hubPulseRef.current,
-      { opacity: 0.5, attr: { r: HUB.r } },
+      { opacity: 0.5, attr: { r: HUB.r, stroke: color } },
       { opacity: 0, attr: { r: HUB.r + 10 }, duration: 0.5, ease: 'power1.out' },
     )
   }
@@ -209,7 +218,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
       ease: 'power1.inOut',
       onComplete: () => {
         gsap.to(pulse, { opacity: 0, duration: 0.2 })
-        onArrive ? onArrive() : flashHub()
+        onArrive ? onArrive() : flashHub(NODES[i].color)
       },
     })
   }
@@ -248,8 +257,12 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     wireRefs.current.forEach((w) => w && gsap.set(w, { strokeDashoffset: 1, opacity: 0 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
     // Replaying the whole "fragmented -> unified" story resets the hub to
-    // its clean default too, instead of leaving a stale tint from before.
+    // its clean default too, instead of leaving a stale tint from before —
+    // including the glow halo and ripple ring, which also pick up
+    // whichever tile last wrote (see morphHubTo).
     if (hubCoreRef.current) gsap.set(hubCoreRef.current, { morphSVG: hubCircle(HUB.x, HUB.y, HUB.r), fill: '#F94E0A' })
+    if (hubGlowRef.current) gsap.set(hubGlowRef.current, { attr: { fill: '#F94E0A' } })
+    if (hubPulseRef.current) gsap.set(hubPulseRef.current, { attr: { stroke: '#F94E0A' } })
 
     const tl = gsap.timeline()
     // Spring-like settle (gentle overshoot, not a hard stop) so the tiles
@@ -321,6 +334,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
               <g ref={(el) => { groupRefs.current[i] = el }}>
                 <g
                   ref={(el) => { tileLiftRefs.current[i] = el }}
+                  className="cursor-pointer"
                   onMouseEnter={() => liftTile(i, true)}
                   onMouseLeave={() => liftTile(i, false)}
                   onClick={() => sendClickBurst(i)}
@@ -374,7 +388,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
               pulse just arrived, tinted in that tile's color, and STAYS
               that color (see morphHubTo) so it reads as remembering the
               last write rather than a generic flash that fades away. */}
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
+          <circle ref={hubGlowRef} cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
           <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
           <path ref={hubCoreRef} d={hubCircle(HUB.x, HUB.y, HUB.r)} fill="#F94E0A" />
           <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
