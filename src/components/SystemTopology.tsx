@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Magnetic } from './Magnetic'
 import gsap from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
@@ -130,30 +130,26 @@ const NODES: Node[] = [
 // lines. Defaults to the settled "after" layout for prerender / no-JS /
 // reduced-motion; the migration plays once on scroll into view.
 //
-// Interaction model (the part that makes this more than decoration): the
-// hub continuously leans a couple px toward whichever tile the cursor is
-// nearest, via gsap.quickTo() (the right tool for a value updated on every
-// mousemove — reuses one tween instead of creating one per frame), so it
-// reads as paying attention rather than a static endpoint the wires happen
-// to touch. Clicking a tile sends a brighter pulse AND, when it lands,
-// morphs the hub's own outline (MorphSVGPlugin, animating the <path> `d`)
-// into a one-sided "poke" dented toward that tile's direction, tinted in
-// that tile's color, before morphing back to a plain circle — a distinct,
-// per-tool visual signature for "this is the data that just arrived,"
-// instead of every tool producing the same generic flash.
+// Interaction model (the part that makes this more than decoration):
+// clicking a tile fires a bright dot that travels along that tile's curved
+// wire (MotionPathPlugin riding the same bezier as the visible stroke).
+// Only once the dot actually arrives at the hub does the hub morph
+// (MorphSVGPlugin, animating the <path> `d`) into a one-sided "poke" dented
+// toward that tile's direction and tint to that tile's color — and it
+// STAYS that color (no revert tween) until the user clicks a different
+// tile or reloads the page, so the hub visibly "remembers" the last tool
+// that wrote to it. Hovering a tile gives a clear "this is clickable"
+// affordance (brightens + lifts slightly) without firing anything yet.
 export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
+  const tileLiftRefs = useRef<(SVGGElement | null)[]>([])
   const wireRefs = useRef<(SVGPathElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
   const hubPulseRef = useRef<SVGCircleElement | null>(null)
-  const hubWrapRef = useRef<SVGGElement | null>(null)
   const hubCoreRef = useRef<SVGPathElement | null>(null)
-  const quickXRef = useRef<gsap.QuickToFunc | null>(null)
-  const quickYRef = useRef<gsap.QuickToFunc | null>(null)
   const morphTweenRef = useRef<gsap.core.Tween | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
-  const hoverPulseRef = useRef<gsap.core.Tween | null>(null)
   const playedRef = useRef(false)
   const langInitRef = useRef(true)
 
@@ -161,53 +157,31 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
 
-  // LEAN_MAX: how far (px, in viewBox units) the hub can drift toward the
-  // cursor. Kept small — this is a subtle "attention" cue, not the hub
-  // chasing the pointer around the canvas.
-  const LEAN_MAX = 5
-
-  const handlePointerMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (skipsScrollAnimation() || !hubWrapRef.current) return
-    if (!quickXRef.current || !quickYRef.current) {
-      quickXRef.current = gsap.quickTo(hubWrapRef.current, 'x', { duration: 0.5, ease: 'power3' })
-      quickYRef.current = gsap.quickTo(hubWrapRef.current, 'y', { duration: 0.5, ease: 'power3' })
-    }
-    const svg = e.currentTarget
-    const rect = svg.getBoundingClientRect()
-    const px = ((e.clientX - rect.left) / rect.width) * VB.w
-    const py = ((e.clientY - rect.top) / rect.height) * VB.h
-    const dx = px - HUB.x
-    const dy = py - HUB.y
-    const dist = Math.hypot(dx, dy) || 1
-    const lean = Math.min(LEAN_MAX, dist * 0.04)
-    quickXRef.current(((dx / dist) * lean))
-    quickYRef.current(((dy / dist) * lean))
-  }
-
-  const handlePointerLeave = () => {
-    if (!quickXRef.current || !quickYRef.current) return
-    quickXRef.current(0)
-    quickYRef.current(0)
-  }
-
-  // Morphs the hub outline into a one-sided dent toward the clicked tile's
-  // direction, tinted in that tile's color, then morphs back to a plain
-  // circle — a per-tool visual signature instead of a generic flash.
+  // Fires a dot along the clicked tile's wire; the hub only reacts (morph +
+  // permanent color change) once the dot lands, in the pulse's onComplete,
+  // so the cause (click) and effect (hub changes) are visibly connected by
+  // the dot's travel time instead of happening simultaneously.
   const sendClickBurst = (i: number) => {
-    if (skipsScrollAnimation() || !unified || !hubCoreRef.current) return
-    sendWirePulse(i, { duration: 0.4, peak: 1 })
+    if (skipsScrollAnimation() || !unified) return
+    sendWirePulse(i, { duration: 0.5, peak: 1 }, () => morphHubTo(i))
+  }
+
+  const morphHubTo = (i: number) => {
+    if (!hubCoreRef.current) return
     const angle = Math.atan2(HUB.y - AFTER_Y[i], HUB.x - WIRE_START_X)
     const poked = hubPoked(HUB.x, HUB.y, HUB.r, angle + Math.PI)
     morphTweenRef.current?.kill()
-    gsap.set(hubCoreRef.current, { fill: NODES[i].color })
+    flashHub()
     morphTweenRef.current = gsap.to(hubCoreRef.current, {
       morphSVG: poked,
+      fill: NODES[i].color,
       duration: 0.18,
       ease: 'power2.out',
       onComplete: () => {
+        // Settle the dent back to round, but keep the new color — the hub
+        // stays tinted until the next click or a page reload.
         gsap.to(hubCoreRef.current, {
           morphSVG: hubCircle(HUB.x, HUB.y, HUB.r),
-          fill: '#F94E0A',
           duration: 0.45,
           ease: 'elastic.out(1, 0.6)',
         })
@@ -224,7 +198,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     )
   }
 
-  const sendWirePulse = (i: number, opts: { duration: number; peak: number }) => {
+  const sendWirePulse = (i: number, opts: { duration: number; peak: number }, onArrive?: () => void) => {
     const pulse = pulseRefs.current[i]
     const wire = wireRefs.current[i]
     if (!pulse || !wire) return
@@ -235,15 +209,23 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
       ease: 'power1.inOut',
       onComplete: () => {
         gsap.to(pulse, { opacity: 0, duration: 0.2 })
-        flashHub()
+        onArrive ? onArrive() : flashHub()
       },
     })
   }
 
-  const sendHoverPulse = (i: number) => {
-    if (skipsScrollAnimation() || !unified) return
-    hoverPulseRef.current?.kill()
-    hoverPulseRef.current = sendWirePulse(i, { duration: 0.45, peak: 1 }) ?? null
+  // Hover affordance: lift + brighten so it's clear the tile is clickable.
+  // Does not fire a wire pulse — that's reserved for an actual click.
+  const liftTile = (i: number, hovered: boolean) => {
+    const lift = tileLiftRefs.current[i]
+    if (!lift || skipsScrollAnimation()) return
+    gsap.to(lift, {
+      scale: hovered ? 1.08 : 1,
+      filter: hovered ? 'brightness(1.12)' : 'brightness(1)',
+      duration: 0.2,
+      ease: 'power2.out',
+      transformOrigin: '50% 50%',
+    })
   }
 
   const snapToUnified = () => {
@@ -258,12 +240,16 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
   const play = () => {
     tlRef.current?.kill()
+    morphTweenRef.current?.kill()
     setUnified(false)
     groupRefs.current.forEach((g, i) => {
       if (g) gsap.set(g, { x: BEFORE_DX[i], y: BEFORE_DY[i], rotation: BEFORE_ROT[i], opacity: 0.55 })
     })
     wireRefs.current.forEach((w) => w && gsap.set(w, { strokeDashoffset: 1, opacity: 0 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
+    // Replaying the whole "fragmented -> unified" story resets the hub to
+    // its clean default too, instead of leaving a stale tint from before.
+    if (hubCoreRef.current) gsap.set(hubCoreRef.current, { morphSVG: hubCircle(HUB.x, HUB.y, HUB.r), fill: '#F94E0A' })
 
     const tl = gsap.timeline()
     // Spring-like settle (gentle overshoot, not a hard stop) so the tiles
@@ -295,7 +281,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     return () => {
       io.disconnect()
       tlRef.current?.kill()
-      hoverPulseRef.current?.kill()
+      morphTweenRef.current?.kill()
     }
   }, [])
 
@@ -318,40 +304,41 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
           className="w-full h-auto block"
           role="img"
           aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}
-          onMouseMove={handlePointerMove}
-          onMouseLeave={handlePointerLeave}
         >
           {/* Tool tiles — drawn FIRST so the curved wires (drawn after) are
               never hidden underneath a tile's opaque label text. Outer <g>
               holds the static AFTER column position and is never touched by
-              GSAP; inner <g> is the one GSAP animates (x/y/rotation start at
-              the BEFORE offset, settle at 0/0/0). GSAP's x/y/rotation
-              overwrite an SVG element's `transform` attribute entirely
-              rather than composing with it — animating the same <g> that
-              carried the static translate(AFTER_X, ...) caused every tile to
-              collapse toward the SVG origin once GSAP wrote its own matrix
-              over it. Splitting the static placement from the animated
-              offset into two nested groups fixes that. */}
+              GSAP; middle <g> (groupRefs) is the one the entrance timeline
+              animates (x/y/rotation start at the BEFORE offset, settle at
+              0/0/0) — GSAP's x/y/rotation overwrite an SVG element's
+              `transform` attribute entirely rather than composing with it,
+              so this has to be a separate group from the static placement;
+              innermost <g> (tileLiftRefs) is the one the hover affordance
+              scales/brightens, kept separate so hover doesn't fight the
+              entrance animation's own transform. */}
           {NODES.map((n, i) => (
             <g key={`n-${n.id}`} transform={`translate(${AFTER_X}, ${AFTER_Y[i]})`}>
-              <g
-                ref={(el) => { groupRefs.current[i] = el }}
-                onMouseEnter={() => sendHoverPulse(i)}
-                onClick={() => sendClickBurst(i)}
-                style={{ cursor: 'pointer' }}
-              >
-                <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
-                <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />
-                {n.glyph.type === 'logo' ? (
-                  <path d={LOGOS[n.glyph.key]} fill="#fff" transform="translate(-12 -12)" />
-                ) : (
-                  <text textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
-                    {n.glyph.text}
+              <g ref={(el) => { groupRefs.current[i] = el }}>
+                <g
+                  ref={(el) => { tileLiftRefs.current[i] = el }}
+                  onMouseEnter={() => liftTile(i, true)}
+                  onMouseLeave={() => liftTile(i, false)}
+                  onClick={() => sendClickBurst(i)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
+                  <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />
+                  {n.glyph.type === 'logo' ? (
+                    <path d={LOGOS[n.glyph.key]} fill="#fff" transform="translate(-12 -12)" />
+                  ) : (
+                    <text textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
+                      {n.glyph.text}
+                    </text>
+                  )}
+                  <text x={H + 10} dominantBaseline="central" className="font-mono" fill={n.color} fontSize={13}>
+                    {n.label}
                   </text>
-                )}
-                <text x={H + 10} dominantBaseline="central" className="font-mono" fill={n.color} fontSize={13}>
-                  {n.label}
-                </text>
+                </g>
               </g>
             </g>
           ))}
@@ -383,21 +370,18 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
             <circle key={`p-${n.id}`} ref={(el) => { pulseRefs.current[i] = el }} cx={WIRE_START_X} cy={AFTER_Y[i]} r={3.5} fill={n.color} opacity={0} />
           ))}
 
-          {/* Hub — leans subtly toward whichever tile the cursor is nearest
-              (quickTo-driven, see handlePointerMove) and flashes/morphs in
-              that tile's color on click (see sendClickBurst), so it reads
-              as something paying attention and actually receiving data,
-              not a static endpoint the wires happen to touch. */}
-          <g ref={hubWrapRef} style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}>
-            <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
-            <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
-            <path ref={hubCoreRef} d={hubCircle(HUB.x, HUB.y, HUB.r)} fill="#F94E0A" />
-            <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-              {hubLines.map((line, li) => (
-                <tspan key={li} x={HUB.x} dy={li === 0 ? (hubLines.length > 1 ? '-0.6em' : '0.32em') : '1.15em'}>{line}</tspan>
-              ))}
-            </text>
-          </g>
+          {/* Hub — morphs into a one-sided dent toward whichever tile's
+              pulse just arrived, tinted in that tile's color, and STAYS
+              that color (see morphHubTo) so it reads as remembering the
+              last write rather than a generic flash that fades away. */}
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
+          <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
+          <path ref={hubCoreRef} d={hubCircle(HUB.x, HUB.y, HUB.r)} fill="#F94E0A" />
+          <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+            {hubLines.map((line, li) => (
+              <tspan key={li} x={HUB.x} dy={li === 0 ? (hubLines.length > 1 ? '-0.6em' : '0.32em') : '1.15em'}>{line}</tspan>
+            ))}
+          </text>
         </svg>
       </div>
 
