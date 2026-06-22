@@ -219,7 +219,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
 
       {/* Replay control */}
       <div className="flex justify-end mt-3">
-        <Magnetic strength={0.3} scaleOnHover={1.08}>
+        <Magnetic scaleOnHover={1.08}>
           <button
             onClick={play}
             className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-brand-orange transition-colors"

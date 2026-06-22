@@ -1,5 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 
+// Module-level so Magnetic (and anything else) can register a snap target
+// without prop-drilling through the component tree. Only one target is
+// ever active at a time, which matches how hover works.
+let cursorTargetEl: HTMLElement | null = null;
+
+export function setCursorTarget(el: HTMLElement) {
+  cursorTargetEl = el;
+}
+
+export function clearCursorTarget() {
+  cursorTargetEl = null;
+}
+
 export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
 
@@ -20,6 +33,8 @@ export const CustomCursor: React.FC = () => {
     // Linear interpolation speeds
     const lerpFactor = 0.25;
     const scaleLerpFactor = 0.2;
+    // Snappier pull when locking onto a magnetic target's center.
+    const snapLerpFactor = 0.35;
 
     let isPointer = false;
     let animationId: number;
@@ -46,14 +61,21 @@ export const CustomCursor: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove);
 
     const updateCursor = () => {
+      // While a magnetic target is set, pull the cursor toward its center
+      // instead of the raw mouse position; otherwise follow the mouse.
+      const snapRect = cursorTargetEl?.getBoundingClientRect();
+      const aimX = snapRect ? snapRect.left + snapRect.width / 2 : mouse.x;
+      const aimY = snapRect ? snapRect.top + snapRect.height / 2 : mouse.y;
+      const lerp = snapRect ? snapLerpFactor : lerpFactor;
+
       // Avoid starting animation slide-in from (0,0) or (-100,-100) on first move
       if (pos.x === -100 && mouse.x !== -100) {
         pos.x = mouse.x;
         pos.y = mouse.y;
       } else {
         // GPU accelerated translate3d position calculation via Lerp
-        pos.x += (mouse.x - pos.x) * lerpFactor;
-        pos.y += (mouse.y - pos.y) * lerpFactor;
+        pos.x += (aimX - pos.x) * lerp;
+        pos.y += (aimY - pos.y) * lerp;
       }
 
       // Smoothly lerp cursor scale expansion

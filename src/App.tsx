@@ -104,17 +104,17 @@ function Home() {
       <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex items-center gap-4">
           <span className="text-neutral-400">[</span>
-          <Magnetic strength={0.3} scaleOnHover={1.15}>
+          <Magnetic scaleOnHover={1.15}>
             <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.work} /></button>
           </Magnetic>
-          <Magnetic strength={0.3} scaleOnHover={1.15}>
+          <Magnetic scaleOnHover={1.15}>
             <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.about} /></button>
           </Magnetic>
-          <Magnetic strength={0.3} scaleOnHover={1.15}>
+          <Magnetic scaleOnHover={1.15}>
             <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.contact} /></button>
           </Magnetic>
           <LangSwitcher lang={lang} />
-          <Magnetic strength={0.35} scaleOnHover={1.2}>
+          <Magnetic scaleOnHover={1.2}>
             <button
               onClick={toggleTheme}
               className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
@@ -257,7 +257,7 @@ function Home() {
                 ))}
               </div>
               <div className="mt-auto pt-10 flex items-end">
-                <Magnetic strength={0.4} scaleOnHover={1.1}>
+                <Magnetic scaleOnHover={1.1}>
                   <a
                     href="#"
                     onClick={(e) => triggerProjectLoad(e, p.id)}
@@ -281,7 +281,7 @@ function Home() {
           {(['work', 'about', 'contact'] as const).map((tab) => {
             const isActive = activeTab === tab
             return (
-              <Magnetic key={tab} strength={0.3} scaleOnHover={1.08}>
+              <Magnetic key={tab} scaleOnHover={1.08}>
                 <button
                   onClick={() => { setActiveTab(tab); scrollTo(tab === 'contact' ? 'contact' : tab) }}
                   className={`${
@@ -300,7 +300,7 @@ function Home() {
         <footer id="contact" className="bg-brand-orange relative py-16 md:py-24 w-full overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
             <div className="w-full md:w-1/3 flex flex-col items-center md:items-start gap-6 md:gap-8 relative z-20">
-              <Magnetic strength={0.2} scaleOnHover={1.04}>
+              <Magnetic scaleOnHover={1.04}>
                 <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
                   <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500"><ScrambleText text={t.footer.sayHello} /></span>
                   <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
@@ -308,7 +308,7 @@ function Home() {
                   </a>
                 </div>
               </Magnetic>
-              <Magnetic strength={0.2} scaleOnHover={1.04} className="md:ml-8">
+              <Magnetic scaleOnHover={1.04} className="md:ml-8">
                 <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 rotate-3 hover:-rotate-1 transition-transform duration-300 active:scale-95 cursor-pointer">
                   <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500"><ScrambleText text={t.footer.connectWithMe} /></span>
                   <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">

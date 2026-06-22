@@ -328,7 +328,7 @@ export function OpsDemo({ demo, steps, lang }: OpsDemoProps) {
       {/* Honesty caption + replay control */}
       <div className="flex items-center justify-between gap-3 mt-3">
         <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">{demo.illustrative}</span>
-        <Magnetic strength={0.3} scaleOnHover={1.08}>
+        <Magnetic scaleOnHover={1.08}>
           <button
             onClick={play}
             className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/60 hover:text-brand-lime transition-colors"

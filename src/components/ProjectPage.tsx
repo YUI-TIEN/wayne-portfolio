@@ -22,7 +22,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
   const t = projectPageCopy[lang]
 
   const themeToggle = (
-    <Magnetic strength={0.35} scaleOnHover={1.2}>
+    <Magnetic scaleOnHover={1.2}>
       <button
         onClick={onToggleTheme}
         className="p-1 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer flex items-center"
@@ -40,7 +40,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
 
         {/* Top Nav */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-          <Magnetic strength={0.3} scaleOnHover={1.08}>
+          <Magnetic scaleOnHover={1.08}>
             <button
               onClick={onBack}
               className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
@@ -263,7 +263,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         <ScrambleStagger delay={0.5}>
         <div className="border-t border-neutral-100 dark:border-neutral-800">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-            <Magnetic strength={0.3} scaleOnHover={1.08}>
+            <Magnetic scaleOnHover={1.08}>
               <button
                 onClick={onBack}
                 className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
@@ -285,7 +285,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-        <Magnetic strength={0.3} scaleOnHover={1.08}>
+        <Magnetic scaleOnHover={1.08}>
           <button
             onClick={onBack}
             className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
