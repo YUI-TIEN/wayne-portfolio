@@ -4,7 +4,6 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
   type ComponentType,
   type HTMLAttributes,
   type ReactNode,
@@ -37,46 +36,16 @@ const SCRAMBLE_CHARS: Record<Lang, string> = {
 }
 
 // Provides a stagger delay (seconds) to every ScrambleText beneath it for the
-// language-switch ripple, AND marks the section as scroll-gated: text inside
-// stays put until the section scrolls into view, then plays with a short
-// per-element random delay so it doesn't snap the instant the section edge
-// crosses the viewport.
+// language-switch ripple. The scramble effect itself only plays on language
+// switch, not on initial scroll-into-view — initial text is written
+// immediately so it never replays per-section as the user scrolls.
 interface ScrambleSectionState {
   delay: number
-  visible: boolean
 }
-const ScrambleDelayContext = createContext<ScrambleSectionState>({ delay: 0, visible: true })
+const ScrambleDelayContext = createContext<ScrambleSectionState>({ delay: 0 })
 
 export function ScrambleStagger({ delay, children }: { delay: number; children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (skipsScrollAnimation() || !ref.current) {
-      setVisible(true)
-      return
-    }
-    const el = ref.current
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setVisible(true)
-            io.disconnect()
-          }
-        }
-      },
-      { threshold: 0.15 },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
-  return (
-    <div ref={ref}>
-      <ScrambleDelayContext.Provider value={{ delay, visible }}>{children}</ScrambleDelayContext.Provider>
-    </div>
-  )
+  return <ScrambleDelayContext.Provider value={{ delay }}>{children}</ScrambleDelayContext.Provider>
 }
 
 type ScrambleTag = 'span' | 'div' | 'p' | 'h1' | 'h2' | 'h3' | 'dd' | 'dt' | 'blockquote'
@@ -93,12 +62,8 @@ interface ScrambleTextProps extends Omit<HTMLAttributes<HTMLElement>, 'children'
 export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: ScrambleTextProps) {
   const ref = useRef<HTMLElement>(null)
   const prevText = useRef(text)
-  const playedInitialRef = useRef(false)
   const lang = useLang()
   const section = useContext(ScrambleDelayContext)
-  // Stable per-element jitter (150-250ms) so a section's text doesn't all
-  // snap in on the same frame the instant it scrolls into view.
-  const jitterRef = useRef(0.15 + Math.random() * 0.1)
 
   useLayoutEffect(() => {
     if (ref.current) ref.current.textContent = text
@@ -109,31 +74,9 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
     const el = ref.current
     if (!el) return
 
-    // Initial reveal: wait for the section to scroll into view before the
-    // first scramble plays, instead of firing the moment the page mounts.
-    if (!playedInitialRef.current) {
-      if (!section.visible) return
-      playedInitialRef.current = true
-      prevText.current = text
-
-      if (skipsScrollAnimation()) {
-        el.textContent = text
-        return
-      }
-      const duration = Math.min(1.4, 0.4 + text.length * 0.01)
-      const tween = gsap.to(el, {
-        duration,
-        delay: section.delay + jitterRef.current,
-        ease: 'none',
-        scrambleText: { text, chars: SCRAMBLE_CHARS[lang], revealDelay: 0.2, speed: 0.55, delimiter: ' ', tweenLength: false },
-      })
-      return () => {
-        tween.kill()
-      }
-    }
-
-    // Subsequent updates (language switch) keep the original stagger delay,
-    // no extra jitter — that ripple is intentionally synchronized top-down.
+    // Only the language-switch transition scrambles. Initial mount text is
+    // written via useLayoutEffect above, so the first run here is always a
+    // no-op (prevText.current === text already).
     if (prevText.current === text) return
     prevText.current = text
 
@@ -160,7 +103,7 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
       tween.kill()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, lang, section.visible, section.delay])
+  }, [text, lang, section.delay])
 
   // Safety net: even word-scrambled text can momentarily run wider than the
   // final copy (e.g. long single tokens), so let it break rather than overflow.
