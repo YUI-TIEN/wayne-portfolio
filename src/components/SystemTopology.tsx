@@ -22,64 +22,59 @@ const LOGOS: Record<string, string> = {
     'M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z',
 }
 
-const VB = { w: 420, h: 320 }
-const HUB = { x: 210, y: 168, r: 34 }
+const VB = { w: 400, h: 300 }
 const TILE = 44
 const H = TILE / 2
+// Before positions: scattered, randomly rotated, no two at the same height,
+// offset to the upper-left of where each tile ends up — reads as "lying
+// around disconnected," not a tidy list. Only visible while play() is
+// actively animating; the settled default shows just the After layout
+// (centered, full-width) so prerender / no-JS / reduced-motion users never
+// see a half-empty composition.
+const BEFORE_DX = [-150, -180, -160, -185]
+const BEFORE_DY = [-40, -10, 20, 55]
+const BEFORE_ROT = [-9, 6, -5, 8]
+// After layout: same four tools, perfectly aligned in a single file, each
+// with a short straight connector into the hub — orderly because it IS the
+// same data now reachable through one path instead of four separate silos.
+// Centered in the viewBox so the settled state fills the canvas.
+const AFTER_X = 140
+const AFTER_Y = [76, 132, 188, 244]
+const HUB = { x: 320, y: 160, r: 28 }
 
 type Glyph = { type: 'logo'; key: string } | { type: 'text'; text: string; size: number }
 
 interface Node {
   id: string
   label: string
-  x: number
-  y: number
   color: string
   glyph: Glyph
-  labelDy: number
-  labelAnchor: 'start' | 'middle' | 'end'
-  sx: number
-  sy: number
-  rot: number
 }
 
-// Deliberately irregular distances and angles around the hub (not a clean
-// X-symmetry cross) so the formation reads as "settled where it landed"
-// rather than a stamped-out template diagram. Claude Code sits closest
-// (shortest write path), Discord farthest, breaking the equal-distance tell.
 const NODES: Node[] = [
-  { id: 'claude', label: 'Claude Code', x: 70, y: 96, color: '#D97757', glyph: { type: 'logo', key: 'claude' }, labelDy: -30, labelAnchor: 'middle', sx: -38, sy: 26, rot: -12 },
-  { id: 'codex', label: 'Codex', x: 332, y: 50, color: '#10A37F', glyph: { type: 'text', text: '</>', size: 17 }, labelDy: -28, labelAnchor: 'middle', sx: 36, sy: -28, rot: 10 },
-  { id: 'antigravity', label: 'Antigravity', x: 60, y: 252, color: '#7C3AED', glyph: { type: 'text', text: '↑', size: 24 }, labelDy: 36, labelAnchor: 'middle', sx: -32, sy: -20, rot: 9 },
-  { id: 'discord', label: 'Discord', x: 358, y: 244, color: '#5865F2', glyph: { type: 'logo', key: 'discord' }, labelDy: 36, labelAnchor: 'middle', sx: 28, sy: 24, rot: -7 },
+  { id: 'claude', label: 'Claude Code', color: '#D97757', glyph: { type: 'logo', key: 'claude' } },
+  { id: 'codex', label: 'Codex', color: '#10A37F', glyph: { type: 'text', text: '</>', size: 16 } },
+  { id: 'antigravity', label: 'Antigravity', color: '#7C3AED', glyph: { type: 'text', text: '↑', size: 22 } },
+  { id: 'discord', label: 'Discord', color: '#5865F2', glyph: { type: 'logo', key: 'discord' } },
 ]
 
-// Ambient per-node write cadence (seconds) once settled — staggered and
-// slightly irregular so all four don't write in lockstep.
-const AMBIENT_INTERVAL = [2.8, 3.6, 3.2, 4.1]
-const RING_LIFE = 1.8
-const MAX_SEDIMENT_RINGS = 14
-
-// Concept: Memory Hub is a body of accumulated memory, not a network switch.
-// Every write from a tool arrives as a ripple that travels inward AND, on
-// arrival, leaves a permanent faint ring baked into the hub — sediment that
-// never fully fades, so the hub visibly thickens with history the longer you
-// watch it. Tool nodes sit at irregular distances/angles (not a symmetric
-// cross) so the formation reads as something that settled, not a stamped
-// template. Defaults to the settled, already-sedimented state for prerender
-// / no-JS / reduced-motion; the morph-in and rings only play/accumulate for
-// users who get motion, and hovering a node sends one extra deliberate write.
+// Concept: a before/after timeline, not a hub-and-spoke network diagram.
+// Left side: four tools scattered at uneven heights with small random
+// rotation/offset — disconnected, lying around independently. Right side:
+// the same four tools snap into a single aligned column, each with a short
+// straight wire into one Memory Hub. The transformation IS the point: tiles
+// physically travel from scattered-left to ordered-right while their wire
+// draws in, so "fragmented -> unified" is shown as a literal migration, not
+// implied by a network topology. Defaults to the settled "after" layout for
+// prerender / no-JS / reduced-motion; the migration plays once on scroll
+// into view. Hovering an aligned tile sends one extra pulse along its wire.
 export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
-  const lineRefs = useRef<(SVGLineElement | null)[]>([])
+  const wireRefs = useRef<(SVGLineElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
-  const hubRef = useRef<SVGGElement | null>(null)
-  const hubCoreRef = useRef<SVGCircleElement | null>(null)
-  const sedimentLayerRef = useRef<SVGGElement | null>(null)
+  const hubPulseRef = useRef<SVGCircleElement | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
-  const heartbeatRef = useRef<gsap.core.Tween | null>(null)
-  const ambientTweensRef = useRef<(gsap.core.Tween | null)[]>([])
   const hoverPulseRef = useRef<gsap.core.Tween | null>(null)
   const playedRef = useRef(false)
   const langInitRef = useRef(true)
@@ -88,171 +83,66 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
 
-  // Deposits one permanent ring inside the hub at a settling radius that
-  // varies per-deposit (not all clustered at the rim), so the accumulated
-  // marks read as real sediment layers at different depths rather than one
-  // faint band. Cream stroke holds visible contrast against the orange core
-  // even at low opacity; rings never fade below a visible floor once they
-  // settle, only the newest deposit is noticeably brighter.
-  const SETTLE_OPACITY = 0.38
-  const REST_OPACITY = 0.22
-
-  const depositSediment = (seedIndex?: number) => {
-    const layer = sedimentLayerRef.current
-    if (!layer) return
-    const order = seedIndex ?? layer.childElementCount
-    const settleR = HUB.r * 0.42 + ((order * 7) % (HUB.r * 0.5))
-    const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-    ring.setAttribute('cx', String(HUB.x))
-    ring.setAttribute('cy', String(HUB.y))
-    ring.setAttribute('fill', 'none')
-    ring.setAttribute('stroke', '#FFE8D6')
-    ring.setAttribute('stroke-width', '1.6')
-    layer.appendChild(ring)
-
-    if (seedIndex !== undefined) {
-      ring.setAttribute('r', String(settleR))
-      ring.setAttribute('opacity', String(REST_OPACITY))
-      return
-    }
-
-    ring.setAttribute('r', String(HUB.r * 0.15))
-    ring.setAttribute('opacity', '0')
-    gsap.to(ring, {
-      attr: { r: settleR },
-      opacity: SETTLE_OPACITY,
-      duration: RING_LIFE,
-      ease: 'power2.out',
-      onComplete: () => {
-        gsap.to(ring, {
-          opacity: REST_OPACITY,
-          duration: 0.6,
-          onComplete: () => {
-            // Cap accumulated rings so the SVG node count can't grow forever
-            // across a long session; oldest sediment quietly retires first.
-            if (layer.childElementCount > MAX_SEDIMENT_RINGS && layer.firstChild) {
-              layer.removeChild(layer.firstChild)
-            }
-          },
-        })
-      },
-    })
+  const flashHub = () => {
+    if (!hubPulseRef.current) return
+    gsap.fromTo(
+      hubPulseRef.current,
+      { opacity: 0.5, attr: { r: HUB.r } },
+      { opacity: 0, attr: { r: HUB.r + 10 }, duration: 0.5, ease: 'power1.out' },
+    )
   }
 
-  const clearSediment = () => {
-    if (sedimentLayerRef.current) sedimentLayerRef.current.replaceChildren()
-  }
-
-  const seedSediment = (count: number) => {
-    clearSediment()
-    for (let i = 0; i < count; i++) depositSediment(i)
-  }
-
-  const flowAlongSpoke = (i: number, opts: { duration: number; peak: number }) => {
+  const sendWirePulse = (i: number, opts: { duration: number; peak: number }) => {
     const pulse = pulseRefs.current[i]
-    const n = NODES[i]
     if (!pulse) return
-    gsap.set(pulse, { opacity: opts.peak, attr: { cx: n.x, cy: n.y } })
-    const proxy = { t: 0 }
-    return gsap.to(proxy, {
-      t: 1,
+    gsap.set(pulse, { opacity: opts.peak, attr: { cx: AFTER_X + H + 4, cy: AFTER_Y[i] } })
+    return gsap.to(pulse, {
+      attr: { cx: HUB.x - HUB.r },
       duration: opts.duration,
       ease: 'power1.inOut',
-      onUpdate: () => {
-        pulse.setAttribute('cx', String(n.x + (HUB.x - n.x) * proxy.t))
-        pulse.setAttribute('cy', String(n.y + (HUB.y - n.y) * proxy.t))
-      },
       onComplete: () => {
-        gsap.to(pulse, { opacity: 0, duration: 0.25 })
-        depositSediment()
-        gsap.to(hubCoreRef.current, {
-          scale: 1.08,
-          duration: 0.15,
-          ease: 'power1.out',
-          transformOrigin: `${HUB.x}px ${HUB.y}px`,
-          onComplete: () => gsap.to(hubCoreRef.current, { scale: 1, duration: 0.4, ease: 'power2.out' }),
-        })
+        gsap.to(pulse, { opacity: 0, duration: 0.2 })
+        flashHub()
       },
     })
-  }
-
-  const startAmbient = () => {
-    if (skipsScrollAnimation()) return
-    stopAmbient()
-    heartbeatRef.current = gsap.to(hubRef.current, {
-      scale: 1.035,
-      duration: 1.8,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      transformOrigin: `${HUB.x}px ${HUB.y}px`,
-    })
-    NODES.forEach((_, i) => {
-      const fire = () => {
-        flowAlongSpoke(i, { duration: 0.9, peak: 0.85 })
-        ambientTweensRef.current[i] = gsap.delayedCall(AMBIENT_INTERVAL[i], fire)
-      }
-      ambientTweensRef.current[i] = gsap.delayedCall(0.5 + i * 0.6, fire)
-    })
-  }
-
-  const stopAmbient = () => {
-    heartbeatRef.current?.kill()
-    heartbeatRef.current = null
-    if (hubRef.current) gsap.set(hubRef.current, { scale: 1 })
-    ambientTweensRef.current.forEach((t) => t?.kill())
-    ambientTweensRef.current = []
   }
 
   const sendHoverPulse = (i: number) => {
     if (skipsScrollAnimation() || !unified) return
     hoverPulseRef.current?.kill()
-    hoverPulseRef.current = flowAlongSpoke(i, { duration: 0.5, peak: 1 }) ?? null
+    hoverPulseRef.current = sendWirePulse(i, { duration: 0.45, peak: 1 }) ?? null
   }
 
   const snapToUnified = () => {
     tlRef.current?.kill()
-    groupRefs.current.forEach((g, i) => {
-      if (g) gsap.set(g, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
+    groupRefs.current.forEach((g) => {
+      if (g) gsap.set(g, { x: 0, y: 0, rotation: 0, opacity: 1 })
     })
-    lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 0, opacity: 1 }))
+    wireRefs.current.forEach((w) => w && gsap.set(w, { strokeDashoffset: 0, opacity: 1 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
     setUnified(true)
-    startAmbient()
   }
 
   const play = () => {
     tlRef.current?.kill()
-    stopAmbient()
-    clearSediment()
     setUnified(false)
     groupRefs.current.forEach((g, i) => {
-      if (g) gsap.set(g, { x: NODES[i].sx, y: NODES[i].sy, rotation: NODES[i].rot, opacity: 0.4, scale: 0.92, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
+      if (g) gsap.set(g, { x: BEFORE_DX[i], y: BEFORE_DY[i], rotation: BEFORE_ROT[i], opacity: 0.55 })
     })
-    lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 1, opacity: 0 }))
+    wireRefs.current.forEach((w) => w && gsap.set(w, { strokeDashoffset: 1, opacity: 0 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
 
     const tl = gsap.timeline()
-    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1.08, duration: 0.55, ease: 'power3.out', stagger: 0.09 })
-    tl.to(groupRefs.current, { scale: 1, duration: 0.25, ease: 'back.out(2.4)', stagger: 0.09 }, '-=0.15')
-    tl.to(lineRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.55, ease: 'power2.out', stagger: 0.09 }, '-=0.5')
+    tl.to(groupRefs.current, { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.7, ease: 'power3.out', stagger: 0.1 })
+    tl.to(wireRefs.current, { opacity: 1, strokeDashoffset: 0, duration: 0.45, ease: 'power2.out', stagger: 0.08 }, '-=0.3')
     tl.call(() => setUnified(true))
-
-    // First four writes land one after another, each depositing real
-    // sediment, so by the time the piece settles the hub already shows a
-    // few rings of accumulated memory instead of starting from nothing.
     NODES.forEach((_, i) => {
-      tl.call(() => flowAlongSpoke(i, { duration: 0.6, peak: 1 }), [], '+=0.12')
+      tl.call(() => sendWirePulse(i, { duration: 0.5, peak: 1 }), [], '+=0.08')
     })
-    tl.call(() => startAmbient())
     tlRef.current = tl
   }
 
   useEffect(() => {
-    // Settled default: a handful of sediment rings already present so the
-    // very first paint (prerender / no-JS / reduced-motion included) shows
-    // an already-lived-in hub, not an empty circle.
-    seedSediment(5)
     if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
     const io = new IntersectionObserver(
@@ -270,7 +160,6 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     return () => {
       io.disconnect()
       tlRef.current?.kill()
-      stopAmbient()
       hoverPulseRef.current?.kill()
     }
   }, [])
@@ -290,19 +179,19 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
         className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
       >
         <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="img" aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}>
-          {/* Spokes */}
+          {/* Wires from each aligned tile into the hub */}
           {NODES.map((n, i) => (
             <line
-              key={`l-${n.id}`}
-              ref={(el) => { lineRefs.current[i] = el }}
-              x1={HUB.x}
-              y1={HUB.y}
-              x2={n.x}
-              y2={n.y}
+              key={`w-${n.id}`}
+              ref={(el) => { wireRefs.current[i] = el }}
+              x1={AFTER_X + H}
+              y1={AFTER_Y[i]}
+              x2={HUB.x - HUB.r}
+              y2={HUB.y}
               stroke={n.color}
               strokeWidth={2}
               strokeLinecap="round"
-              strokeOpacity={0.55}
+              strokeOpacity={0.5}
               pathLength={1}
               strokeDasharray="1"
               strokeDashoffset={0}
@@ -310,62 +199,56 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
             />
           ))}
 
-          {/* Flow pulses */}
+          {/* Wire pulses */}
           {NODES.map((n, i) => (
-            <circle key={`p-${n.id}`} ref={(el) => { pulseRefs.current[i] = el }} cx={n.x} cy={n.y} r={4} fill={n.color} opacity={0} />
+            <circle key={`p-${n.id}`} ref={(el) => { pulseRefs.current[i] = el }} cx={AFTER_X + H} cy={AFTER_Y[i]} r={3.5} fill={n.color} opacity={0} />
           ))}
 
-          {/* Hub: a body of accumulated memory, not a network switch. Solid
-              core base, then sediment rings baked in from past writes drawn
-              ON TOP of it (so they're actually visible), then the label on
-              top of that. */}
-          <g ref={hubRef} style={{ transformBox: 'fill-box' }}>
-            <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 16} fill="#F94E0A" opacity={0.08} />
-            <circle ref={hubCoreRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" style={{ transformBox: 'fill-box' }} />
-            <g ref={sedimentLayerRef} />
-            <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 12 : 13} style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {hubLines.length > 1 ? (
-                hubLines.map((line, li) => (
-                  <tspan key={li} x={HUB.x} dy={li === 0 ? '-0.15em' : '1.15em'}>{line}</tspan>
-                ))
-              ) : (
-                <tspan x={HUB.x} dy="0.02em">{hubLines[0]}</tspan>
-              )}
-            </text>
-          </g>
+          {/* Hub */}
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 8} fill="#F94E0A" opacity={0.1} />
+          <circle ref={hubPulseRef} cx={HUB.x} cy={HUB.y} r={HUB.r} fill="none" stroke="#F94E0A" strokeWidth={2} opacity={0} />
+          <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
+          <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 9.5 : 10.5} style={{ textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+            {hubLines.map((line, li) => (
+              <tspan key={li} x={HUB.x} dy={li === 0 ? (hubLines.length > 1 ? '-0.6em' : '0.32em') : '1.15em'}>{line}</tspan>
+            ))}
+          </text>
 
-          {/* Tool app tiles */}
+          {/* Tool tiles — outer <g> holds the static AFTER column position and
+              is never touched by GSAP; inner <g> is the one GSAP animates
+              (x/y/rotation start at the BEFORE offset, settle at 0/0/0).
+              GSAP's x/y/rotation overwrite an SVG element's `transform`
+              attribute entirely rather than composing with it — animating
+              the same <g> that carried the static translate(AFTER_X, ...)
+              caused every tile to collapse toward the SVG origin once GSAP
+              wrote its own matrix over it. Splitting the static placement
+              from the animated offset into two nested groups fixes that. */}
           {NODES.map((n, i) => (
-            <g
-              key={`n-${n.id}`}
-              ref={(el) => { groupRefs.current[i] = el }}
-              onMouseEnter={() => sendHoverPulse(i)}
-              style={{ cursor: 'pointer' }}
-            >
-              {/* hard offset shadow (brutalist) */}
-              <rect x={n.x - H + 3} y={n.y - H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
-              {/* tile */}
-              <rect x={n.x - H} y={n.y - H} width={TILE} height={TILE} rx={11} fill={n.color} />
-              {/* glyph */}
-              {n.glyph.type === 'logo' ? (
-                <path d={LOGOS[n.glyph.key]} fill="#fff" transform={`translate(${n.x - 12} ${n.y - 12})`} />
-              ) : (
-                <text x={n.x} y={n.y} textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
-                  {n.glyph.text}
+            <g key={`n-${n.id}`} transform={`translate(${AFTER_X}, ${AFTER_Y[i]})`}>
+              <g
+                ref={(el) => { groupRefs.current[i] = el }}
+                onMouseEnter={() => sendHoverPulse(i)}
+                style={{ cursor: 'pointer' }}
+              >
+                <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
+                <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />
+                {n.glyph.type === 'logo' ? (
+                  <path d={LOGOS[n.glyph.key]} fill="#fff" transform="translate(-12 -12)" />
+                ) : (
+                  <text textAnchor="middle" dominantBaseline="central" className="font-mono" fill="#fff" fontSize={n.glyph.size} fontWeight={700}>
+                    {n.glyph.text}
+                  </text>
+                )}
+                <text x={H + 10} dominantBaseline="central" className="font-mono" fill={n.color} fontSize={13}>
+                  {n.label}
                 </text>
-              )}
-              {/* label */}
-              <text x={n.x} y={n.y + n.labelDy} textAnchor={n.labelAnchor} dominantBaseline="middle" className="font-mono" fill={n.color} fontSize={12.5}>
-                {n.label}
-              </text>
+              </g>
             </g>
           ))}
         </svg>
       </div>
 
-      {/* State caption — lives below the diagram, not overlaid on it, so it
-          never covers a node (it used to sit absolute over the bottom-left
-          corner and clip the Antigravity tile on both mobile and desktop). */}
+      {/* State caption — lives below the diagram, not overlaid on it. */}
       <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
         <span className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1 ${unified ? 'bg-brand-lime text-neutral-900' : 'bg-brand-red text-white'}`}>
           {unified ? copy.unified : copy.fragmented}
