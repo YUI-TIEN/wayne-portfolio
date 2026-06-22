@@ -37,9 +37,9 @@ const projectsEn: ProjectCard[] = [
     artifacts: ['persona design', 'live flow', 'runtime ops'],
     bg: 'bg-brand-pink text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-4 md:min-h-[520px]',
-    titleClass: 'md:text-5xl lg:text-6xl',
-    copyClass: 'md:text-lg max-w-xl',
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
   },
   {
     id: 'voice-migration',
@@ -76,9 +76,9 @@ const projectsEn: ProjectCard[] = [
     artifacts: ['from zero', 'visual identity', 'interaction'],
     bg: 'bg-brand-violet text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-6 md:min-h-[300px]',
+    layout: 'md:col-span-3 md:min-h-[430px]',
     titleClass: 'md:text-4xl lg:text-5xl',
-    copyClass: 'md:text-base max-w-xl',
+    copyClass: 'md:text-lg max-w-md',
   },
 ]
 
@@ -105,9 +105,9 @@ const projectsZhTw: ProjectCard[] = [
     artifacts: ['persona 設計', '直播流程', 'runtime ops'],
     bg: 'bg-brand-pink text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-4 md:min-h-[520px]',
-    titleClass: 'md:text-5xl lg:text-6xl',
-    copyClass: 'md:text-lg max-w-xl',
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
   },
   {
     id: 'voice-migration',
@@ -144,9 +144,9 @@ const projectsZhTw: ProjectCard[] = [
     artifacts: ['從 0 到 1', '視覺識別', '互動細節'],
     bg: 'bg-brand-violet text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-6 md:min-h-[300px]',
+    layout: 'md:col-span-3 md:min-h-[430px]',
     titleClass: 'md:text-4xl lg:text-5xl',
-    copyClass: 'md:text-base max-w-xl',
+    copyClass: 'md:text-lg max-w-md',
   },
 ]
 
@@ -173,9 +173,9 @@ const projectsJa: ProjectCard[] = [
     artifacts: ['運用手順書', '動作確認', 'デバッグログ'],
     bg: 'bg-brand-pink text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-4 md:min-h-[520px]',
-    titleClass: 'md:text-5xl lg:text-6xl',
-    copyClass: 'md:text-lg max-w-xl',
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
   },
   {
     id: 'voice-migration',
@@ -212,9 +212,9 @@ const projectsJa: ProjectCard[] = [
     artifacts: ['サイト構築', 'ビジュアルアイデンティティ', 'デプロイ'],
     bg: 'bg-brand-violet text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-6 md:min-h-[300px]',
+    layout: 'md:col-span-3 md:min-h-[430px]',
     titleClass: 'md:text-4xl lg:text-5xl',
-    copyClass: 'md:text-base max-w-xl',
+    copyClass: 'md:text-lg max-w-md',
   },
 ]
 
@@ -241,9 +241,9 @@ const projectsKo: ProjectCard[] = [
     artifacts: ['운영 매뉴얼', '스모크 체크', '디버그 로그'],
     bg: 'bg-brand-pink text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-4 md:min-h-[520px]',
-    titleClass: 'md:text-5xl lg:text-6xl',
-    copyClass: 'md:text-lg max-w-xl',
+    layout: 'md:col-span-3 md:min-h-[430px]',
+    titleClass: 'md:text-4xl lg:text-5xl',
+    copyClass: 'md:text-lg max-w-md',
   },
   {
     id: 'voice-migration',
@@ -280,9 +280,9 @@ const projectsKo: ProjectCard[] = [
     artifacts: ['사이트 구축', '비주얼 아이덴티티', '배포'],
     bg: 'bg-brand-violet text-white',
     tagBg: 'bg-black/20',
-    layout: 'md:col-span-6 md:min-h-[300px]',
+    layout: 'md:col-span-3 md:min-h-[430px]',
     titleClass: 'md:text-4xl lg:text-5xl',
-    copyClass: 'md:text-base max-w-xl',
+    copyClass: 'md:text-lg max-w-md',
   },
 ]
 
