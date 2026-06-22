@@ -74,6 +74,14 @@ async function main() {
   try {
     for (const route of ROUTES) {
       const page = await browser.newPage()
+      // Tells ScrambleText (see src/components/ScrambleText.tsx) to skip the
+      // scroll-gated reveal animation and write final text immediately.
+      // Without this, the snapshot can capture a route mid-scramble — the
+      // crawler-facing HTML would ship literal garbled characters baked into
+      // the markup instead of the real copy.
+      await page.evaluateOnNewDocument(() => {
+        window.__PRERENDER__ = true
+      })
       const url = `http://localhost:${PORT}${route}`
       await page.goto(url, { waitUntil: 'networkidle0' })
       await new Promise(resolve => setTimeout(resolve, 300))

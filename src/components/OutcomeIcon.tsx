@@ -1,11 +1,9 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { Smartphone, Clock, ArrowLeftRight, HeartPulse, type LucideIcon } from 'lucide-react'
+import { skipsScrollAnimation } from './motionGuards'
 
 const ICONS: LucideIcon[] = [Smartphone, Clock, ArrowLeftRight, HeartPulse]
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // A per-outcome icon that pops in once on scroll into view. Index maps to a
 // fixed icon (order is stable across languages). Renders visible by default so
@@ -16,7 +14,7 @@ export function OutcomeIcon({ index, size = 28 }: { index: number; size?: number
   const Icon = ICONS[index % ICONS.length]
 
   useEffect(() => {
-    if (prefersReducedMotion() || !ref.current) return
+    if (skipsScrollAnimation() || !ref.current) return
     const el = ref.current
     const io = new IntersectionObserver(
       (entries) => {

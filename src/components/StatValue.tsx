@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+import { skipsScrollAnimation } from './motionGuards'
 
 // Animates a stat value on scroll into view: a leading integer counts up
 // (e.g. "100%", "3–5"), while purely symbolic values ("∞", "0") just pop in.
@@ -20,7 +18,7 @@ export function StatValue({ value, className }: { value: string; className?: str
   const [display, setDisplay] = useState(value)
 
   useEffect(() => {
-    if (prefersReducedMotion() || !ref.current) return
+    if (skipsScrollAnimation() || !ref.current) return
     const el = ref.current
     const io = new IntersectionObserver(
       (entries) => {

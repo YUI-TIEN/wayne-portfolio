@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import type { Lang } from '../i18n/locales'
+import { skipsScrollAnimation } from './motionGuards'
 
 interface ContextLossProps {
   coldStart: string
   lang: Lang
 }
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Each cycle: a tool fills its "context" partway, then a switch cuts it off —
 // the bar freezes at whatever it reached and gets a red ✗ badge, instead of
@@ -74,7 +72,7 @@ export function ContextLoss({ coldStart, lang }: ContextLossProps) {
   }
 
   useEffect(() => {
-    if (prefersReducedMotion() || !rootRef.current) return
+    if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
     const io = new IntersectionObserver(
       (entries) => {

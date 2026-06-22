@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ShieldCheck } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
+import { skipsScrollAnimation } from './motionGuards'
 
 interface GuardGateProps {
   caption: string
@@ -9,9 +10,6 @@ interface GuardGateProps {
 }
 
 type Status = 'idle' | 'checking' | 'pass' | 'blocked'
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Representative agent actions run through the guardrails: some are held then
 // approved, some are blocked outright. Mono micro-labels stay English to match
@@ -60,7 +58,7 @@ export function GuardGate({ caption, lang }: GuardGateProps) {
   }
 
   useEffect(() => {
-    if (prefersReducedMotion() || !rootRef.current) return
+    if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
     const io = new IntersectionObserver(
       (entries) => {

@@ -13,6 +13,7 @@ import gsap from 'gsap'
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin'
 import { useLang } from '../i18n/LangContext'
 import type { Lang } from '../i18n/locales'
+import { skipsScrollAnimation } from './motionGuards'
 
 // ScrambleTextPlugin's own self-registration path reads window.gsap to find
 // the core instance (see its bundled `_getGSAP`). Since gsap is loaded here
@@ -24,9 +25,6 @@ if (typeof window !== 'undefined') {
   ;(window as typeof window & { gsap?: typeof gsap }).gsap = gsap
 }
 gsap.registerPlugin(ScrambleTextPlugin)
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Scramble pool matches the script being revealed, so mid-transition noise
 // reads as "decoding into that language" instead of always flashing Latin
@@ -54,7 +52,7 @@ export function ScrambleStagger({ delay, children }: { delay: number; children: 
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (prefersReducedMotion() || !ref.current) {
+    if (skipsScrollAnimation() || !ref.current) {
       setVisible(true)
       return
     }
@@ -118,7 +116,7 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
       playedInitialRef.current = true
       prevText.current = text
 
-      if (prefersReducedMotion()) {
+      if (skipsScrollAnimation()) {
         el.textContent = text
         return
       }
@@ -139,7 +137,7 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
     if (prevText.current === text) return
     prevText.current = text
 
-    if (prefersReducedMotion()) {
+    if (skipsScrollAnimation()) {
       el.textContent = text
       return
     }

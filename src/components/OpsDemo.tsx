@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { Hash, Bot, Plus, Smile, Gift } from 'lucide-react'
 import { Magnetic } from './Magnetic'
+import { skipsScrollAnimation } from './motionGuards'
 import type { OpsDemoContent } from '../i18n/projectPage'
 import type { Lang } from '../i18n/locales'
 
@@ -15,9 +16,6 @@ interface OpsDemoProps {
 
 const DONE_STEPS: Status[] = ['done', 'done', 'done', 'done', 'done', 'done']
 const IDLE_STEPS: Status[] = ['idle', 'idle', 'idle', 'idle', 'idle', 'idle']
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Discord palette (modern dark theme) — kept as literals since these are the
 // product's real UI colors, not the site's brand tokens.
@@ -101,7 +99,7 @@ export function OpsDemo({ demo, steps, lang }: OpsDemoProps) {
   }
 
   useEffect(() => {
-    if (prefersReducedMotion() || !rootRef.current) return
+    if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
     const io = new IntersectionObserver(
       (entries) => {

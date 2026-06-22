@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Magnetic } from './Magnetic'
 import gsap from 'gsap'
+import { skipsScrollAnimation } from './motionGuards'
 import type { TopologyContent } from '../i18n/projectPage'
 import type { Lang } from '../i18n/locales'
 
@@ -8,9 +9,6 @@ interface SystemTopologyProps {
   copy: TopologyContent
   lang: Lang
 }
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Official brand logos (Simple Icons, CC0). Codex (OpenAI was pulled from the
 // open icon set) and Antigravity (too new) use a styled monogram tile in the
@@ -75,7 +73,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
 
   const startHeartbeat = () => {
-    if (prefersReducedMotion() || !hubRef.current || heartbeatRef.current) return
+    if (skipsScrollAnimation() || !hubRef.current || heartbeatRef.current) return
     heartbeatRef.current = gsap.to(hubRef.current, {
       scale: 1.06,
       duration: 1.1,
@@ -93,7 +91,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   }
 
   const sendHoverPulse = (i: number) => {
-    if (prefersReducedMotion() || !unified) return
+    if (skipsScrollAnimation() || !unified) return
     const pulse = pulseRefs.current[i]
     const n = NODES[i]
     if (!pulse) return
@@ -161,7 +159,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   }
 
   useEffect(() => {
-    if (prefersReducedMotion() || !rootRef.current) return
+    if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
     const io = new IntersectionObserver(
       (entries) => {
