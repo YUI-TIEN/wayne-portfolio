@@ -52,20 +52,65 @@ const NODES: Node[] = [
 
 // Before/after of the project: scattered, disconnected tool apps snap into a
 // hub-and-spoke around one Memory Hub, the links draw in, and a pulse runs
-// along each spoke into the hub. Defaults to the connected state for prerender
-// / no-JS / reduced-motion; the morph plays once on scroll into view.
+// along each spoke into the hub. After settling, the hub keeps a slow idle
+// "heartbeat" pulse so it reads as a live system rather than a static
+// diagram, and hovering any tool node sends one extra pulse down its spoke
+// so visitors can poke at the connection themselves. Defaults to the
+// connected state for prerender / no-JS / reduced-motion; the morph plays
+// once on scroll into view.
 export function SystemTopology({ copy, lang }: SystemTopologyProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const groupRefs = useRef<(SVGGElement | null)[]>([])
   const lineRefs = useRef<(SVGLineElement | null)[]>([])
   const pulseRefs = useRef<(SVGCircleElement | null)[]>([])
+  const hubRef = useRef<SVGCircleElement | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const heartbeatRef = useRef<gsap.core.Tween | null>(null)
+  const hoverPulseRef = useRef<gsap.core.Tween | null>(null)
   const playedRef = useRef(false)
   const langInitRef = useRef(true)
 
   const [unified, setUnified] = useState(true)
 
   const hubLines = copy.hub.includes(' ') ? copy.hub.split(' ') : [copy.hub]
+
+  const startHeartbeat = () => {
+    if (prefersReducedMotion() || !hubRef.current || heartbeatRef.current) return
+    heartbeatRef.current = gsap.to(hubRef.current, {
+      scale: 1.06,
+      duration: 1.1,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: `${HUB.x}px ${HUB.y}px`,
+    })
+  }
+
+  const stopHeartbeat = () => {
+    heartbeatRef.current?.kill()
+    heartbeatRef.current = null
+    if (hubRef.current) gsap.set(hubRef.current, { scale: 1 })
+  }
+
+  const sendHoverPulse = (i: number) => {
+    if (prefersReducedMotion() || !unified) return
+    const pulse = pulseRefs.current[i]
+    const n = NODES[i]
+    if (!pulse) return
+    hoverPulseRef.current?.kill()
+    gsap.set(pulse, { opacity: 1, attr: { cx: n.x, cy: n.y } })
+    const proxy = { t: 0 }
+    hoverPulseRef.current = gsap.to(proxy, {
+      t: 1,
+      duration: 0.7,
+      ease: 'power1.inOut',
+      onUpdate: () => {
+        pulse.setAttribute('cx', String(n.x + (HUB.x - n.x) * proxy.t))
+        pulse.setAttribute('cy', String(n.y + (HUB.y - n.y) * proxy.t))
+      },
+      onComplete: () => gsap.to(pulse, { opacity: 0, duration: 0.2 }),
+    })
+  }
 
   const snapToUnified = () => {
     tlRef.current?.kill()
@@ -75,10 +120,12 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
     lineRefs.current.forEach((l) => l && gsap.set(l, { strokeDashoffset: 0, opacity: 1 }))
     pulseRefs.current.forEach((p) => p && gsap.set(p, { opacity: 0 }))
     setUnified(true)
+    startHeartbeat()
   }
 
   const play = () => {
     tlRef.current?.kill()
+    stopHeartbeat()
     setUnified(false)
     groupRefs.current.forEach((g, i) => {
       if (g) gsap.set(g, { x: NODES[i].sx, y: NODES[i].sy, rotation: NODES[i].rot, opacity: 0.4, svgOrigin: `${NODES[i].x} ${NODES[i].y}` })
@@ -109,6 +156,7 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
       },
     })
     tl.to(pulseRefs.current, { opacity: 0, duration: 0.2 })
+    tl.call(() => startHeartbeat())
     tlRef.current = tl
   }
 
@@ -130,6 +178,8 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
     return () => {
       io.disconnect()
       tlRef.current?.kill()
+      stopHeartbeat()
+      hoverPulseRef.current?.kill()
     }
   }, [])
 
@@ -173,22 +223,29 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
           ))}
 
           {/* Hub */}
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 12} fill="#F94E0A" opacity={0.12} />
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 5} fill="none" stroke="#F94E0A" strokeWidth={1.5} opacity={0.4} />
-          <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
-          <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 13 : 14} style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            {hubLines.length > 1 ? (
-              hubLines.map((line, li) => (
-                <tspan key={li} x={HUB.x} dy={li === 0 ? '-0.15em' : '1.15em'}>{line}</tspan>
-              ))
-            ) : (
-              <tspan x={HUB.x} dy="0.02em">{hubLines[0]}</tspan>
-            )}
-          </text>
+          <g ref={hubRef} style={{ transformBox: 'fill-box' }}>
+            <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 12} fill="#F94E0A" opacity={0.12} />
+            <circle cx={HUB.x} cy={HUB.y} r={HUB.r + 5} fill="none" stroke="#F94E0A" strokeWidth={1.5} opacity={0.4} />
+            <circle cx={HUB.x} cy={HUB.y} r={HUB.r} fill="#F94E0A" />
+            <text x={HUB.x} y={HUB.y} textAnchor="middle" dominantBaseline="middle" className="font-mono" fill="#fff" fontSize={hubLines.length > 1 ? 13 : 14} style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {hubLines.length > 1 ? (
+                hubLines.map((line, li) => (
+                  <tspan key={li} x={HUB.x} dy={li === 0 ? '-0.15em' : '1.15em'}>{line}</tspan>
+                ))
+              ) : (
+                <tspan x={HUB.x} dy="0.02em">{hubLines[0]}</tspan>
+              )}
+            </text>
+          </g>
 
           {/* Tool app tiles */}
           {NODES.map((n, i) => (
-            <g key={`n-${n.id}`} ref={(el) => { groupRefs.current[i] = el }}>
+            <g
+              key={`n-${n.id}`}
+              ref={(el) => { groupRefs.current[i] = el }}
+              onMouseEnter={() => sendHoverPulse(i)}
+              style={{ cursor: 'pointer' }}
+            >
               {/* hard offset shadow (brutalist) */}
               <rect x={n.x - H + 3} y={n.y - H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
               {/* tile */}
@@ -208,17 +265,16 @@ export function SystemTopology({ copy, lang }: SystemTopologyProps) {
             </g>
           ))}
         </svg>
-
-        {/* State caption */}
-        <div className="absolute left-3 bottom-3">
-          <span className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1 ${unified ? 'bg-brand-lime text-neutral-900' : 'bg-brand-red text-white'}`}>
-            {unified ? copy.unified : copy.fragmented}
-          </span>
-        </div>
       </div>
 
-      {/* Replay control */}
-      <div className="flex justify-end mt-3">
+      {/* State caption — lives below the diagram, not overlaid on it, so it
+          never covers a node (it used to sit absolute over the bottom-left
+          corner and clip the Antigravity tile on both mobile and desktop). */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
+        <span className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1 ${unified ? 'bg-brand-lime text-neutral-900' : 'bg-brand-red text-white'}`}>
+          {unified ? copy.unified : copy.fragmented}
+        </span>
+
         <Magnetic scaleOnHover={1.08}>
           <button
             onClick={play}
