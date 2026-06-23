@@ -9,6 +9,7 @@ import { StatValue } from './StatValue'
 import { ContextLoss } from './ContextLoss'
 import { GuardGate } from './GuardGate'
 import { OutcomeIcon } from './OutcomeIcon'
+import { themeFor, MorphusLayout, PersonaLayout, VoiceLayout, PortfolioLayout } from './CaseStudyLayouts'
 
 interface ProjectPageProps {
   projectId: string
@@ -280,163 +281,31 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
 
   const caseStudy = t.caseStudies[projectId]
   if (caseStudy) {
-    const p = caseStudy
-    return (
-      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-          <Magnetic scaleOnHover={1.08}>
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
-            </button>
-          </Magnetic>
-          {themeToggle}
-        </div>
-
-        <ScrambleStagger delay={0.08}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
-          <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            {p.tags.map((tag, ti) => (
-              <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-                <ScrambleText text={tag} />
-              </span>
-            ))}
-          </div>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-[96px] leading-[0.96] md:leading-[0.92] tracking-tight max-w-5xl mb-8"><ScrambleText text={p.label} /></h1>
-          <p className="font-serif text-2xl md:text-4xl leading-tight max-w-4xl mb-8"><ScrambleText text={p.headline} /></p>
-          <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-14"><ScrambleText text={p.subheadline} /></p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
-            {p.stats.map((s, i) => (
-              <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-                <p className="font-serif text-3xl sm:text-4xl md:text-5xl text-brand-orange mb-2 break-words"><StatValue value={s.value} /></p>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
-              </div>
-            ))}
-          </div>
-        </section>
-        </ScrambleStagger>
-
-        <ScrambleStagger delay={0.16}>
-        <section className="bg-brand-ink dark:bg-black py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-8"><ScrambleText text={t.theProblem} /></p>
-            <p className="font-serif text-2xl sm:text-3xl md:text-5xl leading-tight text-white max-w-4xl">
-              <ScrambleText text={p.problem} />
-            </p>
-            <p className="font-mono text-xs text-white/45 mt-8 max-w-2xl leading-relaxed">
-              <ScrambleText text={`Role: ${p.role}`} />
-            </p>
-          </div>
-        </section>
-        </ScrambleStagger>
-
-        <ScrambleStagger delay={0.22}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <div>
-              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></p>
-              <ul className="space-y-6">
-                {p.before.map((item, i) => (
-                  <li key={i} className="flex gap-5">
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800 pb-6">
-                      <ScrambleText text={item} />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none"><ScrambleText text={t.after} /></p>
-              <ul className="space-y-6">
-                {p.after.map((item, i) => (
-                  <li key={i} className="flex gap-5">
-                    <span className="font-mono text-[10px] text-brand-orange/40 mt-1 shrink-0">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-6 font-medium">
-                      <ScrambleText text={item} />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-        </ScrambleStagger>
-
-        <ScrambleStagger delay={0.28}>
-        <section className="bg-brand-blue py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-brand-lime/70 mb-6"><ScrambleText text="Contributions" /></p>
-                <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight"><ScrambleText text="What I actually did." /></h2>
-              </div>
-              <div className="space-y-px bg-white/10">
-                {p.contributions.map((item, i) => (
-                  <div key={i} className="bg-brand-blue p-6 md:p-7 flex gap-5 hover:bg-white/5 transition-colors">
-                    <span className="font-mono text-[10px] text-brand-lime/60 mt-1 shrink-0">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="font-mono text-xs md:text-sm text-white/75 leading-relaxed"><ScrambleText text={item} /></p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-        </ScrambleStagger>
-
-        <ScrambleStagger delay={0.34}>
-        <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
-              {p.outcomes.map((o, i) => (
-                <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                  <div className="flex items-center justify-between mb-6">
-                    <OutcomeIcon index={i} size={26} />
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600">{String(i + 1).padStart(2, '0')}</span>
-                  </div>
-                  <p className="font-serif text-2xl md:text-3xl text-neutral-900 dark:text-white mb-4 leading-tight"><ScrambleText text={o.title} /></p>
-                  <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed"><ScrambleText text={o.detail} /></p>
-                </div>
-              ))}
-            </div>
-            {p.note && (
-              <p className="font-mono text-[11px] text-neutral-400 mt-8 max-w-2xl leading-relaxed">
-                <ScrambleText text={p.note} />
-              </p>
-            )}
-          </div>
-        </section>
-        </ScrambleStagger>
-
-        <ScrambleStagger delay={0.4}>
-        <div className="border-t border-neutral-100 dark:border-neutral-800">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-            <Magnetic scaleOnHover={1.08}>
-              <button
-                onClick={onBack}
-                className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-              >
-                <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
-              </button>
-            </Magnetic>
-          </div>
-        </div>
-        </ScrambleStagger>
+    const theme = themeFor(projectId)
+    const nav = (
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
+        <Magnetic scaleOnHover={1.08}>
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+          >
+            <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
+          </button>
+        </Magnetic>
+        {themeToggle}
       </div>
     )
+
+    const layoutProps = { p: caseStudy, t, lang, theme, nav, onBack }
+    // Each case study renders through its own layout so the four don't read as
+    // one repeated template — the content shape (funnel / live roster / cloud
+    // migration / meta proof) drives a different structure per page.
+    if (projectId === 'morphus-website') return <MorphusLayout {...layoutProps} />
+    if (projectId === 'persona-workflows') return <PersonaLayout {...layoutProps} />
+    if (projectId === 'voice-migration') return <VoiceLayout {...layoutProps} />
+    if (projectId === 'portfolio-site') return <PortfolioLayout {...layoutProps} />
+    // Fallback for any future case study without a bespoke layout.
+    return <MorphusLayout {...layoutProps} />
   }
 
   // ── PLACEHOLDER ──────────────────────────────────────────────
