@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import { MathCurveLoader } from './components/MathCurveLoader'
@@ -91,7 +91,9 @@ function Home() {
     setTimeout(() => {
       setIsLoading(false)
       navigate(`/${lang}/project/${projectId}`)
-      window.scrollTo(0, 0)
+      // Scroll reset is handled in ProjectDetail's useLayoutEffect (runs after
+      // the new page mounts); calling scrollTo here would target the still-
+      // mounted home document and do nothing useful.
     }, 1800)
   }
 
@@ -389,7 +391,7 @@ function ProjectDetail() {
     setTimeout(() => {
       setIsLoading(false)
       navigate(`/${lang}`)
-      window.scrollTo(0, 0)
+      // Scroll reset on route change is handled centrally in LangLayout.
     }, 1200)
   }
 
@@ -427,6 +429,21 @@ function ProjectDetail() {
 // ── Language-scoped layout: validates :lang param and provides context ──────
 function LangLayout() {
   const { lang: langParam } = useParams<{ lang: string }>()
+  const { pathname } = useLocation()
+
+  // Reset scroll to the top on every route change (home <-> project, project
+  // <-> project), synchronously before paint. Previously each click handler
+  // called window.scrollTo right after navigate(), which ran while the old
+  // page was still mounted (wrong document); the new long project page then
+  // mounted with the browser's scroll position left partway down, and the
+  // global `scroll-behavior: smooth` animated it up to the hero — which read
+  // as "the page opens at the bottom and slides up to the top." Centralizing
+  // it here with behavior:'instant' targets the freshly-routed document and
+  // bypasses the smooth animation. Anchor scrolls within a page (work/about/
+  // contact) don't change pathname, so they're unaffected.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+  }, [pathname])
 
   useEffect(() => {
     if (!isLang(langParam)) return
