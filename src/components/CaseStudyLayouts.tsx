@@ -1,11 +1,15 @@
 import type { ReactNode } from 'react'
-import { ArrowLeft, ArrowRight, Cloud, Server } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { StatValue } from './StatValue'
 import { OutcomeIcon } from './OutcomeIcon'
+import { IdeaPipeline } from './IdeaPipeline'
+import { LiveRoster } from './LiveRoster'
+import { WatchWaveform } from './WatchWaveform'
+import { MigrationDemo } from './MigrationDemo'
 
 // Per-case-study visual identity. Each project gets its own accent so the
 // four case studies don't all read as the same orange/blue/cream template —
@@ -258,32 +262,19 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <Hero p={p} theme={theme} statsVariant="sequence" />
       <ProblemBand p={p} t={t} />
 
-      {/* Stage tracker: idea -> demo, each stage paired with the matching
-          before/after line so the funnel narrative is the visual. */}
+      {/* Stage tracker as a playable maturing-idea pipeline: the token grows
+          detail as it advances idea -> demo, the funnel narrative shown as a
+          literal animation instead of four static cards. */}
       <ScrambleStagger delay={0.22}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
-            {stages.map((stage, i) => (
-              <div key={stage} className="bg-brand-bg dark:bg-brand-ink p-6 md:p-7">
-                <div className="flex items-center gap-2 mb-5">
-                  <span className={`font-mono text-[11px] ${theme.accentText}`}>{String(i + 1).padStart(2, '0')}</span>
-                  <span className="font-serif text-xl md:text-2xl"><ScrambleText text={stage} /></span>
-                  {i < stages.length - 1 && <ArrowRight size={13} className="text-neutral-300 dark:text-neutral-600 ml-auto" />}
-                </div>
-                {p.after[i] && (
-                  <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                    <ScrambleText text={p.after[i]} />
-                  </p>
-                )}
-                {p.before[i] && (
-                  <p className="font-mono text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed mt-3 line-through decoration-neutral-300 dark:decoration-neutral-600">
-                    <ScrambleText text={p.before[i]} />
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+          <IdeaPipeline
+            stages={stages}
+            before={p.before}
+            after={p.after}
+            accentText={theme.accentText}
+            replayLabel={p.stageReplay ?? 'Replay'}
+          />
         </section>
       </ScrambleStagger>
 
@@ -310,14 +301,9 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 
 // ── persona-workflows: live roster + watch-hours banner ─────────────────────
 // "4 active AI Vtubers" and "3000+ watch hours" are the strongest facts here
-// and were buried as plain stat tiles. Surface a 4-character live roster in
-// the Problem band and give the watch-hours number a full-width banner moment.
-const ROSTER = [
-  { tag: 'CH-01', status: 'LIVE', dot: 'bg-brand-pink' },
-  { tag: 'CH-02', status: 'VOD', dot: 'bg-brand-lime' },
-  { tag: 'CH-03', status: 'SHORTS', dot: 'bg-brand-blue' },
-  { tag: 'CH-04', status: 'LIVE', dot: 'bg-brand-pink' },
-]
+// and were buried as plain stat tiles. Surface a live, on-air roster in the
+// Problem band (see LiveRoster) and give the watch-hours number a full-width
+// banner moment with an audio-waveform backdrop.
 export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
   const watchStat = p.stats.find((s) => /watch/i.test(s.label)) ?? p.stats[1]
   return (
@@ -326,26 +312,18 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <Hero p={p} theme={theme} statsVariant="emphasis" />
 
       <ProblemBand p={p} t={t}>
-        {/* Anonymized live roster — visualizes "4 active characters" without
-            disclosing identities (per the confidentiality note). */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {ROSTER.map((c) => (
-            <div key={c.tag} className="border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${c.dot}`} />
-                <span className="font-mono text-[10px] uppercase tracking-widest text-white/60">{c.status}</span>
-              </div>
-              <span className="font-mono text-sm text-white/80">{c.tag}</span>
-              <span className="font-mono text-[9px] uppercase tracking-wider text-white/30">AI Vtuber</span>
-            </div>
-          ))}
-        </div>
+        {/* On-air roster — visualizes "4 active characters" as something
+            currently broadcasting (pulsing dots, live viewer counts, looping
+            VOD/SHORTS bars), without disclosing identities. */}
+        <LiveRoster />
       </ProblemBand>
 
-      {/* Watch-hours banner — the standout number gets its own full-width row. */}
+      {/* Watch-hours banner — the standout number gets its own full-width row,
+          with a live audio-waveform backdrop so it reads as "on air." */}
       <ScrambleStagger delay={0.2}>
-        <section className={`${theme.accentBandBg} py-14 md:py-20`}>
-          <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <section className={`${theme.accentBandBg} relative overflow-hidden py-14 md:py-20`}>
+          <WatchWaveform />
+          <div className="relative max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <p className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
             <p className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
               <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
@@ -435,40 +413,21 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <Hero p={p} theme={theme} statsVariant="specList" />
       <ProblemBand p={p} t={t} />
 
-      {/* Migration path: cloud -> local, constraints falling away. */}
+      {/* Playable cloud -> local migration: constraints fall away, cost/
+          latency bars drop, local bars rise, spec rows reveal in sequence. */}
       <ScrambleStagger delay={0.22}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.migrationPathLabel ?? 'Cloud → Local'} /></p>
-          {/* Stacks vertically on mobile (arrow points down) so the two
-              cards don't get crushed into thin columns at narrow widths. */}
-          <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-8 mb-14">
-            <div className="flex-1 border-2 border-neutral-200 dark:border-neutral-800 p-6 md:p-8">
-              <Cloud size={28} className="text-neutral-400 mb-5" strokeWidth={1.75} />
-              <p className="font-serif text-xl md:text-2xl text-neutral-400 dark:text-neutral-500 mb-3 line-through decoration-neutral-300 dark:decoration-neutral-700">{p.cloudCardTitle ?? 'Cloud voice stack'}</p>
-              <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500 leading-relaxed">{p.cloudCardBody ?? 'Quality was good but locked to Chinese, with per-usage cost and network latency.'}</p>
-            </div>
-            <div className="flex items-center justify-center">
-              <ArrowRight size={26} className={`${theme.accentText} rotate-90 md:rotate-0`} />
-            </div>
-            <div className={`flex-1 border-2 p-6 md:p-8 border-brand-teal/40`}>
-              <Server size={28} className={`${theme.accentText} mb-5`} strokeWidth={1.75} />
-              <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-3">{p.localCardTitle ?? 'Local inference'}</p>
-              <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">{p.localCardBody ?? 'Same voice identity across languages, faster and cheaper to run.'}</p>
-            </div>
-          </div>
-
-          {/* Spec comparison rows — concrete cloud vs local, not vague
-              adjectives. On mobile the cloud/local values stack under the
-              row label instead of being squeezed into three columns. */}
-          <div className="border-t border-neutral-200 dark:border-neutral-800">
-            {specRows.map((row) => (
-              <div key={row.k} className="grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_1.4fr] gap-1 sm:gap-4 py-4 border-b border-neutral-200 dark:border-neutral-800 sm:items-baseline">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{row.k}</span>
-                <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-300 dark:decoration-neutral-700">{row.cloud}</span>
-                <span className={`font-mono text-xs ${theme.accentText} font-medium`}>{row.local}</span>
-              </div>
-            ))}
-          </div>
+          <MigrationDemo
+            accentText={theme.accentText}
+            pathLabel={p.migrationPathLabel ?? 'Cloud → Local'}
+            cloudTitle={p.cloudCardTitle ?? 'Cloud voice stack'}
+            cloudBody={p.cloudCardBody ?? 'Quality was good but locked to Chinese, with per-usage cost and network latency.'}
+            localTitle={p.localCardTitle ?? 'Local inference'}
+            localBody={p.localCardBody ?? 'Same voice identity across languages, faster and cheaper to run.'}
+            specRows={specRows}
+            constraints={p.migrationConstraints}
+            replayLabel={p.migrationReplay ?? 'Replay'}
+          />
         </section>
       </ScrambleStagger>
 

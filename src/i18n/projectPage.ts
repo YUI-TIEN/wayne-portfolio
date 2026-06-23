@@ -66,6 +66,7 @@ export interface CaseStudyContent {
   // morphus-website: pipeline/stage-tracker section
   stageTrackerLabel?: string // "Idea → Demo"
   stages?: string[] // ['Idea', 'Prototype', 'POC', 'Demo']
+  stageReplay?: string // replay label for the idea pipeline
   // persona-workflows: live roster + watch-hours banner
   watchHoursCaption?: string // "{label} — accumulated from real viewers, not a lab demo."
   // voice-migration: migration path + spec comparison
@@ -75,6 +76,8 @@ export interface CaseStudyContent {
   localCardTitle?: string
   localCardBody?: string
   specRows?: { k: string; cloud: string; local: string }[]
+  migrationConstraints?: string[] // cloud-side constraint chips that fall away
+  migrationReplay?: string // replay label for the migration demo
   // portfolio-site: live-proof band
   liveProofLabel?: string
   liveProofTitle?: string
@@ -514,6 +517,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     ],
     stageTrackerLabel: 'Idea → Demo',
     stages: ['Idea', 'Prototype', 'POC', 'Demo'],
+    stageReplay: 'Replay',
   },
   'persona-workflows': {
     label: 'AI Character Live Runtime',
@@ -593,6 +597,8 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
       { title: 'Multilingual voice identity', detail: 'The local model can preserve the same character voice across languages, expanding use cases beyond the original Chinese-only output.' },
     ],
     migrationPathLabel: 'Cloud → Local',
+    migrationConstraints: ['Chinese only', 'Per-usage cost', 'Network latency'],
+    migrationReplay: 'Replay',
     cloudCardTitle: 'Cloud voice stack',
     cloudCardBody: 'Quality was good but locked to Chinese, with per-usage cost and network latency.',
     localCardTitle: 'Local inference',
@@ -683,6 +689,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     ],
     stageTrackerLabel: '想法 → Demo',
     stages: ['想法', 'Prototype', 'POC', 'Demo'],
+    stageReplay: '重播',
   },
   'persona-workflows': {
     label: 'AI 角色直播 Runtime',
@@ -762,6 +769,8 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       { title: '多語言聲音身分', detail: '本地模型可以跨語言維持同一個角色聲音，把使用場景擴展到原本只有中文輸出之外。' },
     ],
     migrationPathLabel: '雲端 → 本地',
+    migrationConstraints: ['只有中文', '按用量計費', '網路延遲'],
+    migrationReplay: '重播',
     cloudCardTitle: '雲端語音架構',
     cloudCardBody: '品質不錯，但卡在中文，而且有按用量計費的成本跟網路延遲。',
     localCardTitle: '本地推論',
@@ -852,6 +861,7 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     ],
     stageTrackerLabel: 'アイデア → デモ',
     stages: ['アイデア', 'プロトタイプ', 'POC', 'デモ'],
+    stageReplay: '再生',
   },
   'persona-workflows': {
     label: 'AIキャラクター・ライブランタイム',
@@ -931,6 +941,8 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
       { title: '多言語の声のアイデンティティ', detail: 'ローカルモデルは言語をまたいで同じキャラクターの声を保持でき、元の中国語のみの出力を超えて活用範囲を拡張した。' },
     ],
     migrationPathLabel: 'クラウド → ローカル',
+    migrationConstraints: ['中国語のみ', '利用ごとの課金', 'ネットワークレイテンシ'],
+    migrationReplay: '再生',
     cloudCardTitle: 'クラウド音声基盤',
     cloudCardBody: '品質は良いが中国語に限定され、利用ごとのコストとネットワークレイテンシが発生する。',
     localCardTitle: 'ローカル推論',
@@ -1021,6 +1033,7 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     ],
     stageTrackerLabel: '아이디어 → 데모',
     stages: ['아이디어', '프로토타입', 'POC', '데모'],
+    stageReplay: '다시 재생',
   },
   'persona-workflows': {
     label: 'AI 캐릭터 라이브 런타임',
@@ -1100,6 +1113,8 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
       { title: '다국어 음성 아이덴티티', detail: '로컬 모델은 언어 전반에서 동일한 캐릭터 음성을 유지할 수 있어, 원래 중국어 단일 출력을 넘어 사용 범위를 확장했다.' },
     ],
     migrationPathLabel: '클라우드 → 로컬',
+    migrationConstraints: ['중국어만', '사용량 기반 비용', '네트워크 레이턴시'],
+    migrationReplay: '다시 재생',
     cloudCardTitle: '클라우드 음성 스택',
     cloudCardBody: '품질은 좋지만 중국어에 묶여 있고, 사용량 기반 비용과 네트워크 레이턴시가 발생한다.',
     localCardTitle: '로컬 추론',
