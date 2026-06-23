@@ -64,11 +64,16 @@ export function themeFor(projectId: string): CaseStudyTheme {
 }
 
 // ── Shared hero ────────────────────────────────────────────────────────────
-// All four still open with the same hero shape (eyebrow + headline + stats) —
-// that consistency is fine and expected for a series; the differentiation
-// happens in the body sections below, which is where the template fatigue
-// actually showed.
-function Hero({ p, theme }: { p: CaseStudyContent; theme: CaseStudyTheme }) {
+// The eyebrow/headline/subheadline lockup stays consistent across all four —
+// that's the site's brand identity, not template fatigue. What WAS template
+// fatigue: every page used the identical 4-equal-tile stat grid regardless
+// of what the stats meant. statsVariant lets each case study present its
+// numbers in a shape that matches its own content (a flowing sequence for a
+// funnel, an uneven emphasis grid for a standout number, a spec list for a
+// technical comparison, loose pills for the meta page).
+type StatsVariant = 'sequence' | 'emphasis' | 'specList' | 'pills'
+
+function Hero({ p, theme, statsVariant = 'emphasis' }: { p: CaseStudyContent; theme: CaseStudyTheme; statsVariant?: StatsVariant }) {
   return (
     <ScrambleStagger delay={0.08}>
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
@@ -85,16 +90,79 @@ function Hero({ p, theme }: { p: CaseStudyContent; theme: CaseStudyTheme }) {
         <p className="font-serif text-2xl md:text-4xl leading-tight max-w-4xl mb-8"><ScrambleText text={p.headline} /></p>
         <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-14"><ScrambleText text={p.subheadline} /></p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
-          {p.stats.map((s, i) => (
-            <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-              <p className={`font-serif text-3xl sm:text-4xl md:text-5xl ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
-            </div>
-          ))}
-        </div>
+        <HeroStats p={p} theme={theme} variant={statsVariant} />
       </section>
     </ScrambleStagger>
+  )
+}
+
+function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStudyTheme; variant: StatsVariant }) {
+  // sequence (morphus): stats read left-to-right as one flowing line with
+  // arrow separators, echoing the stage-tracker funnel below instead of
+  // looking like four unrelated dashboard tiles.
+  if (variant === 'sequence') {
+    return (
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-4 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+        {p.stats.map((s, i) => (
+          <span key={i} className="flex items-baseline gap-3">
+            {i > 0 && <ArrowRight size={14} className="text-neutral-300 dark:text-neutral-600 self-center" />}
+            <span className="flex items-baseline gap-2">
+              <span className={`font-serif text-2xl md:text-3xl ${theme.accentText}`}><StatValue value={s.value} /></span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></span>
+            </span>
+          </span>
+        ))}
+      </div>
+    )
+  }
+
+  // emphasis (persona): uneven grid where the standout number (the one this
+  // page's body gives its own banner moment to) reads larger than the rest,
+  // instead of four equal-weight tiles flattening every number to the same
+  // importance.
+  if (variant === 'emphasis') {
+    const leadIndex = p.stats.findIndex((s) => /watch/i.test(s.label))
+    const lead = leadIndex >= 0 ? leadIndex : 1
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-px bg-neutral-200 dark:bg-neutral-800">
+        {p.stats.map((s, i) => (
+          <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
+            <p className={`font-serif ${i === lead ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl'} ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // specList (voice-migration): label-left, value-right rows instead of big
+  // display numbers — matches the cloud-vs-local spec table this page uses
+  // in its body, so the hero previews the page's own visual language.
+  if (variant === 'specList') {
+    return (
+      <div className="max-w-md border-t border-neutral-200 dark:border-neutral-800">
+        {p.stats.map((s, i) => (
+          <div key={i} className="flex items-baseline justify-between gap-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></span>
+            <span className={`font-serif text-xl md:text-2xl ${theme.accentText}`}><StatValue value={s.value} /></span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // pills (portfolio-site): loose inline badges with no grid lines — the
+  // meta page's whole point is "not a templated layout," so even its stats
+  // skip the boxed-grid convention every other section on the site uses.
+  return (
+    <div className="flex flex-wrap gap-3">
+      {p.stats.map((s, i) => (
+        <div key={i} className={`flex items-baseline gap-2 px-4 py-2 rounded-full border ${theme.accentText} border-current/30`}>
+          <span className="font-serif text-lg md:text-xl"><StatValue value={s.value} /></span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-400">{s.label}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -187,7 +255,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
   return (
     <div className={shell}>
       {nav}
-      <Hero p={p} theme={theme} />
+      <Hero p={p} theme={theme} statsVariant="sequence" />
       <ProblemBand p={p} t={t} />
 
       {/* Stage tracker: idea -> demo, each stage paired with the matching
@@ -255,7 +323,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
   return (
     <div className={shell}>
       {nav}
-      <Hero p={p} theme={theme} />
+      <Hero p={p} theme={theme} statsVariant="emphasis" />
 
       <ProblemBand p={p} t={t}>
         {/* Anonymized live roster — visualizes "4 active characters" without
@@ -364,7 +432,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
   return (
     <div className={shell}>
       {nav}
-      <Hero p={p} theme={theme} />
+      <Hero p={p} theme={theme} statsVariant="specList" />
       <ProblemBand p={p} t={t} />
 
       {/* Migration path: cloud -> local, constraints falling away. */}
@@ -419,7 +487,7 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
   return (
     <div className={shell}>
       {nav}
-      <Hero p={p} theme={theme} />
+      <Hero p={p} theme={theme} statsVariant="pills" />
       <ProblemBand p={p} t={t} />
 
       {/* Live proof: the page demonstrates an interaction it's describing. */}
