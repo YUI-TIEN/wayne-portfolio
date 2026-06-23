@@ -181,8 +181,9 @@ const shell = 'min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:
 // ── morphus-website: pipeline / stage tracker ──────────────────────────────
 // Content is a funnel (idea -> prototype -> POC -> demo); show it as a literal
 // horizontal stage tracker instead of a flat before/after bullet list.
-const STAGES = ['Idea', 'Prototype', 'POC', 'Demo']
+const DEFAULT_STAGES = ['Idea', 'Prototype', 'POC', 'Demo']
 export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+  const stages = p.stages ?? DEFAULT_STAGES
   return (
     <div className={shell}>
       {nav}
@@ -193,14 +194,14 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
           before/after line so the funnel narrative is the visual. */}
       <ScrambleStagger delay={0.22}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text="Idea → Demo" /></p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
-            {STAGES.map((stage, i) => (
+            {stages.map((stage, i) => (
               <div key={stage} className="bg-brand-bg dark:bg-brand-ink p-6 md:p-7">
                 <div className="flex items-center gap-2 mb-5">
                   <span className={`font-mono text-[11px] ${theme.accentText}`}>{String(i + 1).padStart(2, '0')}</span>
                   <span className="font-serif text-xl md:text-2xl"><ScrambleText text={stage} /></span>
-                  {i < STAGES.length - 1 && <ArrowRight size={13} className="text-neutral-300 dark:text-neutral-600 ml-auto" />}
+                  {i < stages.length - 1 && <ArrowRight size={13} className="text-neutral-300 dark:text-neutral-600 ml-auto" />}
                 </div>
                 {p.after[i] && (
                   <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">
@@ -221,7 +222,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       {/* Contributions as a light 2-col skill list, no heavy color band. */}
       <ScrambleStagger delay={0.28}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 pb-16 md:pb-24">
-          <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text="What I actually did" /></p>
+          <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-5">
             {p.contributions.map((item, i) => (
               <div key={i} className="flex gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5">
@@ -279,7 +280,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
           <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <p className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
             <p className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
-              <ScrambleText text={`${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
+              <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
             </p>
           </div>
         </section>
@@ -314,7 +315,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         </section>
       </ScrambleStagger>
 
-      <ContributionsBand p={p} theme={theme} />
+      <ContributionsBand p={p} t={t} theme={theme} />
       <OutcomesGrid p={p} t={t} theme={theme} />
       <Footer t={t} onBack={onBack} />
     </div>
@@ -323,15 +324,15 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 
 // Shared contributions band (kept for persona, which still benefits from the
 // color block to break up its long content), now accent-themed.
-function ContributionsBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudyTheme }) {
+function ContributionsBand({ p, t, theme }: { p: CaseStudyContent; t: ProjectPageCopy; theme: CaseStudyTheme }) {
   return (
     <ScrambleStagger delay={0.28}>
       <section className={`${theme.accentBandBg} py-16 md:py-24`}>
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12">
             <div>
-              <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text="Contributions" /></p>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight"><ScrambleText text="What I actually did." /></h2>
+              <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={t.contributions} /></p>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight"><ScrambleText text={t.whatIDid} /></h2>
             </div>
             <div className={`space-y-px ${theme.accentTileBg}`}>
               {p.contributions.map((item, i) => (
@@ -352,13 +353,14 @@ function ContributionsBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudy
 // A clean technical before/after. Replace the vague adjective stats with a
 // real cloud-vs-local spec comparison, and lead with a horizontal migration
 // path (cloud -> local) distinct from persona's hub-and-spoke.
-const SPEC_ROWS = [
+const DEFAULT_SPEC_ROWS = [
   { k: 'Runtime', cloud: 'Cloud-hosted', local: 'Local inference' },
   { k: 'Cost', cloud: 'Per-usage', local: 'No usage fee' },
   { k: 'Latency', cloud: 'Network round-trip', local: 'Near-runtime' },
   { k: 'Languages', cloud: 'Chinese only', local: 'Multilingual identity' },
 ]
 export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+  const specRows = p.specRows ?? DEFAULT_SPEC_ROWS
   return (
     <div className={shell}>
       {nav}
@@ -368,22 +370,22 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       {/* Migration path: cloud -> local, constraints falling away. */}
       <ScrambleStagger delay={0.22}>
         <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text="Cloud → Local" /></p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.migrationPathLabel ?? 'Cloud → Local'} /></p>
           {/* Stacks vertically on mobile (arrow points down) so the two
               cards don't get crushed into thin columns at narrow widths. */}
           <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-8 mb-14">
             <div className="flex-1 border-2 border-neutral-200 dark:border-neutral-800 p-6 md:p-8">
               <Cloud size={28} className="text-neutral-400 mb-5" strokeWidth={1.75} />
-              <p className="font-serif text-xl md:text-2xl text-neutral-400 dark:text-neutral-500 mb-3 line-through decoration-neutral-300 dark:decoration-neutral-700">Cloud voice stack</p>
-              <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500 leading-relaxed">Quality was good but locked to Chinese, with per-usage cost and network latency.</p>
+              <p className="font-serif text-xl md:text-2xl text-neutral-400 dark:text-neutral-500 mb-3 line-through decoration-neutral-300 dark:decoration-neutral-700">{p.cloudCardTitle ?? 'Cloud voice stack'}</p>
+              <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500 leading-relaxed">{p.cloudCardBody ?? 'Quality was good but locked to Chinese, with per-usage cost and network latency.'}</p>
             </div>
             <div className="flex items-center justify-center">
               <ArrowRight size={26} className={`${theme.accentText} rotate-90 md:rotate-0`} />
             </div>
             <div className={`flex-1 border-2 p-6 md:p-8 border-brand-teal/40`}>
               <Server size={28} className={`${theme.accentText} mb-5`} strokeWidth={1.75} />
-              <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-3">Local inference</p>
-              <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">Same voice identity across languages, faster and cheaper to run.</p>
+              <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-3">{p.localCardTitle ?? 'Local inference'}</p>
+              <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed">{p.localCardBody ?? 'Same voice identity across languages, faster and cheaper to run.'}</p>
             </div>
           </div>
 
@@ -391,7 +393,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               adjectives. On mobile the cloud/local values stack under the
               row label instead of being squeezed into three columns. */}
           <div className="border-t border-neutral-200 dark:border-neutral-800">
-            {SPEC_ROWS.map((row) => (
+            {specRows.map((row) => (
               <div key={row.k} className="grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_1.4fr] gap-1 sm:gap-4 py-4 border-b border-neutral-200 dark:border-neutral-800 sm:items-baseline">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{row.k}</span>
                 <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-300 dark:decoration-neutral-700">{row.cloud}</span>
@@ -402,7 +404,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         </section>
       </ScrambleStagger>
 
-      <ContributionsBand p={p} theme={theme} />
+      <ContributionsBand p={p} t={t} theme={theme} />
       <OutcomesGrid p={p} t={t} theme={theme} />
       <Footer t={t} onBack={onBack} />
     </div>
@@ -424,12 +426,12 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <ScrambleStagger delay={0.22}>
         <section className={`${theme.accentBandBg} py-16 md:py-24`}>
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text="Live proof" /></p>
+            <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={p.liveProofLabel ?? 'Live proof'} /></p>
             <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight max-w-3xl mb-4">
-              <ScrambleText text="This page is the artifact." />
+              <ScrambleText text={p.liveProofTitle ?? 'This page is the artifact.'} />
             </h2>
             <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-12`}>
-              <ScrambleText text="Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated." />
+              <ScrambleText text={p.liveProofBody ?? 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.'} />
             </p>
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">
               {p.contributions.map((item, i) => (
