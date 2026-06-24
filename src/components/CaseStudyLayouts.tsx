@@ -36,11 +36,13 @@ const THEMES: Record<string, CaseStudyTheme> = {
     accentTileBg: 'bg-white/10',
     iconSet: 'product',
   },
-  // Stage-lit live-performance feel (pink pop).
+  // Stage-lit live-performance feel. Violet is the single identity color
+  // (big bands, hero numbers, structural accents); pink is reserved purely
+  // for interaction/hover so the two don't scatter as competing accents.
   'persona-workflows': {
-    accentText: 'text-brand-pink',
+    accentText: 'text-brand-violet',
     accentBandBg: 'bg-brand-violet',
-    accentBandText: 'text-brand-pink/80',
+    accentBandText: 'text-white/70',
     accentBandBody: 'text-white/85',
     accentTileBg: 'bg-white/10',
     iconSet: 'live',
