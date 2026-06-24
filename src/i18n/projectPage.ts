@@ -71,6 +71,8 @@ export interface CaseStudyContent {
   liveRosterLabel?: string // generic per-card label, e.g. "AI Streamer" (+ 01-04)
   liveRosterIllustrative?: string // "Illustrative — not a real screenshot" disclaimer
   liveRosterRealNote?: string // clarifies the cards are a real, currently-operating roster (not a mockup scenario)
+  transitionPieces?: [string, string, string, string] // the 4 manual pieces that consolidate onto one runtime
+  transitionSpineLabel?: string // caption under the consolidation visual, e.g. "one stable runtime"
   watchHoursCaption?: string // "{label} — accumulated from real viewers, not a lab demo."
   // voice-migration: migration path + spec comparison
   migrationPathLabel?: string // "Cloud → Local"
@@ -563,6 +565,8 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     liveRosterLabel: 'AI Streamer',
     liveRosterIllustrative: 'Illustrative — not a real screenshot',
     liveRosterRealNote: 'These 4 characters are real and currently in active operation — the cards are a recreation, but the roster and the numbers are not.',
+    transitionPieces: ['Persona', 'Tooling', 'Runtime', 'Live flow'],
+    transitionSpineLabel: 'one stable runtime',
     watchHoursCaption: 'watch hours — accumulated from real viewers, not a lab demo.',
   },
   'voice-migration': {
@@ -738,6 +742,8 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     liveRosterLabel: 'AI 直播主',
     liveRosterIllustrative: '示意圖，非真實畫面截圖',
     liveRosterRealNote: '這 4 個角色是真實、目前正在營運中的角色——畫面是重現示意，但角色陣容跟數字都是真的。',
+    transitionPieces: ['人格', '工具', 'Runtime', '直播流程'],
+    transitionSpineLabel: '同一套穩定 runtime',
     watchHoursCaption: '小時觀看時數——來自真實觀眾累積，不是實驗室 demo。',
   },
   'voice-migration': {
@@ -913,6 +919,8 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     liveRosterLabel: 'AIストリーマー',
     liveRosterIllustrative: 'イメージ図 — 実際のスクリーンショットではありません',
     liveRosterRealNote: 'この4キャラクターは実在し、現在も実際に稼働中です——画面はイメージ再現ですが、編成と数字は本物です。',
+    transitionPieces: ['ペルソナ', 'ツール', 'Runtime', '配信フロー'],
+    transitionSpineLabel: '一つの安定した runtime',
     watchHoursCaption: '視聴時間 — 研究室デモではなく、実際の視聴者から積み上げられた数値。',
   },
   'voice-migration': {
@@ -1088,6 +1096,8 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     liveRosterLabel: 'AI 스트리머',
     liveRosterIllustrative: '예시 이미지 — 실제 화면 캡처가 아닙니다',
     liveRosterRealNote: '이 4개 캐릭터는 실제로 존재하며 현재도 실제로 운영 중입니다 — 화면은 재현 이미지이지만, 구성과 수치는 실제입니다.',
+    transitionPieces: ['페르소나', '툴링', 'Runtime', '라이브 플로우'],
+    transitionSpineLabel: '하나의 안정된 runtime',
     watchHoursCaption: '시간 시청 — 실험실 데모가 아니라 실제 시청자로부터 축적된 수치.',
   },
   'voice-migration': {

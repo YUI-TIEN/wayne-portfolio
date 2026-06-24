@@ -10,6 +10,8 @@ import { IdeaPipeline } from './IdeaPipeline'
 import { LiveRoster } from './LiveRoster'
 import { WatchWaveform } from './WatchWaveform'
 import { MigrationDemo } from './MigrationDemo'
+import { PersonaTransition } from './PersonaTransition'
+import { PersonaOutcomes } from './PersonaOutcomes'
 
 // Per-case-study visual identity. Each project gets its own accent so the
 // four case studies don't all read as the same orange/blue/cream template —
@@ -326,7 +328,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       {/* Watch-hours banner — the standout number gets its own full-width row,
           with a live audio-waveform backdrop so it reads as "on air." */}
       <ScrambleStagger delay={0.2}>
-        <section className={`${theme.accentBandBg} relative overflow-hidden min-h-[320px] md:min-h-[420px] py-14 md:py-20 flex items-center`}>
+        <section className={`${theme.accentBandBg} relative overflow-hidden min-h-[240px] md:min-h-[420px] py-12 md:py-20 flex items-center`}>
           <WatchWaveform />
           <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <p className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
@@ -363,11 +365,26 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               </ul>
             </div>
           </div>
+
+          {/* Consolidation visual — the four formerly-manual pieces snapping
+              onto one runtime spine, making the Before→After story something
+              you watch resolve rather than just read. */}
+          <PersonaTransition
+            accentText={theme.accentText}
+            spineLabel={p.transitionSpineLabel ?? 'one stable runtime'}
+            pieces={p.transitionPieces}
+          />
         </section>
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
-      <OutcomesGrid p={p} t={t} theme={theme} />
+      <PersonaOutcomes
+        outcomes={p.outcomes}
+        outcomesLabel={t.outcomes}
+        note={p.note}
+        accentText={theme.accentText}
+        accentBg="bg-brand-pink"
+      />
       <Footer t={t} onBack={onBack} />
     </div>
   )
