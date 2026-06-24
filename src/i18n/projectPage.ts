@@ -87,6 +87,7 @@ export interface CaseStudyContent {
   liveProofLabel?: string
   liveProofTitle?: string
   liveProofBody?: string
+  scrambleProofHint?: string // caption under the interactive scramble demo
 }
 
 export interface ProjectPageCopy {
@@ -658,6 +659,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     liveProofLabel: 'Live proof',
     liveProofTitle: 'This page is the artifact.',
     liveProofBody: 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.',
+    scrambleProofHint: 'Tap a script — this is the same effect every heading on the site uses.',
   },
 }
 
@@ -835,6 +837,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     liveProofLabel: 'Live proof',
     liveProofTitle: '這個頁面本身就是成品。',
     liveProofBody: '你剛剛滑過的每個標題都是一個字一個字解碼出來的。切換網站語言，整個頁面會重新用新的文字系統解碼一次——是真的做出來的，不是套範本。',
+    scrambleProofHint: '點一下任一語言——這就是全站每個標題用的同一個效果。',
   },
 }
 
@@ -1012,6 +1015,7 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     liveProofLabel: 'Live proof',
     liveProofTitle: 'このページ自体が成果物。',
     liveProofBody: 'スクロールして見た見出しはすべて、一文字ずつ解読されて表示されたもの。サイトの言語を切り替えると、ページ全体が新しい文字体系で再びスクランブルされる — テンプレートではなく、実際に作られたものだから。',
+    scrambleProofHint: 'いずれかの言語をタップ — サイト全ての見出しと同じエフェクトです。',
   },
 }
 
@@ -1189,6 +1193,7 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     liveProofLabel: 'Live proof',
     liveProofTitle: '이 페이지 자체가 결과물이다.',
     liveProofBody: '스크롤하며 지나친 모든 제목은 한 글자씩 디코딩되어 나타난 것이다. 사이트 언어를 바꾸면 페이지 전체가 새로운 문자 체계로 다시 스크램블된다 — 템플릿이 아니라 실제로 만들어졌기 때문이다.',
+    scrambleProofHint: '아무 언어나 눌러보세요 — 사이트의 모든 제목에 쓰인 바로 그 효과입니다.',
   },
 }
 

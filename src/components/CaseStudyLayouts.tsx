@@ -11,6 +11,7 @@ import { WatchWaveform } from './WatchWaveform'
 import { MigrationDemo } from './MigrationDemo'
 import { PersonaTransition } from './PersonaTransition'
 import { AnimatedOutcomes } from './AnimatedOutcomes'
+import { ScrambleProof } from './ScrambleProof'
 
 // Per-case-study visual identity. Each project gets its own accent so the
 // four case studies don't all read as the same orange/blue/cream template —
@@ -469,10 +470,19 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight max-w-3xl mb-4">
               <ScrambleText text={p.liveProofTitle ?? 'This page is the artifact.'} />
             </h2>
-            <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-12`}>
+            <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-6`}>
               <ScrambleText text={p.liveProofBody ?? 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.'} />
             </p>
-            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">
+
+            {/* Interactive proof: trigger the page's own scramble effect by
+                clicking a script — demonstrating the claim instead of asserting
+                it. */}
+            <ScrambleProof
+              hint={p.scrambleProofHint ?? 'Tap a script — this is the same effect every heading uses.'}
+              accentBandText={theme.accentBandText}
+            />
+
+            <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">
               {p.contributions.map((item, i) => (
                 <div key={i} className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5`}>
                   <span className={`font-mono text-[10px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
