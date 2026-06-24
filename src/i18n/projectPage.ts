@@ -68,6 +68,7 @@ export interface CaseStudyContent {
   stages?: string[] // ['Idea', 'Prototype', 'POC', 'Demo']
   stageReplay?: string // replay label for the idea pipeline
   // persona-workflows: live roster + watch-hours banner
+  liveRosterLabel?: string // generic per-card label, e.g. "AI Streamer" (+ 01-04)
   watchHoursCaption?: string // "{label} — accumulated from real viewers, not a lab demo."
   // voice-migration: migration path + spec comparison
   migrationPathLabel?: string // "Cloud → Local"
@@ -557,6 +558,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
       { title: 'Commercial collaboration', detail: 'Built and tested a confidential all-AI virtual entertainer with a known Taiwanese public game company.' },
     ],
     note: 'Specific character identities and partner names are intentionally omitted for confidentiality.',
+    liveRosterLabel: 'AI Streamer',
     watchHoursCaption: 'watch hours — accumulated from real viewers, not a lab demo.',
   },
   'voice-migration': {
@@ -729,6 +731,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       { title: '商業合作', detail: '跟一家知名台灣上市遊戲公司一起打造並測試了一個保密的全 AI 虛擬藝人。' },
     ],
     note: '出於保密考量，這裡刻意省略具體角色身分跟合作方名稱。',
+    liveRosterLabel: 'AI 直播主',
     watchHoursCaption: '小時觀看時數——來自真實觀眾累積，不是實驗室 demo。',
   },
   'voice-migration': {
@@ -901,6 +904,7 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
       { title: '商業協業', detail: '台湾の有名な上場ゲーム企業と、非公開の全AI仮想エンターテイナーを構築・検証した。' },
     ],
     note: '機密保持のため、具体的なキャラクターの正体やパートナー名は意図的に省略しています。',
+    liveRosterLabel: 'AIストリーマー',
     watchHoursCaption: '視聴時間 — 研究室デモではなく、実際の視聴者から積み上げられた数値。',
   },
   'voice-migration': {
@@ -1073,6 +1077,7 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
       { title: '상업적 협업', detail: '잘 알려진 대만 상장 게임사와 함께 비공개 올-AI 가상 엔터테이너를 만들고 테스트했다.' },
     ],
     note: '기밀 유지를 위해 구체적인 캐릭터 신원과 협업사 이름은 의도적으로 생략했습니다.',
+    liveRosterLabel: 'AI 스트리머',
     watchHoursCaption: '시간 시청 — 실험실 데모가 아니라 실제 시청자로부터 축적된 수치.',
   },
   'voice-migration': {

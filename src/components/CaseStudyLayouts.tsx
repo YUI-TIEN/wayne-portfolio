@@ -313,9 +313,11 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 
       <ProblemBand p={p} t={t}>
         {/* On-air roster — visualizes "4 active characters" as something
-            currently broadcasting (pulsing dots, live viewer counts, looping
-            VOD/SHORTS bars), without disclosing identities. */}
-        <LiveRoster />
+            currently broadcasting (pulsing LIVE badge, ticking viewer
+            counts), all in the same LIVE state so the point reads as "4
+            running simultaneously" rather than a confusing platform-state
+            taxonomy. Labeled generically, not with internal channel codes. */}
+        <LiveRoster label={p.liveRosterLabel ?? 'AI Streamer'} />
       </ProblemBand>
 
       {/* Watch-hours banner — the standout number gets its own full-width row,
