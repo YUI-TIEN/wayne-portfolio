@@ -29,7 +29,7 @@ export function WatchWaveform() {
       if (!bar) return
       tl.to(
         bar,
-        { scaleY: bases.current[i] * 1.7 + 0.2, duration: 1.1, ease: 'sine.inOut' },
+        { scaleY: bases.current[i] * 1.7 + 0.2, duration: 1.1, ease: 'power2.inOut' },
         i * 0.015,
       )
     })
