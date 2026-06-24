@@ -1,38 +1,53 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { Radio, Repeat, Award } from 'lucide-react'
+import {
+  Radio, Repeat, Award,
+  Rocket, Layers, RefreshCw,
+  Coins, Gauge, Globe,
+  Sparkles, PenTool, FileCode,
+  type LucideIcon,
+} from 'lucide-react'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { skipsScrollAnimation } from './motionGuards'
 
-// Persona-specific outcomes grid. The shared OutcomesGrid renders a small
-// static glyph in the corner of each cream tile, which reads as a generic
-// feature card. Here each outcome is a tall tile whose accent icon is large,
-// animates in on scroll, and reacts on hover (the tile floods with the accent
-// and the icon inverts) — so the three proof points feel like interactive
-// result cards rather than a templated three-up.
+// Shared upgraded outcomes grid used across all case studies. The original
+// OutcomesGrid rendered a small static glyph in the corner of each cream tile,
+// which read as a generic feature card. Here each outcome is a tall bordered
+// tile whose accent icon is large, animates in on scroll, and reacts on hover
+// (the tile floods with the accent, the icon inverts) — so the proof points
+// feel like interactive result cards rather than a templated three-up. The
+// first tile's icon keeps a slow "live" pulse.
 //
 // Settled default = icons visible, no flood, for prerender / no-JS /
 // reduced-motion.
-const ICONS = [Radio, Repeat, Award]
+const ICON_SETS: Record<string, LucideIcon[]> = {
+  product: [Rocket, Layers, RefreshCw],
+  live: [Radio, Repeat, Award],
+  voice: [Coins, Gauge, Globe],
+  meta: [Sparkles, PenTool, FileCode],
+}
 
 interface Outcome {
   title: string
   detail: string
 }
 
-export function PersonaOutcomes({
+export function AnimatedOutcomes({
   outcomes,
   outcomesLabel,
   note,
+  iconSet,
   accentText,
   accentBg,
 }: {
   outcomes: Outcome[]
   outcomesLabel: string
   note?: string
-  accentText: string // e.g. text-brand-pink
+  iconSet: keyof typeof ICON_SETS
+  accentText: string // e.g. text-brand-violet
   accentBg: string // e.g. bg-brand-pink (hover flood)
 }) {
+  const icons = ICON_SETS[iconSet] ?? ICON_SETS.product
   const rootRef = useRef<HTMLDivElement>(null)
   const iconRefs = useRef<(HTMLSpanElement | null)[]>([])
   const pulseRef = useRef<gsap.core.Tween | null>(null)
@@ -56,8 +71,6 @@ export function PersonaOutcomes({
               { scale: 1, opacity: 1, rotate: 0, duration: 0.6, ease: 'back.out(2.2)', delay: i * 0.1 },
             )
           })
-          // The first outcome (real-viewer validation) keeps a slow live pulse
-          // on its Radio icon, echoing the "still on air" theme of the page.
           const first = iconRefs.current[0]
           if (first) {
             pulseRef.current = gsap.to(first, {
@@ -89,7 +102,7 @@ export function PersonaOutcomes({
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {outcomes.map((o, i) => {
-              const Icon = ICONS[i % ICONS.length]
+              const Icon = icons[i % icons.length]
               const on = hover === i
               return (
                 <div

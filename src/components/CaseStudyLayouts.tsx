@@ -5,13 +5,12 @@ import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { StatValue } from './StatValue'
-import { OutcomeIcon } from './OutcomeIcon'
 import { IdeaPipeline } from './IdeaPipeline'
 import { LiveRoster } from './LiveRoster'
 import { WatchWaveform } from './WatchWaveform'
 import { MigrationDemo } from './MigrationDemo'
 import { PersonaTransition } from './PersonaTransition'
-import { PersonaOutcomes } from './PersonaOutcomes'
+import { AnimatedOutcomes } from './AnimatedOutcomes'
 
 // Per-case-study visual identity. Each project gets its own accent so the
 // four case studies don't all read as the same orange/blue/cream template —
@@ -23,6 +22,7 @@ export interface CaseStudyTheme {
   accentBandText: string // small-label color inside that band
   accentBandBody: string // body text color inside that band
   accentTileBg: string // bg used between flex/grid cells inside the band
+  accentInteractBg: string // tailwind bg-* used for hover/interaction floods
   iconSet: 'product' | 'live' | 'voice' | 'meta'
 }
 
@@ -34,6 +34,7 @@ const THEMES: Record<string, CaseStudyTheme> = {
     accentBandText: 'text-white/70',
     accentBandBody: 'text-white/85',
     accentTileBg: 'bg-white/10',
+    accentInteractBg: 'bg-brand-orange',
     iconSet: 'product',
   },
   // Stage-lit live-performance feel. Violet is the single identity color
@@ -45,6 +46,7 @@ const THEMES: Record<string, CaseStudyTheme> = {
     accentBandText: 'text-white/70',
     accentBandBody: 'text-white/85',
     accentTileBg: 'bg-white/10',
+    accentInteractBg: 'bg-brand-pink',
     iconSet: 'live',
   },
   // Cool technical-infrastructure feel.
@@ -54,6 +56,7 @@ const THEMES: Record<string, CaseStudyTheme> = {
     accentBandText: 'text-brand-lime/80',
     accentBandBody: 'text-white/85',
     accentTileBg: 'bg-white/10',
+    accentInteractBg: 'bg-brand-teal',
     iconSet: 'voice',
   },
   // Meta / self-referential feel (electric blue).
@@ -63,6 +66,7 @@ const THEMES: Record<string, CaseStudyTheme> = {
     accentBandText: 'text-brand-lime/70',
     accentBandBody: 'text-white/80',
     accentTileBg: 'bg-white/10',
+    accentInteractBg: 'bg-brand-blue',
     iconSet: 'meta',
   },
 }
@@ -212,37 +216,6 @@ function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEven
   )
 }
 
-// Outcomes grid, accent-themed per case study. Used by the layouts that keep
-// the grid; portfolio-site overrides this with a pull-quote treatment.
-function OutcomesGrid({ p, t, theme }: { p: CaseStudyContent; t: ProjectPageCopy; theme: CaseStudyTheme }) {
-  return (
-    <ScrambleStagger delay={0.34}>
-      <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
-            {p.outcomes.map((o, i) => (
-              <div key={i} className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                <div className="flex items-center justify-between mb-6">
-                  <OutcomeIcon index={i} size={26} set={theme.iconSet} className={theme.accentText} />
-                  <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600">{String(i + 1).padStart(2, '0')}</span>
-                </div>
-                <p className="font-serif text-2xl md:text-3xl text-neutral-900 dark:text-white mb-4 leading-tight"><ScrambleText text={o.title} /></p>
-                <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed"><ScrambleText text={o.detail} /></p>
-              </div>
-            ))}
-          </div>
-          {p.note && (
-            <p className="font-mono text-[11px] text-neutral-400 mt-8 max-w-2xl leading-relaxed">
-              <ScrambleText text={p.note} />
-            </p>
-          )}
-        </div>
-      </section>
-    </ScrambleStagger>
-  )
-}
-
 interface LayoutProps {
   p: CaseStudyContent
   t: ProjectPageCopy
@@ -297,7 +270,14 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         </section>
       </ScrambleStagger>
 
-      <OutcomesGrid p={p} t={t} theme={theme} />
+      <AnimatedOutcomes
+        outcomes={p.outcomes}
+        outcomesLabel={t.outcomes}
+        note={p.note}
+        iconSet={theme.iconSet}
+        accentText={theme.accentText}
+        accentBg={theme.accentInteractBg}
+      />
       <Footer t={t} onBack={onBack} />
     </div>
   )
@@ -380,12 +360,13 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
-      <PersonaOutcomes
+      <AnimatedOutcomes
         outcomes={p.outcomes}
         outcomesLabel={t.outcomes}
         note={p.note}
+        iconSet={theme.iconSet}
         accentText={theme.accentText}
-        accentBg="bg-brand-pink"
+        accentBg={theme.accentInteractBg}
       />
       <Footer t={t} onBack={onBack} />
     </div>
@@ -456,7 +437,14 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
-      <OutcomesGrid p={p} t={t} theme={theme} />
+      <AnimatedOutcomes
+        outcomes={p.outcomes}
+        outcomesLabel={t.outcomes}
+        note={p.note}
+        iconSet={theme.iconSet}
+        accentText={theme.accentText}
+        accentBg={theme.accentInteractBg}
+      />
       <Footer t={t} onBack={onBack} />
     </div>
   )
