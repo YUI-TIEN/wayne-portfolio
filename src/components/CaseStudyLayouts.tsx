@@ -316,15 +316,19 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             characters streaming simultaneously" reads instantly to anyone
             who has used a video site — illustrative recreation, not a real
             screenshot or logo, same convention as OpsDemo's Discord UI. */}
-        <LiveRoster label={p.liveRosterLabel ?? 'AI Streamer'} illustrative={p.liveRosterIllustrative ?? 'Illustrative — not a real screenshot'} />
+        <LiveRoster
+          label={p.liveRosterLabel ?? 'AI Streamer'}
+          illustrative={p.liveRosterIllustrative ?? 'Illustrative — not a real screenshot'}
+          realNote={p.liveRosterRealNote ?? 'These 4 characters are real and currently in active operation — the cards are a recreation, but the roster and the numbers are not.'}
+        />
       </ProblemBand>
 
       {/* Watch-hours banner — the standout number gets its own full-width row,
           with a live audio-waveform backdrop so it reads as "on air." */}
       <ScrambleStagger delay={0.2}>
-        <section className={`${theme.accentBandBg} relative overflow-hidden py-14 md:py-20`}>
+        <section className={`${theme.accentBandBg} relative overflow-hidden min-h-[320px] md:min-h-[420px] py-14 md:py-20 flex items-center`}>
           <WatchWaveform />
-          <div className="relative max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <p className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
             <p className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
               <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />

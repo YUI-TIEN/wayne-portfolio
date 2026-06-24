@@ -43,7 +43,7 @@ export function WatchWaveform() {
       ref={ref}
       viewBox="0 0 100 40"
       preserveAspectRatio="none"
-      className="absolute inset-0 w-full h-full opacity-[0.13] pointer-events-none"
+      className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none"
       aria-hidden
     >
       {bases.current.map((b, i) => (

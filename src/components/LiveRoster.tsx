@@ -30,7 +30,7 @@ const CHANNELS: RosterChannel[] = [
 
 const BARS = 14
 
-export function LiveRoster({ label, illustrative }: { label: string; illustrative: string }) {
+export function LiveRoster({ label, illustrative, realNote }: { label: string; illustrative: string; realNote: string }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const dotRefs = useRef<(HTMLSpanElement | null)[]>([])
   const barRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -100,6 +100,7 @@ export function LiveRoster({ label, illustrative }: { label: string; illustrativ
 
   return (
     <div className="mt-12">
+      <p className="font-sans text-sm text-white/85 mb-2">{realNote}</p>
       <p className="font-mono text-[9px] uppercase tracking-widest text-white/30 mb-3">{illustrative}</p>
       <div ref={rootRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {CHANNELS.map((c, i) => (
