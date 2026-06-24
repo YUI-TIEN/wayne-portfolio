@@ -69,6 +69,7 @@ export interface CaseStudyContent {
   stageReplay?: string // replay label for the idea pipeline
   // persona-workflows: live roster + watch-hours banner
   liveRosterLabel?: string // generic per-card label, e.g. "AI Streamer" (+ 01-04)
+  liveRosterIllustrative?: string // "Illustrative — not a real screenshot" disclaimer
   watchHoursCaption?: string // "{label} — accumulated from real viewers, not a lab demo."
   // voice-migration: migration path + spec comparison
   migrationPathLabel?: string // "Cloud → Local"
@@ -559,6 +560,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     ],
     note: 'Specific character identities and partner names are intentionally omitted for confidentiality.',
     liveRosterLabel: 'AI Streamer',
+    liveRosterIllustrative: 'Illustrative — not a real screenshot',
     watchHoursCaption: 'watch hours — accumulated from real viewers, not a lab demo.',
   },
   'voice-migration': {
@@ -732,6 +734,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     ],
     note: '出於保密考量，這裡刻意省略具體角色身分跟合作方名稱。',
     liveRosterLabel: 'AI 直播主',
+    liveRosterIllustrative: '示意圖，非真實畫面截圖',
     watchHoursCaption: '小時觀看時數——來自真實觀眾累積，不是實驗室 demo。',
   },
   'voice-migration': {
@@ -905,6 +908,7 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     ],
     note: '機密保持のため、具体的なキャラクターの正体やパートナー名は意図的に省略しています。',
     liveRosterLabel: 'AIストリーマー',
+    liveRosterIllustrative: 'イメージ図 — 実際のスクリーンショットではありません',
     watchHoursCaption: '視聴時間 — 研究室デモではなく、実際の視聴者から積み上げられた数値。',
   },
   'voice-migration': {
@@ -1078,6 +1082,7 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     ],
     note: '기밀 유지를 위해 구체적인 캐릭터 신원과 협업사 이름은 의도적으로 생략했습니다.',
     liveRosterLabel: 'AI 스트리머',
+    liveRosterIllustrative: '예시 이미지 — 실제 화면 캡처가 아닙니다',
     watchHoursCaption: '시간 시청 — 실험실 데모가 아니라 실제 시청자로부터 축적된 수치.',
   },
   'voice-migration': {

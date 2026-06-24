@@ -312,12 +312,11 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <Hero p={p} theme={theme} statsVariant="emphasis" />
 
       <ProblemBand p={p} t={t}>
-        {/* On-air roster — visualizes "4 active characters" as something
-            currently broadcasting (pulsing LIVE badge, ticking viewer
-            counts), all in the same LIVE state so the point reads as "4
-            running simultaneously" rather than a confusing platform-state
-            taxonomy. Labeled generically, not with internal channel codes. */}
-        <LiveRoster label={p.liveRosterLabel ?? 'AI Streamer'} />
+        {/* On-air roster, styled as a YouTube-style video grid so "4 AI
+            characters streaming simultaneously" reads instantly to anyone
+            who has used a video site — illustrative recreation, not a real
+            screenshot or logo, same convention as OpsDemo's Discord UI. */}
+        <LiveRoster label={p.liveRosterLabel ?? 'AI Streamer'} illustrative={p.liveRosterIllustrative ?? 'Illustrative — not a real screenshot'} />
       </ProblemBand>
 
       {/* Watch-hours banner — the standout number gets its own full-width row,
