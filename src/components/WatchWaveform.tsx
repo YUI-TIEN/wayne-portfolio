@@ -12,7 +12,7 @@ const BARS = 64
 export function WatchWaveform() {
   const ref = useRef<SVGSVGElement | null>(null)
   const barRefs = useRef<(SVGRectElement | null)[]>([])
-  const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const tweensRef = useRef<gsap.core.Tween[]>([])
 
   // Stable per-bar base heights so the static frame looks like a real
   // waveform, not a flat line.
@@ -22,19 +22,28 @@ export function WatchWaveform() {
 
   useEffect(() => {
     if (skipsScrollAnimation()) return
-    // Each bar gently oscillates its height; a small per-bar delay makes the
-    // motion ripple across the strip instead of pulsing in unison.
-    const tl = gsap.timeline({ repeat: -1, yoyo: true })
+    // Each bar runs its own independent loop, retargeting to a fresh random
+    // height every time it finishes — rather than yoyo-ing between two fixed
+    // values — so bars don't all visibly "land" and pause at the same min/max
+    // in sync; it reads more like irregular live audio than a metronome.
     barRefs.current.forEach((bar, i) => {
       if (!bar) return
-      tl.to(
-        bar,
-        { scaleY: bases.current[i] * 1.7 + 0.2, duration: 1.1, ease: 'power2.inOut' },
-        i * 0.015,
-      )
+      const base = bases.current[i]
+      const next = () => {
+        const target = base * (0.5 + Math.random() * 1.5) + 0.15
+        tweensRef.current[i] = gsap.to(bar, {
+          scaleY: target,
+          duration: 0.7 + Math.random() * 0.9,
+          ease: 'power2.inOut',
+          onComplete: next,
+        })
+      }
+      tweensRef.current[i] = gsap.delayedCall(i * 0.015, next)
     })
-    tlRef.current = tl
-    return () => { tlRef.current?.kill() }
+    return () => {
+      tweensRef.current.forEach((t) => t?.kill())
+      tweensRef.current = []
+    }
   }, [])
 
   const barW = 100 / BARS
