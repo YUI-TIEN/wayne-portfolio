@@ -42,8 +42,8 @@ export function WatchWaveform() {
     <svg
       ref={ref}
       viewBox="0 0 100 40"
-      preserveAspectRatio="none"
-      className="absolute inset-0 w-full h-full opacity-[0.07] pointer-events-none"
+      preserveAspectRatio="xMidYMid meet"
+      className="absolute inset-0 w-full h-20 md:h-28 m-auto opacity-[0.07] pointer-events-none"
       aria-hidden
     >
       {bases.current.map((b, i) => (
