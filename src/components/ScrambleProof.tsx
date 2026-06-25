@@ -64,7 +64,7 @@ export function ScrambleProof({
     }
     tweenRef.current?.kill()
     tweenRef.current = gsap.to(el, {
-      duration: Math.min(1.6, 0.5 + text.length * 0.04),
+      duration: Math.min(1.2, 0.5 + text.length * 0.04),
       ease: 'none',
       scrambleText: { text, chars: SCRAMBLE_CHARS[lang], revealDelay: 0.25, speed: 0.5, delimiter: ' ', tweenLength: false },
     })

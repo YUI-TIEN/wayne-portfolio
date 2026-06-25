@@ -85,7 +85,7 @@ export function ScrambleText({ text, as: Tag = 'span', style, ...rest }: Scrambl
       return
     }
 
-    const duration = Math.min(1.4, 0.4 + text.length * 0.01)
+    const duration = Math.min(1.0, 0.4 + text.length * 0.01)
     const tween = gsap.to(el, {
       duration,
       delay: section.delay,

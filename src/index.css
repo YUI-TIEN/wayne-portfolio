@@ -98,6 +98,22 @@ html, body {
   isolation: auto !important;
 }
 
+/* CSS-driven motion isn't covered by the JS skipsScrollAnimation() guard the
+   components use, so honor prefers-reduced-motion here for the purely-CSS
+   pieces: the infinite stack marquee, smooth anchor scrolling, and the
+   language-switch overlay fade. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-scroll {
+    animation: none;
+  }
+  .animate-fade-in {
+    animation: none;
+  }
+}
+
 ::view-transition-old(root) {
   z-index: 1;
 }
