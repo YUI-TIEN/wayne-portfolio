@@ -57,25 +57,26 @@ export function MigrationDemo({
     tlRef.current?.kill()
     setMigrated(false)
 
-    // initial "cloud era" state: cloud bars high, local bars empty, chips
-    // present, spec rows hidden.
-    gsap.set(cloudBarRefs.current, { scaleX: 1, transformOrigin: 'left center' })
-    gsap.set(localBarRefs.current, { scaleX: 0, transformOrigin: 'left center' })
-    gsap.set(chipRefs.current, { opacity: 1, y: 0 })
-    gsap.set(rowRefs.current, { opacity: 0, y: 8 })
-
     const tl = gsap.timeline({ onComplete: () => setMigrated(true) })
+    // Reset to the "cloud era" state eased rather than gsap.set's hard snap —
+    // the rewind back to the start is itself visible to anyone replaying, so
+    // it needs the same easing as the forward tween instead of a hard cut.
+    tl.to(cloudBarRefs.current, { scaleX: 1, duration: 0.3, ease: 'power2.inOut', transformOrigin: 'left center' }, 0)
+    tl.to(localBarRefs.current, { scaleX: 0, duration: 0.3, ease: 'power2.inOut', transformOrigin: 'left center' }, 0)
+    tl.to(chipRefs.current, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0)
+    tl.to(rowRefs.current, { opacity: 0, y: 8, duration: 0.3, ease: 'power2.in' }, 0)
+
     // chips fall away
     chipRefs.current.forEach((chip, i) => {
-      tl.to(chip, { opacity: 0, y: 14, duration: 0.4, ease: 'power2.in' }, 0.3 + i * 0.25)
+      tl.to(chip, { opacity: 0, y: 14, duration: 0.4, ease: 'power2.in' }, 0.6 + i * 0.25)
     })
     // cloud cost/latency bars drop as constraints leave
-    tl.to(cloudBarRefs.current, { scaleX: 0.18, duration: 0.9, ease: 'power2.inOut', stagger: 0.1 }, 0.5)
+    tl.to(cloudBarRefs.current, { scaleX: 0.18, duration: 0.9, ease: 'power2.inOut', stagger: 0.1 }, 0.8)
     // local bars rise
-    tl.to(localBarRefs.current, { scaleX: 1, duration: 0.9, ease: 'power2.out', stagger: 0.1 }, 0.9)
+    tl.to(localBarRefs.current, { scaleX: 1, duration: 0.9, ease: 'power2.out', stagger: 0.1 }, 1.2)
     // spec rows reveal in sequence
     rowRefs.current.forEach((row, i) => {
-      tl.to(row, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.2 + i * 0.15)
+      tl.to(row, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.5 + i * 0.15)
     })
     tlRef.current = tl
   }

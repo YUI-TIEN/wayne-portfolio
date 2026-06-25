@@ -12,6 +12,7 @@ import { MigrationDemo } from './MigrationDemo'
 import { PersonaTransition } from './PersonaTransition'
 import { AnimatedOutcomes } from './AnimatedOutcomes'
 import { ScrambleProof } from './ScrambleProof'
+import { LiveSystemStatus } from './LiveSystemStatus'
 
 // Per-case-study visual identity. Each project gets its own accent so the
 // four case studies don't all read as the same orange/blue/cream template —
@@ -252,6 +253,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             after={p.after}
             accentText={theme.accentText}
             replayLabel={p.stageReplay ?? 'Replay'}
+            interactHint={p.stageInteractHint}
           />
         </section>
       </ScrambleStagger>
@@ -354,6 +356,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               you watch resolve rather than just read. */}
           <PersonaTransition
             accentText={theme.accentText}
+            accentBg={theme.accentBandBg}
             spineLabel={p.transitionSpineLabel ?? 'one stable runtime'}
             pieces={p.transitionPieces}
           />
@@ -480,6 +483,23 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             <ScrambleProof
               hint={p.scrambleProofHint ?? 'Tap a script — this is the same effect every heading uses.'}
               accentBandText={theme.accentBandText}
+            />
+
+            {/* Second live-proof beat: instead of describing the site's
+                reduced-motion/dark-mode/responsive awareness, read its actual
+                runtime state right now. Toggling theme or resizing updates a
+                row live, in the same scramble-decode style as every other
+                text on the page. */}
+            <LiveSystemStatus
+              title={p.statusTitle ?? 'Live, right now — not a screenshot'}
+              rowLabels={{
+                reducedMotion: p.statusReducedMotion ?? 'Reduced motion',
+                theme: p.statusTheme ?? 'Theme',
+                breakpoint: p.statusBreakpoint ?? 'Breakpoint',
+                lang: p.statusLang ?? 'Language',
+              }}
+              reducedMotionOn={p.statusReducedMotionOn ?? 'on — animations skipped'}
+              reducedMotionOff={p.statusReducedMotionOff ?? 'off'}
             />
 
             <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">

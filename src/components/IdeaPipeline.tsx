@@ -9,6 +9,7 @@ interface IdeaPipelineProps {
   after: string[] // per-stage "what changed" line
   accentText: string // tailwind text-* for the moving token + active stage
   replayLabel: string
+  interactHint?: string // "Click a stage to replay up to it" — shown briefly after the auto-run finishes
 }
 
 // The product idea matures as it moves down the pipeline: an empty frame at
@@ -28,22 +29,41 @@ const FINAL = STAGE_X.length - 1
 // Each maturity level draws a different glyph inside the token, so the SAME
 // element visibly accrues detail as it advances. All centered on (0,0); the
 // token group is translated along the track.
+//
+// Every level gets an opaque backing rect first — the token rides directly
+// on top of the accent track line, so the empty-frame and wireframe levels
+// (which are stroke-only, no fill) would otherwise let the track line show
+// through their transparent interior instead of looking like a solid token.
 function maturityGlyph(level: number, color: string) {
+  // fill-brand-bg / dark:fill-brand-ink matches the page's own light/dark
+  // background, so the backing rect reads as "opaque token surface", not an
+  // off-shade patch — Tailwind class instead of an inline fill so it tracks
+  // the dark mode toggle without re-rendering this glyph.
+  const backing = <rect x={-14} y={-14} width={28} height={28} rx={5} className="fill-brand-bg dark:fill-brand-ink" />
   switch (level) {
     case 0: // empty frame
-      return <rect x={-13} y={-13} width={26} height={26} rx={4} fill="none" stroke={color} strokeWidth={1.6} strokeDasharray="3 3" />
+      return (
+        <g>
+          {backing}
+          <rect x={-13} y={-13} width={26} height={26} rx={4} fill="none" stroke={color} strokeWidth={1.6} strokeDasharray="3 3" />
+        </g>
+      )
     case 1: // wireframe sketch
       return (
-        <g stroke={color} strokeWidth={1.6} fill="none">
-          <rect x={-13} y={-13} width={26} height={26} rx={4} />
-          <line x1={-13} y1={-4} x2={13} y2={-4} />
-          <line x1={-6} y1={2} x2={6} y2={2} />
-          <line x1={-6} y1={7} x2={2} y2={7} />
+        <g>
+          {backing}
+          <g stroke={color} strokeWidth={1.6} fill="none">
+            <rect x={-13} y={-13} width={26} height={26} rx={4} />
+            <line x1={-13} y1={-4} x2={13} y2={-4} />
+            <line x1={-6} y1={2} x2={6} y2={2} />
+            <line x1={-6} y1={7} x2={2} y2={7} />
+          </g>
         </g>
       )
     case 2: // UI mock (filled header + blocks)
       return (
         <g>
+          {backing}
           <rect x={-13} y={-13} width={26} height={26} rx={4} fill="none" stroke={color} strokeWidth={1.6} />
           <rect x={-13} y={-13} width={26} height={7} rx={2} fill={color} opacity={0.5} />
           <rect x={-9} y={0} width={11} height={4} rx={1} fill={color} opacity={0.7} />
@@ -53,6 +73,7 @@ function maturityGlyph(level: number, color: string) {
     default: // finished demo card (solid + check)
       return (
         <g>
+          {backing}
           <rect x={-13} y={-13} width={26} height={26} rx={4} fill={color} />
           <path d="M -6 0 L -1.5 5 L 7 -6" stroke="#fff" strokeWidth={2.2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
         </g>
@@ -60,12 +81,14 @@ function maturityGlyph(level: number, color: string) {
   }
 }
 
-export function IdeaPipeline({ stages, before, after, accentText, replayLabel }: IdeaPipelineProps) {
+export function IdeaPipeline({ stages, before, after, accentText, replayLabel, interactHint }: IdeaPipelineProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const tokenRef = useRef<SVGGElement | null>(null)
   const trackFillRef = useRef<SVGRectElement | null>(null)
+  const nudgeRefs = useRef<(SVGCircleElement | null)[]>([])
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const playedRef = useRef(false)
+  const [showHint, setShowHint] = useState(false)
 
   // Resolve the accent class to a concrete stroke/fill color for SVG (SVG
   // can't use tailwind text-* on stroke), keyed off the same class string the
@@ -83,7 +106,8 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel }:
   const [maturity, setMaturity] = useState(FINAL)
   const [hovered, setHovered] = useState(-1)
 
-  const runTo = (target: number) => {
+  const runTo = (target: number, opts: { showHintOnComplete?: boolean } = {}) => {
+    setShowHint(false)
     if (skipsScrollAnimation()) {
       setTokenStage(target)
       setMaturity(target)
@@ -96,7 +120,25 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel }:
     if (tokenRef.current) gsap.set(tokenRef.current, { x: STAGE_X[0], y: TRACK_Y })
     if (trackFillRef.current) gsap.set(trackFillRef.current, { scaleX: 0, transformOrigin: 'left center' })
 
-    const tl = gsap.timeline()
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (!opts.showHintOnComplete) return
+        // Nothing in the finished state visually says "these are clickable" —
+        // a couple of ring pulses on the final station plus a brief text hint
+        // gives that affordance once, right after the run lands, instead of
+        // requiring the visitor to discover it by chance hover.
+        setShowHint(true)
+        const ring = nudgeRefs.current[target]
+        if (ring) {
+          gsap.fromTo(
+            ring,
+            { scale: 0.4, opacity: 0.6 },
+            { scale: 1.8, opacity: 0, duration: 1.1, ease: 'power2.out', repeat: 2, repeatDelay: 0.3 },
+          )
+        }
+        gsap.delayedCall(4, () => setShowHint(false))
+      },
+    })
     for (let i = 1; i <= target; i++) {
       tl.to(tokenRef.current, {
         x: STAGE_X[i],
@@ -125,7 +167,7 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel }:
         for (const entry of entries) {
           if (entry.isIntersecting && !playedRef.current) {
             playedRef.current = true
-            runTo(FINAL)
+            runTo(FINAL, { showHintOnComplete: true })
           }
         }
       },
@@ -162,6 +204,13 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel }:
             >
               {/* hit area + node dot */}
               <circle r={16} fill="transparent" />
+              {/* Affordance ring: pulses a couple of times right after the
+                  auto-run finishes, on whichever station the run landed on,
+                  so the click-to-replay interaction is discovered instead of
+                  requiring a chance hover. opacity 0 at rest — only visible
+                  while the pulse tween (started from runTo's onComplete) is
+                  actually running. */}
+              <circle ref={(el) => { nudgeRefs.current[i] = el }} r={8} fill="none" stroke={accent} strokeWidth={1.5} opacity={0} />
               <circle r={5} fill={reached ? accent : 'currentColor'} className={reached ? '' : 'text-neutral-300 dark:text-neutral-600'} />
               <text y={34} textAnchor="middle" className="font-mono" fontSize={11} fill="currentColor">
                 <tspan className={reached ? accentText : 'text-neutral-400'}>{String(i + 1).padStart(2, '0')}</tspan>
@@ -195,11 +244,16 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel }:
         })()}
       </div>
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex items-center justify-between gap-3">
+        {interactHint && (
+          <p className={`font-mono text-[10px] uppercase tracking-widest transition-opacity duration-300 ${showHint ? 'opacity-100' : 'opacity-0'} ${accentText}`}>
+            <span aria-hidden>↖</span> {interactHint}
+          </p>
+        )}
         <Magnetic scaleOnHover={1.08}>
           <button
             onClick={() => runTo(FINAL)}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors shrink-0"
           >
             <span aria-hidden>▶</span> {replayLabel}
           </button>

@@ -67,6 +67,7 @@ export interface CaseStudyContent {
   stageTrackerLabel?: string // "Idea → Demo"
   stages?: string[] // ['Idea', 'Prototype', 'POC', 'Demo']
   stageReplay?: string // replay label for the idea pipeline
+  stageInteractHint?: string // "Click a stage to replay up to it" — flashes briefly after the auto-run lands
   // persona-workflows: live roster + watch-hours banner
   liveRosterLabel?: string // generic per-card label, e.g. "AI Streamer" (+ 01-04)
   liveRosterIllustrative?: string // "Illustrative — not a real screenshot" disclaimer
@@ -88,6 +89,14 @@ export interface CaseStudyContent {
   liveProofTitle?: string
   liveProofBody?: string
   scrambleProofHint?: string // caption under the interactive scramble demo
+  // portfolio-site: live system-status panel (second live-proof beat)
+  statusTitle?: string // "Live, right now" label above the status panel
+  statusReducedMotion?: string // row label: "Reduced motion"
+  statusTheme?: string // row label: "Theme"
+  statusBreakpoint?: string // row label: "Breakpoint"
+  statusLang?: string // row label: "Language"
+  statusReducedMotionOn?: string // value shown when prefers-reduced-motion is on
+  statusReducedMotionOff?: string // value shown when prefers-reduced-motion is off
 }
 
 export interface ProjectPageCopy {
@@ -524,6 +533,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     stageTrackerLabel: 'Idea → Demo',
     stages: ['Idea', 'Prototype', 'POC', 'Demo'],
     stageReplay: 'Replay',
+    stageInteractHint: 'Click a stage to replay up to it',
   },
   'persona-workflows': {
     label: 'AI Character Live Runtime',
@@ -660,6 +670,13 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     liveProofTitle: 'This page is the artifact.',
     liveProofBody: 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.',
     scrambleProofHint: 'Tap a script — this is the same effect every heading on the site uses.',
+    statusTitle: 'Live, right now — not a screenshot',
+    statusReducedMotion: 'Reduced motion',
+    statusTheme: 'Theme',
+    statusBreakpoint: 'Breakpoint',
+    statusLang: 'Language',
+    statusReducedMotionOn: 'on — animations skipped',
+    statusReducedMotionOff: 'off',
   },
 }
 
@@ -702,6 +719,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     stageTrackerLabel: '想法 → Demo',
     stages: ['想法', 'Prototype', 'POC', 'Demo'],
     stageReplay: '重播',
+    stageInteractHint: '點擊任一階段可重播到該階段',
   },
   'persona-workflows': {
     label: 'AI 角色直播 Runtime',
@@ -838,6 +856,13 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     liveProofTitle: '這個頁面本身就是成品。',
     liveProofBody: '你剛剛滑過的每個標題都是一個字一個字解碼出來的。切換網站語言，整個頁面會重新用新的文字系統解碼一次——是真的做出來的，不是套範本。',
     scrambleProofHint: '點一下任一語言——這就是全站每個標題用的同一個效果。',
+    statusTitle: '即時狀態，現在發生——不是截圖',
+    statusReducedMotion: '減少動態效果',
+    statusTheme: '主題',
+    statusBreakpoint: '版面寬度',
+    statusLang: '語言',
+    statusReducedMotionOn: '已啟用——動畫已跳過',
+    statusReducedMotionOff: '未啟用',
   },
 }
 
@@ -880,6 +905,7 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     stageTrackerLabel: 'アイデア → デモ',
     stages: ['アイデア', 'プロトタイプ', 'POC', 'デモ'],
     stageReplay: '再生',
+    stageInteractHint: '各ステージをクリックすると、その段階まで再生されます',
   },
   'persona-workflows': {
     label: 'AIキャラクター・ライブランタイム',
@@ -1016,6 +1042,13 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     liveProofTitle: 'このページ自体が成果物。',
     liveProofBody: 'スクロールして見た見出しはすべて、一文字ずつ解読されて表示されたもの。サイトの言語を切り替えると、ページ全体が新しい文字体系で再びスクランブルされる — テンプレートではなく、実際に作られたものだから。',
     scrambleProofHint: 'いずれかの言語をタップ — サイト全ての見出しと同じエフェクトです。',
+    statusTitle: 'リアルタイムの状態 — スクリーンショットではない',
+    statusReducedMotion: 'モーション削減',
+    statusTheme: 'テーマ',
+    statusBreakpoint: 'ブレークポイント',
+    statusLang: '言語',
+    statusReducedMotionOn: '有効 — アニメーションをスキップ中',
+    statusReducedMotionOff: '無効',
   },
 }
 
@@ -1058,6 +1091,7 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     stageTrackerLabel: '아이디어 → 데모',
     stages: ['아이디어', '프로토타입', 'POC', '데모'],
     stageReplay: '다시 재생',
+    stageInteractHint: '단계를 클릭하면 그 단계까지 다시 재생됩니다',
   },
   'persona-workflows': {
     label: 'AI 캐릭터 라이브 런타임',
@@ -1194,6 +1228,13 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     liveProofTitle: '이 페이지 자체가 결과물이다.',
     liveProofBody: '스크롤하며 지나친 모든 제목은 한 글자씩 디코딩되어 나타난 것이다. 사이트 언어를 바꾸면 페이지 전체가 새로운 문자 체계로 다시 스크램블된다 — 템플릿이 아니라 실제로 만들어졌기 때문이다.',
     scrambleProofHint: '아무 언어나 눌러보세요 — 사이트의 모든 제목에 쓰인 바로 그 효과입니다.',
+    statusTitle: '실시간 상태 — 스크린샷이 아닙니다',
+    statusReducedMotion: '모션 감소',
+    statusTheme: '테마',
+    statusBreakpoint: '브레이크포인트',
+    statusLang: '언어',
+    statusReducedMotionOn: '켜짐 — 애니메이션 건너뜀',
+    statusReducedMotionOff: '꺼짐',
   },
 }
 
