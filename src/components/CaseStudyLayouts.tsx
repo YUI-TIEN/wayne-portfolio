@@ -500,6 +500,14 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               }}
               reducedMotionOn={p.statusReducedMotionOn ?? 'on — animations skipped'}
               reducedMotionOff={p.statusReducedMotionOff ?? 'off'}
+              rowMeanings={{
+                reducedMotion: p.statusMeaningReducedMotion ?? 'honors your OS motion setting',
+                theme: p.statusMeaningTheme ?? 'follows your saved theme choice',
+                breakpoint: p.statusMeaningBreakpoint ?? 'layout tier for this width — resize to move it',
+                lang: p.statusMeaningLang ?? 'active locale, decoded in its own script',
+              }}
+              resizeHint={p.statusResizeHint}
+              themeHint={p.statusThemeHint}
             />
 
             <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">

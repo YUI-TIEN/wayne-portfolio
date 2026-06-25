@@ -54,6 +54,21 @@
   100% { transform: translateX(-50%); }
 }
 
+/* Live status panel: an equalizer that runs when motion is allowed and freezes
+   flat under prefers-reduced-motion. It sits in the "Reduced motion" readout,
+   so the indicator literally demonstrates the value it reports. */
+@keyframes liveEq {
+  0%, 100% { transform: scaleY(0.25); }
+  50% { transform: scaleY(1); }
+}
+.live-eq-bar {
+  transform-origin: bottom center;
+  animation: liveEq 0.9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-eq-bar { animation: none; transform: scaleY(0.25); }
+}
+
 .marquee-container {
   overflow-x: auto;
   overflow-y: hidden;

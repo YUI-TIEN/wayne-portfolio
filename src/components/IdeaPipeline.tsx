@@ -159,6 +159,33 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
     tlRef.current = tl
   }
 
+  // Click-to-inspect: move the token from wherever it currently is to the
+  // clicked stage and grow/shrink the track fill to match — WITHOUT rewinding
+  // to stage 0 and replaying the whole pipeline. Only the Replay button does a
+  // full from-scratch run (runTo). This is what makes the stages feel like
+  // selectable steps rather than a button that always restarts the animation.
+  const goTo = (target: number) => {
+    setShowHint(false)
+    if (target === tokenStage) return
+    if (skipsScrollAnimation()) {
+      setTokenStage(target)
+      setMaturity(target)
+      return
+    }
+    tlRef.current?.kill()
+    const tl = gsap.timeline()
+    tl.to(tokenRef.current, {
+      x: STAGE_X[target],
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onStart: () => setMaturity(target),
+    })
+    tl.to(trackFillRef.current, { scaleX: target / FINAL, duration: 0.5, ease: 'power2.inOut' }, '<')
+    tl.to(tokenRef.current, { scale: 1.15, duration: 0.12, ease: 'power1.out' })
+    tl.to(tokenRef.current, { scale: 1, duration: 0.18, ease: 'power2.out', onComplete: () => setTokenStage(target) })
+    tlRef.current = tl
+  }
+
   useEffect(() => {
     if (skipsScrollAnimation() || !rootRef.current) return
     const el = rootRef.current
@@ -193,29 +220,34 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
         {/* Stage stops */}
         {stages.map((stage, i) => {
           const reached = tokenStage >= i
+          const active = hovered === i
           return (
             <g
               key={stage}
               transform={`translate(${STAGE_X[i]}, ${TRACK_Y})`}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(-1)}
-              onClick={() => runTo(i)}
+              onClick={() => goTo(i)}
               className="cursor-pointer"
             >
               {/* hit area + node dot */}
               <circle r={16} fill="transparent" />
+              {/* Persistent hover ring: makes it unmistakable that each station
+                  is an interactive target. Appears under the cursor on hover,
+                  separate from the post-run pulse ring below. */}
+              <circle r={11} fill="none" stroke={accent} strokeWidth={1.25} className="transition-opacity duration-200" opacity={active ? 0.5 : 0} />
               {/* Affordance ring: pulses a couple of times right after the
                   auto-run finishes, on whichever station the run landed on,
-                  so the click-to-replay interaction is discovered instead of
+                  so the click-to-inspect interaction is discovered instead of
                   requiring a chance hover. opacity 0 at rest — only visible
                   while the pulse tween (started from runTo's onComplete) is
                   actually running. */}
               <circle ref={(el) => { nudgeRefs.current[i] = el }} r={8} fill="none" stroke={accent} strokeWidth={1.5} opacity={0} />
-              <circle r={5} fill={reached ? accent : 'currentColor'} className={reached ? '' : 'text-neutral-300 dark:text-neutral-600'} />
+              <circle r={active ? 6.5 : 5} fill={reached || active ? accent : 'currentColor'} className={`transition-all duration-200 ${reached || active ? '' : 'text-neutral-300 dark:text-neutral-600'}`} />
               <text y={34} textAnchor="middle" className="font-mono" fontSize={11} fill="currentColor">
-                <tspan className={reached ? accentText : 'text-neutral-400'}>{String(i + 1).padStart(2, '0')}</tspan>
+                <tspan className={reached || active ? accentText : 'text-neutral-400'}>{String(i + 1).padStart(2, '0')}</tspan>
               </text>
-              <text y={50} textAnchor="middle" className="font-serif" fontSize={15} fill="currentColor">{stage}</text>
+              <text y={50} textAnchor="middle" className={`font-serif transition-opacity duration-200 ${active ? 'opacity-100' : 'opacity-80'}`} fontSize={15} fill="currentColor">{stage}</text>
             </g>
           )
         })}
@@ -246,7 +278,7 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
 
       <div className="mt-4 flex items-center justify-between gap-3">
         {interactHint && (
-          <p className={`font-mono text-[10px] uppercase tracking-widest transition-opacity duration-300 ${showHint ? 'opacity-100' : 'opacity-0'} ${accentText}`}>
+          <p className={`font-mono text-[10px] uppercase tracking-widest transition-opacity duration-300 ${showHint ? 'opacity-100' : 'opacity-60'} ${accentText}`}>
             <span aria-hidden>↖</span> {interactHint}
           </p>
         )}
