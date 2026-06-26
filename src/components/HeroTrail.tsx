@@ -21,7 +21,13 @@ const MAX_POINTS = 60
 const FADE_PER_FRAME = 0.012 // how fast each point's life decays (~lower = longer tail)
 const MAX_WIDTH = 5 // stroke width at the freshest point (px)
 
-export function HeroTrail({ color = '#C4FF3D' }: { color?: string }) {
+export function HeroTrail({
+  colorLight = '#3B5BFC',
+  colorDark = '#C4FF3D',
+}: {
+  colorLight?: string
+  colorDark?: string
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -45,6 +51,17 @@ export function HeroTrail({ color = '#C4FF3D' }: { color?: string }) {
     let height = 0
     const points: TrailPoint[] = []
     let rafId = 0
+
+    // Track the theme so the trail stays legible in both modes (a brand-blue
+    // line on the light cream background, a lime line on the dark ink one).
+    // The theme toggle flips the `dark` class on <html>, so observe that
+    // instead of re-running the whole effect.
+    const isDark = () => document.documentElement.classList.contains('dark')
+    let strokeColor = isDark() ? colorDark : colorLight
+    const themeObserver = new MutationObserver(() => {
+      strokeColor = isDark() ? colorDark : colorLight
+    })
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     const resize = () => {
       const rect = host.getBoundingClientRect()
@@ -88,7 +105,7 @@ export function HeroTrail({ color = '#C4FF3D' }: { color?: string }) {
       if (points.length >= 2) {
         ctx.lineCap = 'round'
         ctx.lineJoin = 'round'
-        ctx.strokeStyle = color
+        ctx.strokeStyle = strokeColor
         // Draw each segment individually so width + alpha can taper along the
         // trail: freshest (head) is widest/most opaque, oldest (tail) thins
         // and fades to nothing. A smooth quadratic through the midpoints keeps
@@ -118,8 +135,9 @@ export function HeroTrail({ color = '#C4FF3D' }: { color?: string }) {
       cancelAnimationFrame(rafId)
       window.removeEventListener('pointermove', onPointerMove)
       ro.disconnect()
+      themeObserver.disconnect()
     }
-  }, [color])
+  }, [colorLight, colorDark])
 
   return (
     <canvas

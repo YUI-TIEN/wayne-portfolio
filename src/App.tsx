@@ -164,10 +164,14 @@ function Home() {
 
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
-      <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
-        {/* Ambient cursor-trail sketch behind the hero — fills the empty space
-            around the card; no click needed, fades from the tail. */}
-        <HeroTrail />
+      {/* Full-width wrapper hosts the ambient cursor trail so it covers the
+          whole hero band (incl. the wide empty margins on desktop), not just
+          the centered max-w-2xl column. The trail sits at z-0 behind the
+          centered card, so the card stays readable while the surrounding
+          space comes alive. */}
+      <div className="relative">
+        <HeroTrail colorLight="#3B5BFC" colorDark="#C4FF3D" />
+        <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
           <div data-hero-tag className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
             <ScrambleText text={t.hero.badge} />
@@ -183,7 +187,8 @@ function Home() {
             </h1>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
 
       {/* Marquee Ribbon */}
       <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-brand-blue py-3 marquee-container">
