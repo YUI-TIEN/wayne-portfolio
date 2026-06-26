@@ -35,13 +35,7 @@ export function HeroDotGrid({
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    if (
-      typeof window === 'undefined' ||
-      window.matchMedia('(pointer: coarse)').matches ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      return
-    }
+    if (typeof window === 'undefined') return
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -49,6 +43,56 @@ export function HeroDotGrid({
     if (!host) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    const isDarkMode = () => document.documentElement.classList.contains('dark')
+
+    // Touch devices have no hovering pointer, and reduced-motion users opt out
+    // of animation — but the grid is part of the page's head/tail identity, so
+    // instead of rendering nothing we paint a single static lattice (and
+    // repaint it on resize / theme change). The interactive repulsion path
+    // below only runs for fine-pointer users who haven't opted out.
+    const isStatic =
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (isStatic) {
+      let staticDpr = window.devicePixelRatio || 1
+      const paintStatic = () => {
+        const rect = host.getBoundingClientRect()
+        const w = rect.width
+        const h = rect.height
+        staticDpr = window.devicePixelRatio || 1
+        canvas.width = Math.round(w * staticDpr)
+        canvas.height = Math.round(h * staticDpr)
+        canvas.style.width = `${w}px`
+        canvas.style.height = `${h}px`
+        ctx.setTransform(staticDpr, 0, 0, staticDpr, 0, 0)
+        ctx.clearRect(0, 0, w, h)
+        ctx.fillStyle = isDarkMode() ? colorDark : colorLight
+        ctx.globalAlpha = 0.18
+        const cols = Math.floor(w / SPACING)
+        const rows = Math.floor(h / SPACING)
+        const ox = (w - (cols - 1) * SPACING) / 2
+        const oy = (h - (rows - 1) * SPACING) / 2
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            ctx.beginPath()
+            ctx.arc(ox + c * SPACING, oy + r * SPACING, DOT_RADIUS, 0, Math.PI * 2)
+            ctx.fill()
+          }
+        }
+        ctx.globalAlpha = 1
+      }
+      paintStatic()
+      const ro = new ResizeObserver(paintStatic)
+      ro.observe(host)
+      const themeObs = new MutationObserver(paintStatic)
+      themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+      return () => {
+        ro.disconnect()
+        themeObs.disconnect()
+      }
+    }
 
     let dpr = window.devicePixelRatio || 1
     let width = 0
@@ -63,10 +107,9 @@ export function HeroDotGrid({
     // Theme-aware: brand-blue on the light cream bg, lime on the dark ink bg.
     // The toggle flips the `dark` class on <html>, so observe that rather than
     // re-running the whole effect.
-    const isDark = () => document.documentElement.classList.contains('dark')
-    let dotColor = isDark() ? colorDark : colorLight
+    let dotColor = isDarkMode() ? colorDark : colorLight
     const themeObserver = new MutationObserver(() => {
-      dotColor = isDark() ? colorDark : colorLight
+      dotColor = isDarkMode() ? colorDark : colorLight
     })
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 

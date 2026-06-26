@@ -342,7 +342,12 @@ function Home() {
         </div>
 
         <footer id="contact" className="bg-brand-orange relative py-16 md:py-24 w-full overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 relative w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
+          {/* Bookend to the hero's dot field: same interactive grid on the
+              orange footer, but white dots instead of blue/lime so head and
+              tail rhyme without being identical. Footer is always orange (no
+              dark variant), so both color props are the same fixed white. */}
+          <HeroDotGrid colorLight="#FFFFFF" colorDark="#FFFFFF" />
+          <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
             <div className="w-full md:w-1/3 flex flex-col items-center md:items-start gap-6 md:gap-8 relative z-20">
               <Magnetic scaleOnHover={1.04}>
                 <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
