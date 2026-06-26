@@ -135,42 +135,43 @@ function Home() {
       <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={profilePageSchema} />
       <CustomCursor />
 
-      {/* Navigation */}
-      <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="flex items-center gap-4">
-          <span className="text-neutral-400">[</span>
-          <Magnetic scaleOnHover={1.15}>
-            <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.work} /></button>
-          </Magnetic>
-          <Magnetic scaleOnHover={1.15}>
-            <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.about} /></button>
-          </Magnetic>
-          <Magnetic scaleOnHover={1.15}>
-            <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.contact} /></button>
-          </Magnetic>
-          <LangSwitcher lang={lang} />
-          <Magnetic scaleOnHover={1.2}>
-            <button
-              onClick={toggleTheme}
-              className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun size={14} /> : <Moon size={14} />}
-            </button>
-          </Magnetic>
-          <span className="text-neutral-400">]</span>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
       {/* Full-width wrapper hosts the ambient dot grid so it covers the whole
-          hero band (incl. the wide empty margins on desktop), not just the
-          centered max-w-2xl column. The grid sits at z-0 behind the centered
-          card, so the card stays readable while the surrounding space comes
-          alive — dots near the cursor are pushed out, grow, and brighten. */}
+          top band — nav included — not just the centered max-w-2xl column.
+          The grid sits at z-0 behind everything; nav and the hero card are
+          z-10+ on top with transparent backgrounds, so the dot field shows
+          through under the nav instead of being masked by an opaque strip. */}
       <div className="relative">
         <HeroDotGrid colorLight="#3B5BFC" colorDark="#C4FF3D" />
+
+        {/* Navigation */}
+        <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
+          <div className="flex items-center gap-4">
+            <span className="text-neutral-400">[</span>
+            <Magnetic scaleOnHover={1.15}>
+              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.work} /></button>
+            </Magnetic>
+            <Magnetic scaleOnHover={1.15}>
+              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.about} /></button>
+            </Magnetic>
+            <Magnetic scaleOnHover={1.15}>
+              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.contact} /></button>
+            </Magnetic>
+            <LangSwitcher lang={lang} />
+            <Magnetic scaleOnHover={1.2}>
+              <button
+                onClick={toggleTheme}
+                className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
+                aria-label="Toggle theme"
+              >
+                {isDark ? <Sun size={14} /> : <Moon size={14} />}
+              </button>
+            </Magnetic>
+            <span className="text-neutral-400">]</span>
+          </div>
+        </nav>
+
         <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
           <div data-hero-tag className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
