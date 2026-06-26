@@ -7,7 +7,7 @@ import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
-import { HeroTrail } from './components/HeroTrail'
+import { HeroDotGrid } from './components/HeroDotGrid'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -164,13 +164,13 @@ function Home() {
 
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
-      {/* Full-width wrapper hosts the ambient cursor trail so it covers the
-          whole hero band (incl. the wide empty margins on desktop), not just
-          the centered max-w-2xl column. The trail sits at z-0 behind the
-          centered card, so the card stays readable while the surrounding
-          space comes alive. */}
+      {/* Full-width wrapper hosts the ambient dot grid so it covers the whole
+          hero band (incl. the wide empty margins on desktop), not just the
+          centered max-w-2xl column. The grid sits at z-0 behind the centered
+          card, so the card stays readable while the surrounding space comes
+          alive — dots near the cursor are pushed out, grow, and brighten. */}
       <div className="relative">
-        <HeroTrail colorLight="#3B5BFC" colorDark="#C4FF3D" />
+        <HeroDotGrid colorLight="#3B5BFC" colorDark="#C4FF3D" />
         <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
           <div data-hero-tag className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
