@@ -7,6 +7,7 @@ import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
+import { HeroTrail } from './components/HeroTrail'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -164,6 +165,9 @@ function Home() {
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
       <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative px-6 py-12">
+        {/* Ambient cursor-trail sketch behind the hero — fills the empty space
+            around the card; no click needed, fades from the tail. */}
+        <HeroTrail />
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
           <div data-hero-tag className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
             <ScrambleText text={t.hero.badge} />
