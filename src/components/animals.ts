@@ -1,15 +1,19 @@
 // AUTO-GENERATED from the svgrepo pixel-animal set (artist: Thiago, CC Attribution).
-// Each animal's original art is preserved verbatim in `body`; the eye square is
-// re-drawn on top by PixelCritter so its pupil can track the cursor. To add or
-// retune an animal, edit scripts and regenerate rather than hand-editing here.
+// Each animal's original art is preserved verbatim in `body`; the eye is re-drawn
+// on top by PixelCritter so its pupil can track the cursor. To add or retune an
+// animal, edit the generator and regenerate rather than hand-editing here.
 
 export interface Animal {
   id: string
   label: string
-  /** Eye/pupil square in the shared 0–512 viewBox. */
+  /** Eye socket in the shared 0–512 viewBox (square unless eyeH overrides height). */
   eye: { x: number; y: number; size: number }
+  /** Socket height when it isn't square (the bee's tall white eye). */
+  eyeH?: number
   /** Color behind the eye so the sliding pupil reads as a socket, not a hole. */
   faceColor: string
+  /** Pupil square; defaults to eye.size so the pupil fills the socket. */
+  pupilSize?: number
   /** Original inner SVG markup (everything inside <svg>), faces right. */
   body: string
 }
@@ -21,6 +25,15 @@ export const ANIMALS: Animal[] = [
     eye: { x: 358, y: 230, size: 26 },
     faceColor: '#A5A5A5',
     body: "<g id=\"wolf\"><g><rect x=\"358\" y=\"230\" width=\"26\" height=\"26\"/><rect x=\"435\" y=\"256\" width=\"26\" height=\"26\"/></g><path style=\"fill:#A5A5A5;\" d=\"M410,230v-25.2V179h-26v-25.4V128v-26h-26v26h-25v26h-26v25h-25v26h-26h-25.6h-25.6h-25.6h-25.6H128 v25h-26v-25.2v-25.6v-25.6V128H77v26H51v25.2v25.6v25.6V256v25.6V307h26v25.8v25.6V384v25.6v25.6V461h25v-25.8v-25.6V384v-26h26 h25.6h25.6h25.6h25.6H256v26v25.6v25.6V461h26v-25.8v-25.6V384v-26h25.2H333v-25h25.4H384v-26h25.6H435v-25.4V256v-26H410z M384,256h-26v-26h26V256z\"/><g><polygon style=\"fill:#727271;\" points=\"128,384 128,409.6 128,435.2 128,461 154,461 154,435.2 154,409.6 154,384 154,358 128,358 \"/><polygon style=\"fill:#727271;\" points=\"307,358 307,384 307,409.6 307,435.2 307,461 333,461 333,435.2 333,409.6 333,384 333,358 \"/></g></g>",
+  },
+  {
+    id: 'bee',
+    label: 'Bee',
+    eye: { x: 384, y: 230, size: 26 },
+    faceColor: '#FFFFFF',
+    eyeH: 52,
+    pupilSize: 18,
+    body: "<g id=\"bee\"><g><polygon style=\"fill:#FEC738;\" points=\"102,256 77,256 77,282 51,282 51,307 77,307 77,333 102,333 102,358 128,358 128,332.8 128,307.2 128,281.6 128,256 128,230 102,230 \"/><polygon style=\"fill:#FEC738;\" points=\"179,256 154,256 154,281.6 154,307.2 154,332.8 154,358.4 154,384 179.2,384 205,384 205,358.4 205,332.8 205,307.2 205,282 179,282 \"/><polygon style=\"fill:#FEC738;\" points=\"333,282 333,256 333,230 307,230 307,256 307,281.6 307,307.2 307,332.8 307,358 333,358 333,332.8 333,307 358,307 358,282 \"/><polygon style=\"fill:#FEC738;\" points=\"230,307 230,332.8 230,358.4 230,384 256,384 282,384 282,358.4 282,332.8 282,307 256,307 \"/></g><polygon style=\"fill:#BFC0C0;\" points=\"307,154 307,128 307,102 281.6,102 256,102 230,102 230,128 256,128 256,154 282,154 282,179 307,179 307,204.8 307,230 333,230 333,204.8 333,179.2 333,154 \"/><rect x=\"128\" y=\"230\" style=\"fill:#070000;\" width=\"26\" height=\"25.68\"/><rect x=\"128\" y=\"255.68\" style=\"fill:#070000;\" width=\"26\" height=\"25.68\"/><polygon style=\"fill:#FFFFFF;\" points=\"384,230 384,256 384,282 410,282 410,256 410,230 \"/><rect x=\"128\" y=\"281.36\" style=\"fill:#070000;\" width=\"26\" height=\"25.68\"/><rect x=\"204.8\" y=\"281.6\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><polygon style=\"fill:#A0A09C;\" points=\"282,179 282,154 256,154 256,128 230.4,128 205,128 205,102 179.2,102 153.6,102 128,102 128,128 102,128 102,153.6 102,179 128,179 128,204.8 128,230 154,230 154,256 179,256 179,282 204.8,282 230,282 230,307 256,307 282,307 282,282 307,282 307,256 307,230.4 307,204.8 307,179 \"/><rect x=\"281.6\" y=\"281.6\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><rect x=\"128\" y=\"307.04\" style=\"fill:#070000;\" width=\"26\" height=\"25.68\"/><rect x=\"204.8\" y=\"307.2\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><rect x=\"281.6\" y=\"307.2\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><rect x=\"128\" y=\"332.72\" style=\"fill:#070000;\" width=\"26\" height=\"25.68\"/><rect x=\"204.8\" y=\"332.8\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><rect x=\"281.6\" y=\"332.8\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><g><polygon style=\"fill:#070000;\" points=\"435,281.6 435,256 435,230 410,230 410,256 410,282 384,282 384,256 384,230 410,230 410,205 384,205 358.4,205 333,205 333,230.4 333,256 333,282 358,282 358,307 384,307 384,333 409.6,333 435,333 435,307.2 \"/><rect x=\"435\" y=\"333\" style=\"fill:#070000;\" width=\"26\" height=\"25\"/></g><rect x=\"204.8\" y=\"358.4\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><rect x=\"281.6\" y=\"358.4\" style=\"fill:#070000;\" width=\"25.6\" height=\"25.6\"/><g><rect x=\"102\" y=\"358\" style=\"fill:#9F7424;\" width=\"26\" height=\"26\"/><rect x=\"77\" y=\"384\" style=\"fill:#9F7424;\" width=\"25\" height=\"26\"/><rect x=\"179\" y=\"384\" style=\"fill:#9F7424;\" width=\"26\" height=\"26\"/><rect x=\"256\" y=\"384\" style=\"fill:#9F7424;\" width=\"26\" height=\"26\"/><rect x=\"154\" y=\"410\" style=\"fill:#9F7424;\" width=\"25\" height=\"25\"/><rect x=\"230\" y=\"410\" style=\"fill:#9F7424;\" width=\"26\" height=\"25\"/></g></g>",
   },
   {
     id: 'ounce',

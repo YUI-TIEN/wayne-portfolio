@@ -111,6 +111,16 @@ export function PixelCritter({ className }: { className?: string }) {
   const cycle = () => setIndex((i) => (i + 1) % ANIMALS.length)
   const clipId = `critter-eye-${animal.id}`
 
+  // Socket can be taller than wide (the bee's white eye), and the pupil can be
+  // smaller than the socket (a dark pupil floating in a white eye). For the
+  // solid-eyed animals both default to the eye square, so the pupil fills the
+  // socket and reads as one moving black eye.
+  const sw = eye.size
+  const sh = animal.eyeH ?? eye.size
+  const ps = animal.pupilSize ?? eye.size
+  const px = eye.x + (sw - ps) / 2
+  const py = eye.y + (sh - ps) / 2
+
   return (
     <svg
       ref={svgRef}
@@ -130,14 +140,14 @@ export function PixelCritter({ className }: { className?: string }) {
     >
       {/* Original animal art (faces right), preserved verbatim. */}
       <g dangerouslySetInnerHTML={{ __html: animal.body }} />
-      {/* Socket: face-colored backing + a pupil clipped to the eye square, so the
+      {/* Socket: a colored backing + a pupil clipped to the socket, so the
           sliding pupil never spills past the eye. */}
       <clipPath id={clipId}>
-        <rect x={eye.x} y={eye.y} width={eye.size} height={eye.size} />
+        <rect x={eye.x} y={eye.y} width={sw} height={sh} />
       </clipPath>
-      <rect x={eye.x} y={eye.y} width={eye.size} height={eye.size} fill={animal.faceColor} />
+      <rect x={eye.x} y={eye.y} width={sw} height={sh} fill={animal.faceColor} />
       <g clipPath={`url(#${clipId})`}>
-        <rect ref={pupilRef} x={eye.x} y={eye.y} width={eye.size} height={eye.size} fill="#000000" />
+        <rect ref={pupilRef} x={px} y={py} width={ps} height={ps} fill="#000000" />
       </g>
     </svg>
   )
