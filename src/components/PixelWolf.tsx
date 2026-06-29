@@ -20,7 +20,8 @@ import { useEffect, useRef } from 'react'
 const EYE = { x: 358, y: 230, size: 26 }
 
 const MAX_SHIFT = 8 // pupil travel from center (viewBox units)
-const MAX_TILT = 30 // max snout tilt toward the cursor (degrees)
+const MAX_TILT = 12 // max snout tilt toward the cursor (degrees) — kept subtle
+//                     so the eye's motion stays the more visible of the two
 const EASE = 0.18 // tilt + pupil smoothing (higher = snappier)
 const FLIP_EASE = 0.2 // turn-around smoothing
 
