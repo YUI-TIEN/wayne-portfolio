@@ -8,7 +8,7 @@ import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { HeroDotGrid } from './components/HeroDotGrid'
-import { PixelWolf } from './components/PixelWolf'
+import { PixelCritter } from './components/PixelCritter'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -176,7 +176,7 @@ function Home() {
         <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
           <div data-hero-tag className="absolute -left-2 md:-left-24 top-[-44px] md:top-[-64px] z-20 active:scale-95 transition-transform">
-            <PixelWolf className="w-20 h-20 md:w-24 md:h-24 block" />
+            <PixelCritter className="w-20 h-20 md:w-24 md:h-24 block" />
           </div>
           <div data-hero-tag className="bg-brand-orange text-neutral-950 text-xs md:text-sm font-mono px-2.5 py-1.5 md:px-3.5 md:py-2 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform">
             <ScrambleText text={t.hero.tag} />
@@ -406,6 +406,13 @@ function Home() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
             <div><ScrambleText text={t.footer.copyright} /></div>
             <div><ScrambleText text={t.footer.meta} /></div>
+          </div>
+          {/* Required attribution for the hero's pixel-animal set (CC Attribution). */}
+          <div className="mt-4 text-center sm:text-right text-[10px] font-mono text-neutral-400 dark:text-neutral-500">
+            Pixel animals by{' '}
+            <a href="https://www.behance.net/thiagopontes00?ref=svgrepo.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">Thiago</a>
+            {' '}(CC Attribution) via{' '}
+            <a href="https://www.svgrepo.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">SVG Repo</a>
           </div>
         </div>
       </div>
