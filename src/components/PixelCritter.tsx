@@ -31,6 +31,7 @@ export function PixelCritter({ className }: { className?: string }) {
 
   const svgRef = useRef<SVGSVGElement>(null)
   const pupilRef = useRef<SVGRectElement>(null)
+  const popRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -108,7 +109,27 @@ export function PixelCritter({ className }: { className?: string }) {
     // captured (and the pose resets to facing-right, which reads as a fresh hop-in).
   }, [animal.id])
 
-  const cycle = () => setIndex((i) => (i + 1) % ANIMALS.length)
+  // Advance to the next animal and play a squash-then-overshoot "pop" so the
+  // swap reads as a deliberate hop rather than a silent texture change. Runs on
+  // the outer wrapper (the svg keeps its own rAF tilt/flip transform untouched);
+  // skipped under reduced-motion.
+  const cycle = () => {
+    setIndex((i) => (i + 1) % ANIMALS.length)
+    const el = popRef.current
+    if (
+      el?.animate &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      el.animate(
+        [
+          { transform: 'scale(0.62) rotate(-12deg)' },
+          { transform: 'scale(1.12) rotate(6deg)', offset: 0.55 },
+          { transform: 'scale(1) rotate(0deg)' },
+        ],
+        { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' },
+      )
+    }
+  }
   const clipId = `critter-eye-${animal.id}`
 
   // Socket can be taller than wide (the bee's white eye), and the pupil can be
@@ -121,12 +142,15 @@ export function PixelCritter({ className }: { className?: string }) {
   const px = eye.x + (sw - ps) / 2
   const py = eye.y + (sh - ps) / 2
 
+  // Three layers so the effects never fight each other:
+  //   outer (popRef) — click target + the switch "pop" (Web Animations)
+  //   inner          — hover grow/lift (CSS, motion-safe only)
+  //   svg            — the per-frame cursor tilt/flip (rAF, imperative)
   return (
-    <svg
-      ref={svgRef}
-      viewBox="0 0 512 512"
+    <div
+      ref={popRef}
       className={className}
-      style={{ transformOrigin: 'center', willChange: 'transform', cursor: 'pointer' }}
+      style={{ transformOrigin: 'center', cursor: 'pointer' }}
       role="button"
       tabIndex={0}
       aria-label={`Pixel ${animal.label} — click to change animal`}
@@ -138,18 +162,28 @@ export function PixelCritter({ className }: { className?: string }) {
         }
       }}
     >
-      {/* Original animal art (faces right), preserved verbatim. */}
-      <g dangerouslySetInnerHTML={{ __html: animal.body }} />
-      {/* Socket: a colored backing + a pupil clipped to the socket, so the
-          sliding pupil never spills past the eye. */}
-      <clipPath id={clipId}>
-        <rect x={eye.x} y={eye.y} width={sw} height={sh} />
-      </clipPath>
-      <rect x={eye.x} y={eye.y} width={sw} height={sh} fill={animal.faceColor} />
-      <g clipPath={`url(#${clipId})`}>
-        <rect ref={pupilRef} x={px} y={py} width={ps} height={ps} fill="#000000" />
-      </g>
-    </svg>
+      <div className="w-full h-full origin-center motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:scale-110">
+        <svg
+          ref={svgRef}
+          viewBox="0 0 512 512"
+          className="w-full h-full block"
+          style={{ transformOrigin: 'center', willChange: 'transform' }}
+          aria-hidden
+        >
+          {/* Original animal art (faces right), preserved verbatim. */}
+          <g dangerouslySetInnerHTML={{ __html: animal.body }} />
+          {/* Socket: a colored backing + a pupil clipped to the socket, so the
+              sliding pupil never spills past the eye. */}
+          <clipPath id={clipId}>
+            <rect x={eye.x} y={eye.y} width={sw} height={sh} />
+          </clipPath>
+          <rect x={eye.x} y={eye.y} width={sw} height={sh} fill={animal.faceColor} />
+          <g clipPath={`url(#${clipId})`}>
+            <rect ref={pupilRef} x={px} y={py} width={ps} height={ps} fill="#000000" />
+          </g>
+        </svg>
+      </div>
+    </div>
   )
 }
 
