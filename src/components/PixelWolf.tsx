@@ -18,8 +18,6 @@ import { useEffect, useRef } from 'react'
 
 // Eye geometry, in the SVG's 0–512 viewBox units.
 const EYE = { x: 358, y: 230, size: 26 }
-const EYE_CX = EYE.x + EYE.size / 2
-const EYE_CY = EYE.y + EYE.size / 2
 
 const MAX_SHIFT = 8 // pupil travel from center (viewBox units)
 const MAX_TILT = 30 // max snout tilt toward the cursor (degrees)
