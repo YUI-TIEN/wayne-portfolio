@@ -8,6 +8,7 @@ import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { HeroDotGrid } from './components/HeroDotGrid'
+import { PixelWolf } from './components/PixelWolf'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
@@ -174,11 +175,11 @@ function Home() {
 
         <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
         <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
-          <div data-hero-tag className="bg-brand-peach text-neutral-900 px-3 py-1.5 md:px-4 md:py-2 absolute -left-2 md:-left-20 top-[-20px] md:top-[-30px] shadow-sm font-mono text-[10px] md:text-xs z-20 -rotate-6 whitespace-nowrap active:scale-95 transition-transform">
-            <ScrambleText text={t.hero.badge} />
+          <div data-hero-tag className="bg-brand-peach p-1.5 md:p-2 absolute -left-2 md:-left-20 top-[-24px] md:top-[-40px] shadow-sm z-20 -rotate-6 active:scale-95 transition-transform">
+            <PixelWolf className="w-9 h-9 md:w-11 md:h-11 block" />
           </div>
           <div data-hero-tag className="bg-brand-orange text-neutral-950 text-[9px] md:text-[11px] font-mono px-2 py-1 md:px-3 md:py-1 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform">
-            <ScrambleText text={t.hero.availability} />
+            <ScrambleText text={t.hero.tag} />
           </div>
           <div data-hero-card className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
             <h1 className="text-2xl md:text-5xl font-serif leading-snug font-normal">

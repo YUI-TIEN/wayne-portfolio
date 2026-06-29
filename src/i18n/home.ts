@@ -289,8 +289,7 @@ const projectsKo: ProjectCard[] = [
 export interface HomeCopy {
   nav: { work: string; about: string; contact: string }
   hero: {
-    badge: string
-    availability: string
+    tag: string
     leadIn: string
     highlight1: string
     midText: string
@@ -334,8 +333,7 @@ export interface HomeCopy {
 const en: HomeCopy = {
   nav: { work: 'work', about: 'about', contact: 'contact' },
   hero: {
-    badge: '⚙️ AI Operations',
-    availability: 'Open to projects Q2 2026',
+    tag: 'AI Operation',
     leadIn: 'Yui (Wayne) Tien is a product builder with a love for',
     highlight1: 'AI workflows',
     midText: 'and',
@@ -395,8 +393,7 @@ const en: HomeCopy = {
 const zhTw: HomeCopy = {
   nav: { work: '作品', about: '關於', contact: '聯絡' },
   hero: {
-    badge: '⚙️ AI 維運',
-    availability: '2026 第二季開始接案',
+    tag: 'AI 維運',
     leadIn: '我是 Yui，也可以叫我 Wayne，擅長建立',
     highlight1: 'AI 工作流',
     midText: '跟',
@@ -456,8 +453,7 @@ const zhTw: HomeCopy = {
 const ja: HomeCopy = {
   nav: { work: '実績', about: '概要', contact: '連絡' },
   hero: {
-    badge: '⚙️ AI運用',
-    availability: '2026年Q2より新規プロジェクト受付中',
+    tag: 'AI運用',
     leadIn: 'Yui（Wayne）Tienは',
     highlight1: 'AIワークフロー',
     midText: 'と',
@@ -517,8 +513,7 @@ const ja: HomeCopy = {
 const ko: HomeCopy = {
   nav: { work: '작업', about: '소개', contact: '연락' },
   hero: {
-    badge: '⚙️ AI 운영',
-    availability: '2026년 2분기부터 새 프로젝트 모집',
+    tag: 'AI 운영',
     leadIn: 'Yui(Wayne) Tien은',
     highlight1: 'AI 워크플로우',
     midText: '와',
