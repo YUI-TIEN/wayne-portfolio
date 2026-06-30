@@ -10,16 +10,15 @@
 
     <meta name="author" content="Yui (Wayne) Tien" />
 
-    <!-- Open Graph / Twitter type+image+site_name don't vary per route; title/description/url/locale are set per-page via react-helmet-async (see src/seo/Seo.tsx) and the prerender step (scripts/prerender.mjs) -->
+    <!-- Constant OG/Twitter bits (type, site_name, card, image dimensions — all
+         our OG images are 1200×630). Per-route title/description/url/locale and
+         the og:image/twitter:image URL itself are set by react-helmet-async
+         (src/seo/Seo.tsx) and rewritten in the prerender step (scripts/prerender.mjs). -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Yui (Wayne) Tien" />
-    <meta property="og:image" content="https://waynetien.com/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Yui (Wayne) Tien — AI Product & Agent Workflow Portfolio" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:image" content="https://waynetien.com/og-image.jpg" />
-    <meta property="twitter:image:alt" content="Yui (Wayne) Tien — AI Product & Agent Workflow Portfolio" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

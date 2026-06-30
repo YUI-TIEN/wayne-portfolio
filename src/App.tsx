@@ -18,7 +18,7 @@ const ProjectPage = lazy(() =>
 )
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
-import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema } from './seo/schema'
+import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { homeCopy } from './i18n/home'
@@ -142,7 +142,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
-      <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={profilePageSchema} />
+      <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[profilePageSchema, faqPageSchema(t.faq.items)]} />
       <CustomCursor />
 
       {/* Hero Section */}
@@ -327,6 +327,34 @@ function Home() {
       </section>
       </ScrambleStagger>
 
+      {/* FAQ — visible Q&A, also emitted as FAQPage structured data (see the
+          faqPageSchema in jsonLd above). Plain-language answers double as
+          grounding for search and AI assistants. */}
+      <ScrambleStagger delay={0.28}>
+      <section id="faq" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
+        <div className="mb-8 md:mb-10">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+            <ScrambleText text={t.faq.eyebrow} />
+          </span>
+          <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
+            <ScrambleText text={t.faq.heading} />
+          </h2>
+        </div>
+        <dl className="border-t border-neutral-200 dark:border-neutral-800">
+          {t.faq.items.map((item, i) => (
+            <div key={i} className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-2 md:gap-8 py-6 md:py-8 border-b border-neutral-200 dark:border-neutral-800">
+              <dt className="font-serif text-xl md:text-2xl leading-snug text-neutral-900 dark:text-white">
+                <ScrambleText text={item.q} />
+              </dt>
+              <dd className="text-sm md:text-base leading-relaxed text-neutral-600 dark:text-neutral-400 font-sans">
+                {item.a}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+      </ScrambleStagger>
+
       {/* Footer Container */}
       <ScrambleStagger delay={0.32}>
       <div className="relative z-10 mt-16 w-full">
@@ -475,6 +503,7 @@ function ProjectDetail() {
           title={seo.title}
           description={seo.description}
           path={`/${lang}/project/${projectId}`}
+          ogImage={`/og/${projectId}.jpg`}
           jsonLd={[
             projectCreativeWorkSchema({
               name: seo.title,
@@ -546,9 +575,13 @@ function LangLayout() {
     if (existing) {
       existing.href = href
     } else {
+      // Load non-render-blocking (media=print, flip to all on load), mirroring
+      // the Western fonts and the prerendered snapshot's cjk-fonts link.
       const link = document.createElement('link')
       link.id = 'cjk-fonts'
       link.rel = 'stylesheet'
+      link.media = 'print'
+      link.onload = () => { link.media = 'all' }
       link.href = href
       document.head.appendChild(link)
     }

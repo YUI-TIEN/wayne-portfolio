@@ -25,7 +25,7 @@ const CJK_FONT_HREF = {
 // Rather than depend on that runtime behavior, strip every Helmet-managed
 // tag from the prerendered snapshot and rewrite them from a static lookup
 // table (seoData.mjs), so each route's output HTML is unambiguous.
-const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
+const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description|image|image:alt)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
 
 function rewriteHead(html, route) {
   const seo = routeSeo[route]
@@ -53,11 +53,19 @@ function rewriteHead(html, route) {
     `<meta property="og:title" content="${esc(seo.title)}">`,
     `<meta property="og:description" content="${esc(seo.description)}">`,
     ...(seo.ogLocale ? [`<meta property="og:locale" content="${seo.ogLocale}">`] : []),
+    ...(seo.ogImage
+      ? [
+          `<meta property="og:image" content="${seo.ogImage}">`,
+          `<meta property="og:image:alt" content="${esc(seo.title)}">`,
+          `<meta property="twitter:image" content="${seo.ogImage}">`,
+          `<meta property="twitter:image:alt" content="${esc(seo.title)}">`,
+        ]
+      : []),
     `<meta property="twitter:url" content="${url}">`,
     `<meta property="twitter:title" content="${esc(seo.title)}">`,
     `<meta property="twitter:description" content="${esc(seo.description)}">`,
     ...seo.jsonLd.map(schema => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`),
-    ...(CJK_FONT_HREF[lang] ? [`<link id="cjk-fonts" rel="stylesheet" href="${CJK_FONT_HREF[lang]}">`] : []),
+    ...(CJK_FONT_HREF[lang] ? [`<link id="cjk-fonts" rel="stylesheet" media="print" onload="this.media='all'" href="${CJK_FONT_HREF[lang]}">`] : []),
   ].join('\n    ')
 
   return stripped.replace('</head>', `    ${tags}\n  </head>`)

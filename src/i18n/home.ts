@@ -317,6 +317,11 @@ export interface HomeCopy {
     legend: { owned: string; ownedDesc: string; collaborated: string; collaboratedDesc: string }
     viewProject: string
   }
+  faq: {
+    eyebrow: string
+    heading: string
+    items: { q: string; a: string }[]
+  }
   projects: ProjectCard[]
   footer: {
     sayHello: string
@@ -376,6 +381,16 @@ const en: HomeCopy = {
       collaboratedDesc: 'means product, workflow, debugging, ops, or implementation work inside a team-owned project.',
     },
     viewProject: 'View Project',
+  },
+  faq: {
+    eyebrow: 'faq',
+    heading: 'Quick answers.',
+    items: [
+      { q: 'Who is Yui (Wayne) Tien?', a: 'A Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI. He bridges 0-to-1 product design with the technical orchestration of AI agents.' },
+      { q: 'What does he work on?', a: 'AI persona and character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery workflows that take ideas from POC to MVP to launch.' },
+      { q: 'Where is he based?', a: 'Taipei, Taiwan. He works in English and Mandarin Chinese.' },
+      { q: 'How can you reach him?', a: 'By email at youwei0112@gmail.com, or on LinkedIn (/in/yui-tien) and GitHub (@YUI-TIEN).' },
+    ],
   },
   projects: projectsEn,
   footer: {
@@ -437,6 +452,16 @@ const zhTw: HomeCopy = {
     },
     viewProject: '看這個專案',
   },
+  faq: {
+    eyebrow: '常見問題',
+    heading: '快速了解。',
+    items: [
+      { q: 'Yui（Wayne）Tien 是誰？', a: '常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
+      { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
+      { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
+      { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },
+    ],
+  },
   projects: projectsZhTw,
   footer: {
     sayHello: '打聲招呼吧！',
@@ -497,6 +522,16 @@ const ja: HomeCopy = {
     },
     viewProject: 'プロジェクトを見る',
   },
+  faq: {
+    eyebrow: 'よくある質問',
+    heading: 'クイックアンサー。',
+    items: [
+      { q: 'Yui（Wayne）Tienとは？', a: '台北を拠点とするAIプロダクトビルダーで、MorphusAIのDigital Persona Technical Director。0→1のプロダクト設計と、AIエージェントの挙動の技術的なオーケストレーションの両方を手がけています。' },
+      { q: '何に取り組んでいますか？', a: 'AIペルソナ・キャラクターシステム、エージェントのメモリと文脈の保持、ランタイム診断、そしてアイデアをPOCからMVP、ローンチへと運ぶデモ・トゥ・デリバリーのワークフロー。' },
+      { q: '拠点はどこですか？', a: '台湾・台北。英語と中国語（北京語）で対応します。' },
+      { q: '連絡方法は？', a: 'メール（youwei0112@gmail.com）、またはLinkedIn（/in/yui-tien）とGitHub（@YUI-TIEN）から。' },
+    ],
+  },
   projects: projectsJa,
   footer: {
     sayHello: 'こんにちは！',
@@ -556,6 +591,16 @@ const ko: HomeCopy = {
       collaboratedDesc: '은 팀이 주도한 프로젝트에서 제품, 워크플로우, 디버깅, 운영, 구현 작업을 맡았다는 의미입니다.',
     },
     viewProject: '프로젝트 보기',
+  },
+  faq: {
+    eyebrow: '자주 묻는 질문',
+    heading: '빠른 답변.',
+    items: [
+      { q: 'Yui(Wayne) Tien은 누구인가요?', a: '타이베이를 기반으로 활동하는 AI 프로덕트 빌더이자 MorphusAI의 Digital Persona Technical Director입니다. 0→1 제품 설계와 AI 에이전트 동작의 기술적 오케스트레이션을 함께 다룹니다.' },
+      { q: '주로 어떤 일을 하나요?', a: 'AI 페르소나·캐릭터 시스템, 에이전트 메모리와 컨텍스트 보존, 런타임 진단, 그리고 아이디어를 POC에서 MVP, 출시까지 잇는 데모-투-딜리버리 워크플로우.' },
+      { q: '어디에 있나요?', a: '대만 타이베이. 영어와 중국어(만다린)로 소통합니다.' },
+      { q: '어떻게 연락하나요?', a: '이메일 youwei0112@gmail.com, 또는 LinkedIn(/in/yui-tien)과 GitHub(@YUI-TIEN).' },
+    ],
   },
   projects: projectsKo,
   footer: {

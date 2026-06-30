@@ -44,6 +44,20 @@ export const profilePageSchema = {
   mainEntity: personSchema,
 }
 
+// Mirrors the FAQ copy in src/i18n/home.ts; the prerender rewrites the
+// crawler-facing copy from scripts/seoData.mjs (homeFaq). Keep all three aligned.
+export function faqPageSchema(items: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  }
+}
+
 export function projectCreativeWorkSchema(opts: {
   name: string
   description: string

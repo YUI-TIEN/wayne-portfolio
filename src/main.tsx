@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import './index.css'
 import App from './App.tsx'
 import { reportWebVitals } from './vitals'
+import { loadAnalytics } from './analytics'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -20,4 +21,5 @@ createRoot(document.getElementById('root')!).render(
 // synthetic navigation would log meaningless values).
 if (!(window as unknown as { __PRERENDER__?: boolean }).__PRERENDER__) {
   reportWebVitals()
+  loadAnalytics()
 }
