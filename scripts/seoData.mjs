@@ -1,26 +1,40 @@
 const SITE_URL = 'https://waynetien.com'
 const LANGS = ['en', 'zh-tw', 'ja', 'ko']
 
+// Open Graph BCP-47 → Facebook-style locale codes, one per supported language.
+const OG_LOCALE = { en: 'en_US', 'zh-tw': 'zh_TW', ja: 'ja_JP', ko: 'ko_KR' }
+
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': `${SITE_URL}/#person`,
   name: 'Yui Tien',
   alternateName: 'Wayne Tien',
   url: SITE_URL,
   image: `${SITE_URL}/avatar.png`,
   email: 'mailto:youwei0112@gmail.com',
-  sameAs: ['https://www.linkedin.com/in/yui-tien/'],
-  jobTitle: 'Product Builder',
+  sameAs: [
+    'https://www.linkedin.com/in/yui-tien/',
+    'https://github.com/YUI-TIEN',
+  ],
+  jobTitle: 'Digital Persona Technical Director',
+  worksFor: { '@type': 'Organization', name: 'MorphusAI' },
   description:
-    'Yui (Wayne) Tien is a Taiwan-based product builder specializing in AI workflows, agent operations, and demo-to-delivery systems.',
+    'Yui (Wayne) Tien is a Taipei-based product builder and Digital Persona Technical Director at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
   knowsAbout: [
-    'agent workflow operations',
+    'AI agent workflow operations',
+    'AI persona and character systems',
     '0-to-1 product execution',
     'runtime diagnostics',
     'demo-to-delivery systems',
     'UI/UX engineering',
   ],
-  homeLocation: { '@type': 'Place', name: 'Taiwan' },
+  homeLocation: { '@type': 'Place', name: 'Taipei, Taiwan' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Taipei',
+    addressCountry: 'TW',
+  },
 }
 
 const profilePageSchema = {
@@ -29,15 +43,40 @@ const profilePageSchema = {
   mainEntity: personSchema,
 }
 
-function projectSchema({ name, description, routePath, keywords }) {
+function projectSchema({ name, description, routePath, keywords, lang }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
     name,
     description,
     url: `${SITE_URL}${routePath}`,
+    inLanguage: lang,
     keywords: keywords.join(', '),
-    creator: personSchema,
+    creator: { '@id': `${SITE_URL}/#person` },
+  }
+}
+
+// Localized "Home" crumb label for the project-page breadcrumb trail.
+const HOME_CRUMB = { en: 'Home', 'zh-tw': '首頁', ja: 'ホーム', ko: '홈' }
+
+function breadcrumbSchema({ lang, routePath, name }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: HOME_CRUMB[lang],
+        item: `${SITE_URL}/${lang}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name,
+        item: `${SITE_URL}${routePath}`,
+      },
+    ],
   }
 }
 
@@ -201,6 +240,18 @@ const PROJECT_IDS = Object.keys(projectSeo)
 // Build the full route table: /{lang}/ and /{lang}/project/{id} for every
 // language, each with its own title/description/canonical/jsonLd, plus
 // hreflang alternates pointing at every language variant of that same page.
+const DEFAULT_LANG = LANGS[0]
+
+// hreflang alternates for a page that exists in every language: one entry per
+// language, plus x-default pointing at the default-language (en) variant so
+// search engines have an explicit fallback for unmatched locales.
+function buildAlternates(toPath) {
+  return [
+    ...LANGS.map(l => ({ lang: l, path: toPath(l) })),
+    { lang: 'x-default', path: toPath(DEFAULT_LANG) },
+  ]
+}
+
 export const routeSeo = {}
 
 for (const lang of LANGS) {
@@ -208,8 +259,9 @@ for (const lang of LANGS) {
   routeSeo[homePath] = {
     title: homeSeo[lang].title,
     description: homeSeo[lang].description,
+    ogLocale: OG_LOCALE[lang],
     jsonLd: [profilePageSchema],
-    alternates: LANGS.map(l => ({ lang: l, path: `/${l}/` })),
+    alternates: buildAlternates(l => `/${l}/`),
   }
 
   for (const id of PROJECT_IDS) {
@@ -218,17 +270,38 @@ for (const lang of LANGS) {
     routeSeo[path] = {
       title: copy.title,
       description: copy.description,
+      ogLocale: OG_LOCALE[lang],
       jsonLd: [
         projectSchema({
           name: copy.title,
           description: copy.description,
           routePath: path,
           keywords: copy.keywords,
+          lang,
         }),
+        breadcrumbSchema({ lang, routePath: path, name: copy.title }),
       ],
-      alternates: LANGS.map(l => ({ lang: l, path: `/${l}/project/${id}` })),
+      alternates: buildAlternates(l => `/${l}/project/${id}`),
     }
   }
 }
 
-export { SITE_URL, LANGS, PROJECT_IDS }
+// Build sitemap.xml from the same route table the prerenderer uses, so the two
+// can never drift (this replaced a hand-maintained public/sitemap.xml that had
+// gone stale — it listed a project that no longer existed). lastmod defaults to
+// the build date; home pages rank above project pages via <priority>.
+export function buildSitemap(lastmod = new Date().toISOString().slice(0, 10)) {
+  const urls = Object.entries(routeSeo)
+    .map(([route, seo]) => {
+      const loc = `${SITE_URL}${route}`
+      const priority = route.includes('/project/') ? '0.8' : '1.0'
+      const alts = seo.alternates
+        .map(a => `    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${SITE_URL}${a.path}" />`)
+        .join('\n')
+      return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <priority>${priority}</priority>\n${alts}\n  </url>`
+    })
+    .join('\n')
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls}\n</urlset>\n`
+}
+
+export { SITE_URL, LANGS, PROJECT_IDS, DEFAULT_LANG }

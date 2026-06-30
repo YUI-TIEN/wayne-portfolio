@@ -12,7 +12,7 @@ import { PixelCritter } from './components/PixelCritter'
 import { ProjectPage } from './components/ProjectPage'
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
-import { profilePageSchema, projectCreativeWorkSchema } from './seo/schema'
+import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { homeCopy } from './i18n/home'
@@ -460,12 +460,20 @@ function ProjectDetail() {
           title={seo.title}
           description={seo.description}
           path={`/${lang}/project/${projectId}`}
-          jsonLd={projectCreativeWorkSchema({
-            name: seo.title,
-            description: seo.description,
-            path: `/${lang}/project/${projectId}`,
-            keywords: project?.tags ?? [],
-          })}
+          jsonLd={[
+            projectCreativeWorkSchema({
+              name: seo.title,
+              description: seo.description,
+              path: `/${lang}/project/${projectId}`,
+              keywords: project?.tags ?? [],
+              lang,
+            }),
+            breadcrumbSchema({
+              lang,
+              path: `/${lang}/project/${projectId}`,
+              name: seo.title,
+            }),
+          ]}
         />
       )}
       <CustomCursor />

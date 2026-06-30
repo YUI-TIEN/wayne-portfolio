@@ -8,13 +8,18 @@
     <meta name="theme-color" content="#1A1A1A" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Open Graph / Twitter type+image don't vary per route; title/description/url are set per-page via react-helmet-async (see src/seo/Seo.tsx) -->
+    <meta name="author" content="Yui (Wayne) Tien" />
+
+    <!-- Open Graph / Twitter type+image+site_name don't vary per route; title/description/url/locale are set per-page via react-helmet-async (see src/seo/Seo.tsx) and the prerender step (scripts/prerender.mjs) -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Yui (Wayne) Tien" />
     <meta property="og:image" content="https://waynetien.com/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Yui (Wayne) Tien — AI Product & Agent Workflow Portfolio" />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:image" content="https://waynetien.com/og-image.jpg" />
+    <meta property="twitter:image:alt" content="Yui (Wayne) Tien — AI Product & Agent Workflow Portfolio" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

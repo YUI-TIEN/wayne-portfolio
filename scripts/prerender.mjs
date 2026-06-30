@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import handler from 'serve-handler'
 import puppeteer from 'puppeteer'
-import { routeSeo, SITE_URL, LANGS } from './seoData.mjs'
+import { routeSeo, SITE_URL, LANGS, buildSitemap } from './seoData.mjs'
 
 const DIST = path.resolve(import.meta.dirname, '..', 'dist')
 const PORT = 4173
@@ -45,6 +45,7 @@ function rewriteHead(html, route) {
     `<meta property="og:url" content="${url}">`,
     `<meta property="og:title" content="${esc(seo.title)}">`,
     `<meta property="og:description" content="${esc(seo.description)}">`,
+    ...(seo.ogLocale ? [`<meta property="og:locale" content="${seo.ogLocale}">`] : []),
     `<meta property="twitter:url" content="${url}">`,
     `<meta property="twitter:title" content="${esc(seo.title)}">`,
     `<meta property="twitter:description" content="${esc(seo.description)}">`,
@@ -107,6 +108,12 @@ async function main() {
       await writeFile(path.join(DIST, 'index.html'), rootFallbackHtml, 'utf-8')
       console.log('prerendered / -> index.html (default-language fallback)')
     }
+
+    // Generate sitemap.xml from the same route table, so it can never drift
+    // from what was actually prerendered. Overwrites any copy Vite carried
+    // over from public/.
+    await writeFile(path.join(DIST, 'sitemap.xml'), buildSitemap(), 'utf-8')
+    console.log(`sitemap.xml -> ${Object.keys(routeSeo).length} urls`)
   } finally {
     await browser.close()
     server.close()

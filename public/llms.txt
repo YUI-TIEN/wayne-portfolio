@@ -1,0 +1,33 @@
+# Yui (Wayne) Tien
+
+> Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI. Works across 0-to-1 AI product design/launch and the technical orchestration of AI agent behavior — AI persona/character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery (POC → MVP → launch) systems.
+
+Yui Tien (also known as Wayne Tien) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products. He currently leads a small technical team at MorphusAI.
+
+- Name: Yui Tien (English name: Wayne Tien)
+- Role: Digital Persona Technical Director & Virtual Character Systems Engineer, MorphusAI (since 2024)
+- Location: Taipei, Taiwan
+- Focus: AI agent workflow operations, AI persona/character systems, runtime diagnostics, demo-to-delivery systems, UI/UX engineering
+- Site: https://waynetien.com (available in English, 繁體中文, 日本語, 한국어)
+
+## Selected work
+
+- [Personal Agent Operating System](https://waynetien.com/en/project/openclaw-ops): Discord-native task routing, persistent cross-tool memory, self-correcting workflows, and operating contracts for multi-agent runtimes.
+- [AI Character Live Runtime](https://waynetien.com/en/project/persona-workflows): made the SHIKI AI character system demo-ready — persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff docs.
+- [Local Voice Infrastructure Migration](https://waynetien.com/en/project/voice-migration): moved a cloud voice stack to local inference — legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout.
+- [AI Product Demo Flow](https://waynetien.com/en/project/morphus-website): MorphusAI product presentation — information architecture, demo narrative, launch-facing copy, and visual polish.
+- [Personal Portfolio Site](https://waynetien.com/en/project/portfolio-site): this site — an expressive, interactive portfolio built from zero with AI agents as a meta case study.
+
+## Quick answers
+
+- Who is Yui (Wayne) Tien? A Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI.
+- What does he do? Designs and ships AI products end-to-end, and orchestrates AI agent behavior — personas, agent memory/context, runtime diagnostics, and demo-to-delivery systems.
+- Where is he based? Taipei, Taiwan.
+- How to contact? Email youwei0112@gmail.com, LinkedIn https://www.linkedin.com/in/yui-tien/, GitHub https://github.com/YUI-TIEN
+
+## Links
+
+- Website: https://waynetien.com
+- LinkedIn: https://www.linkedin.com/in/yui-tien/
+- GitHub: https://github.com/YUI-TIEN
+- Sitemap: https://waynetien.com/sitemap.xml
