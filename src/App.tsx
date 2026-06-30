@@ -148,16 +148,16 @@ function Home() {
 
         {/* Navigation */}
         <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <span className="text-neutral-400">[</span>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.work} /></button>
+              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.work} /></button>
             </Magnetic>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.about} /></button>
+              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.about} /></button>
             </Magnetic>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.contact} /></button>
+              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.contact} /></button>
             </Magnetic>
             <LangSwitcher lang={lang} />
             <Magnetic scaleOnHover={1.2}>
