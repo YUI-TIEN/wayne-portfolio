@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import gsap from 'gsap'
@@ -9,7 +9,13 @@ import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { HeroDotGrid } from './components/HeroDotGrid'
 import { PixelCritter } from './components/PixelCritter'
-import { ProjectPage } from './components/ProjectPage'
+// Lazy: ProjectPage pulls in every case-study demo component (OpsDemo,
+// SystemTopology, GuardGate, CaseStudyLayouts, …). Splitting it out keeps
+// that weight off the home page's initial bundle — it only loads when a
+// visitor opens a project.
+const ProjectPage = lazy(() =>
+  import('./components/ProjectPage').then(m => ({ default: m.ProjectPage })),
+)
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
 import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema } from './seo/schema'
@@ -119,6 +125,9 @@ function Home() {
   }, [])
 
   const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
+    // Let modified clicks (open-in-new-tab / new-window) use the real href
+    // instead of the animated in-app transition.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
     e.preventDefault()
     setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose')
     setIsLoading(true)
@@ -304,7 +313,7 @@ function Home() {
               <div className="mt-auto pt-10 flex items-end">
                 <Magnetic scaleOnHover={1.1}>
                   <a
-                    href="#"
+                    href={`/${lang}/project/${p.id}`}
                     onClick={(e) => triggerProjectLoad(e, p.id)}
                     className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity py-2.5 -my-2.5"
                   >
@@ -385,7 +394,13 @@ function Home() {
                 <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                   <div className="absolute inset-0 bg-white p-2.5 pb-8 md:p-3 md:pb-12 shadow-xl backface-hidden flex flex-col border border-neutral-200">
                     <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-                      <img src={`${import.meta.env.BASE_URL}avatar.png`} alt={t.footer.photoAlt} className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+                      {/* display:contents so the <img> stays the flex child (w/h-full
+                          resolve as before). WebP is ~11KB vs the 434KB PNG; the PNG
+                          stays as the <img> fallback and the JSON-LD person image. */}
+                      <picture className="contents">
+                        <source srcSet={`${import.meta.env.BASE_URL}avatar.webp`} type="image/webp" />
+                        <img src={`${import.meta.env.BASE_URL}avatar.png`} alt={t.footer.photoAlt} width={400} height={400} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
+                      </picture>
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-white p-2.5 pb-2 md:p-3 md:pb-3 shadow-xl rotate-y-180 backface-hidden flex flex-col items-center justify-between border border-neutral-200">
@@ -477,7 +492,17 @@ function ProjectDetail() {
         />
       )}
       <CustomCursor />
-      <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
+            <div className="w-24 h-24 md:w-32 md:h-32">
+              <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
+            </div>
+          </div>
+        }
+      >
+        <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
+      </Suspense>
       {isLoading && (
         <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
           <div className="w-24 h-24 md:w-32 md:h-32">

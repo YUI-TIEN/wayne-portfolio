@@ -33,7 +33,14 @@ function rewriteHead(html, route) {
 
   const lang = route.split('/')[1]
   const withLang = html.replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
-  const stripped = withLang.replace(MANAGED_TAG, '')
+  const stripped = withLang
+    .replace(MANAGED_TAG, '')
+    // The non-blocking font <link media="print" onload="this.media='all'">
+    // has already had its onload fire under puppeteer, so page.content()
+    // serializes it as media="all" (render-blocking again). Restore media=
+    // "print" so the static snapshot ships non-blocking; the real browser
+    // re-runs onload on load and flips it back to all.
+    .replace(/media="all" onload="this\.media='all'"/g, `media="print" onload="this.media='all'"`)
   const url = `${SITE_URL}${route}`
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 

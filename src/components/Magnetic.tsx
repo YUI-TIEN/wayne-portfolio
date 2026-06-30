@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import React, { useRef, useLayoutEffect } from 'react';
+import gsap from 'gsap';
 
 interface MagneticProps {
   children: React.ReactNode;
@@ -12,48 +12,62 @@ const isMagneticDisabled = () =>
   typeof window !== 'undefined' &&
   (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+type QuickTo = ReturnType<typeof gsap.quickTo>;
+
 // Pulls the element itself toward the cursor while hovered (classic
 // "magnetic button" effect), with a small scale bump for extra feedback.
+// Uses gsap.quickTo (the same engine the rest of the site animates with) so
+// the project no longer ships framer-motion just for this one component.
 export function Magnetic({ children, className = '', scaleOnHover = 1.1 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const scale = useMotionValue(1);
-  const springX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
-  const springY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
-  const springScale = useSpring(scale, { stiffness: 260, damping: 20 });
+  const xTo = useRef<QuickTo | null>(null);
+  const yTo = useRef<QuickTo | null>(null);
+  const scaleTo = useRef<QuickTo | null>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // quickTo returns a fast setter that retargets a live tween each call —
+    // the smooth "catch up" toward the latest value is the magnetic feel.
+    xTo.current = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3.out' });
+    yTo.current = gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3.out' });
+    scaleTo.current = gsap.quickTo(el, 'scale', { duration: 0.3, ease: 'power3.out' });
+    return () => {
+      gsap.killTweensOf(el);
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMagneticDisabled() || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const offsetX = e.clientX - (rect.left + rect.width / 2);
     const offsetY = e.clientY - (rect.top + rect.height / 2);
-    x.set(offsetX * 0.35);
-    y.set(offsetY * 0.35);
+    xTo.current?.(offsetX * 0.35);
+    yTo.current?.(offsetY * 0.35);
   };
 
   const handleMouseEnter = () => {
     if (isMagneticDisabled()) return;
-    scale.set(scaleOnHover);
+    scaleTo.current?.(scaleOnHover);
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-    scale.set(1);
+    xTo.current?.(0);
+    yTo.current?.(0);
+    scaleTo.current?.(1);
   };
 
   return (
-    <motion.div
+    <div
       ref={ref}
       className={className}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY, scale: springScale, display: 'inline-block' }}
+      style={{ display: 'inline-block' }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
