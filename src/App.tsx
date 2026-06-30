@@ -174,7 +174,7 @@ function Home() {
         </nav>
 
         <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
-        <div ref={heroRef} className="relative w-full max-w-xl mt-8 md:mt-0">
+        <div ref={heroRef} className="relative w-full max-w-xl -mt-4 md:-mt-16">
           <div data-hero-tag className="absolute -left-2 md:-left-24 top-[-44px] md:top-[-64px] z-20 active:scale-95 transition-transform">
             <PixelCritter className="w-20 h-20 md:w-24 md:h-24 block" />
           </div>
