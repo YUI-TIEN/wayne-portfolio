@@ -145,7 +145,7 @@ function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEven
           <Magnetic scaleOnHover={1.08}>
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
             >
               <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
             </button>

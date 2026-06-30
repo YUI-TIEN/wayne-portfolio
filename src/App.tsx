@@ -66,7 +66,7 @@ function LangSwitcher({ lang }: { lang: Lang }) {
           {i > 0 && <span className="text-neutral-300 dark:text-neutral-600">/</span>}
           <button
             onClick={() => switchTo(l)}
-            className={l === lang ? 'text-brand-orange' : 'hover:text-brand-orange transition-colors'}
+            className={`py-2.5 -my-2.5 px-1.5 -mx-0.5 inline-flex items-center ${l === lang ? 'text-brand-orange' : 'hover:text-brand-orange transition-colors'}`}
             aria-current={l === lang}
           >
             {LANG_LABEL[l]}
@@ -151,19 +151,19 @@ function Home() {
           <div className="flex items-center gap-4">
             <span className="text-neutral-400">[</span>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.work} /></button>
+              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.work} /></button>
             </Magnetic>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.about} /></button>
+              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.about} /></button>
             </Magnetic>
             <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors"><ScrambleText text={t.nav.contact} /></button>
+              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center"><ScrambleText text={t.nav.contact} /></button>
             </Magnetic>
             <LangSwitcher lang={lang} />
             <Magnetic scaleOnHover={1.2}>
               <button
                 onClick={toggleTheme}
-                className="p-1 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
+                className="p-2.5 -m-1.5 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
                 aria-label="Toggle theme"
               >
                 {isDark ? <Sun size={14} /> : <Moon size={14} />}
@@ -306,7 +306,7 @@ function Home() {
                   <a
                     href="#"
                     onClick={(e) => triggerProjectLoad(e, p.id)}
-                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity"
+                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity py-2.5 -my-2.5"
                   >
                     <ScrambleText text={t.work.viewProject} /> <ArrowRight size={14} />
                   </a>
