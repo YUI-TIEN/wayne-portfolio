@@ -300,6 +300,10 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
       tlRef.current?.kill()
       morphTweenRef.current?.kill()
     }
+    // `play` is intentionally omitted: the observer must mount once, and
+    // playedRef already guards the animation to a single run. Adding `play`
+    // (a fresh function each render) would needlessly re-create the observer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

@@ -9,16 +9,17 @@ import { skipsScrollAnimation } from './motionGuards'
 // no-JS / reduced-motion and only animates for users who get motion.
 const BARS = 64
 
+// Stable per-bar base heights so the static frame looks like a real waveform,
+// not a flat line. Module-level constant — never changes, so it must not live in
+// a ref read during render.
+const BASES = Array.from(
+  { length: BARS },
+  (_, i) => 0.25 + Math.abs(Math.sin(i * 0.7)) * 0.55 + (i % 5) * 0.03,
+)
+
 export function WatchWaveform() {
-  const ref = useRef<SVGSVGElement | null>(null)
   const barRefs = useRef<(SVGRectElement | null)[]>([])
   const tweensRef = useRef<gsap.core.Tween[]>([])
-
-  // Stable per-bar base heights so the static frame looks like a real
-  // waveform, not a flat line.
-  const bases = useRef<number[]>(
-    Array.from({ length: BARS }, (_, i) => 0.25 + Math.abs(Math.sin(i * 0.7)) * 0.55 + (i % 5) * 0.03),
-  )
 
   useEffect(() => {
     if (skipsScrollAnimation()) return
@@ -28,7 +29,7 @@ export function WatchWaveform() {
     // in sync; it reads more like irregular live audio than a metronome.
     barRefs.current.forEach((bar, i) => {
       if (!bar) return
-      const base = bases.current[i]
+      const base = BASES[i]
       const next = () => {
         const target = base * (0.5 + Math.random() * 1.5) + 0.15
         tweensRef.current[i] = gsap.to(bar, {
@@ -49,13 +50,12 @@ export function WatchWaveform() {
   const barW = 100 / BARS
   return (
     <svg
-      ref={ref}
       viewBox="0 0 100 40"
       preserveAspectRatio="none"
       className="absolute inset-x-0 top-10 bottom-10 md:top-14 md:bottom-14 w-full h-auto opacity-[0.07] pointer-events-none"
       aria-hidden
     >
-      {bases.current.map((b, i) => (
+      {BASES.map((b, i) => (
         <rect
           key={i}
           ref={(el) => { barRefs.current[i] = el }}

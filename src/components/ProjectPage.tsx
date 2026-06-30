@@ -9,7 +9,8 @@ import { StatValue } from './StatValue'
 import { ContextLoss } from './ContextLoss'
 import { GuardGate } from './GuardGate'
 import { OutcomeIcon } from './OutcomeIcon'
-import { themeFor, MorphusLayout, PersonaLayout, VoiceLayout, PortfolioLayout } from './CaseStudyLayouts'
+import { MorphusLayout, PersonaLayout, VoiceLayout, PortfolioLayout } from './CaseStudyLayouts'
+import { themeFor } from './caseStudyTheme'
 
 interface ProjectPageProps {
   projectId: string

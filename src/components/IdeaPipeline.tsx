@@ -205,7 +205,6 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
       io.disconnect()
       tlRef.current?.kill()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
