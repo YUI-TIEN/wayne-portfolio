@@ -184,7 +184,7 @@ function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEven
   )
 }
 
-interface LayoutProps {
+export interface LayoutProps {
   p: CaseStudyContent
   t: ProjectPageCopy
   lang: Lang
