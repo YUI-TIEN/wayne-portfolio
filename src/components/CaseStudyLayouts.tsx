@@ -13,7 +13,35 @@ import { PersonaTransition } from './PersonaTransition'
 import { AnimatedOutcomes } from './AnimatedOutcomes'
 import { ScrambleProof } from './ScrambleProof'
 import { LiveSystemStatus } from './LiveSystemStatus'
+import { GovernanceBand as GovernanceCards } from './TurningPoints'
 import type { CaseStudyTheme } from './caseStudyTheme'
+
+// Shared AI-collaboration-governance band. The site's core axis is that Wayne
+// governs AI (names its blind spots, builds process to constrain them) — so
+// this band leads with a page-level governance claim, then a card grid whose
+// FIRST-GLANCE layer already carries each governance claim + named blind spot;
+// only the three-beat evidence sits behind the expand interaction. Rendered
+// when governanceCases content is present; omitted otherwise.
+function GovernanceBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudyTheme }) {
+  if (!p.governanceCases || p.governanceCases.length === 0) return null
+  return (
+    <ScrambleStagger delay={0.3}>
+      <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <GovernanceCards
+          cases={p.governanceCases}
+          bannerLabel={p.governanceBannerLabel ?? 'AI collaboration governance'}
+          bannerClaim={p.governanceBannerClaim ?? ''}
+          gridLabel={p.governanceLabel ?? 'Governance cases'}
+          hint={p.governanceHint}
+          beatPatternLabel={p.governanceBeatPattern ?? "The AI's ingrained pattern"}
+          beatMechanismLabel={p.governanceBeatMechanism ?? 'The governance mechanism I built'}
+          beatValueLabel={p.governanceBeatValue ?? 'The collaboration value it unlocked'}
+          accentText={theme.accentText}
+        />
+      </section>
+    </ScrambleStagger>
+  )
+}
 
 // ── Shared hero ────────────────────────────────────────────────────────────
 // The eyebrow/headline/subheadline lockup stays consistent across all four —
@@ -211,6 +239,8 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         </section>
       </ScrambleStagger>
 
+      <GovernanceBand p={p} theme={theme} />
+
       <AnimatedOutcomes
         outcomes={p.outcomes}
         outcomesLabel={t.outcomes}
@@ -302,6 +332,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
+      <GovernanceBand p={p} theme={theme} />
       <AnimatedOutcomes
         outcomes={p.outcomes}
         outcomesLabel={t.outcomes}
@@ -379,6 +410,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
+      <GovernanceBand p={p} theme={theme} />
       <AnimatedOutcomes
         outcomes={p.outcomes}
         outcomesLabel={t.outcomes}
@@ -459,6 +491,11 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
           </div>
         </section>
       </ScrambleStagger>
+
+      {/* AI-collaboration governance: named blind spots + the process Wayne
+          built to constrain them — the site's core-axis proof, first-glance
+          claims with one-hand evidence behind the expand. */}
+      <GovernanceBand p={p} theme={theme} />
 
       {/* Outcomes as pull-quotes — self-referential copy reads better large. */}
       <ScrambleStagger delay={0.34}>

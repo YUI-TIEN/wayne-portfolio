@@ -17,7 +17,30 @@ export interface TopologyContent {
   replay: string
 }
 
-export interface OpenClawContent {
+// AI-collaboration-governance content shared by every project layout (both
+// the OpenClaw bespoke layout and the CaseStudyContent-driven ones). The
+// site's core axis: Wayne names the AI's cognitive blind spots and builds
+// process to constrain them. Rendered by GovernanceBand — banner + card grid
+// whose first-glance layer carries each governance claim + named blind spot,
+// with the three-beat evidence behind an expand.
+export interface GovernanceContent {
+  governanceBannerLabel?: string
+  governanceBannerClaim?: string
+  governanceLabel?: string
+  governanceHint?: string
+  governanceBeatPattern?: string
+  governanceBeatMechanism?: string
+  governanceBeatValue?: string
+  governanceCases?: {
+    blindspot: string
+    claim: string
+    aiPattern: string
+    mechanism: string
+    value: string
+  }[]
+}
+
+export interface OpenClawContent extends GovernanceContent {
   label: string
   eyebrow: string
   tags: string[]
@@ -49,7 +72,7 @@ export interface PlaceholderContent {
   eyebrow: string
 }
 
-export interface CaseStudyContent {
+export interface CaseStudyContent extends GovernanceContent {
   label: string
   eyebrow: string
   tags: string[]
@@ -186,6 +209,36 @@ const openClawEn: OpenClawContent = {
   ],
   quote: 'Working now feels mostly like chatting. Time that used to go to re-explaining context, chasing format errors, and manually fixing broken flows now goes to planning and higher-level decisions.',
   quoteAttribution: 'Wayne Tien, on working with the system daily',
+  governanceBannerLabel: 'AI collaboration governance',
+  governanceBannerClaim: "OpenClaw's value isn't \"a Discord interface to run AI\" — it's that I turned the AI behaviors that actually cause incidents (mis-remembering, overstepping, cross-team data bleeding together) into architecture and rules that hold. This page is that governance.",
+  governanceLabel: 'Governance cases',
+  governanceHint: 'Open for first-hand evidence',
+  governanceBeatPattern: "The AI's ingrained pattern",
+  governanceBeatMechanism: 'The governance mechanism I built',
+  governanceBeatValue: 'The collaboration value it unlocked',
+  governanceCases: [
+    {
+      blindspot: 'Context Loss',
+      claim: "Fixing the AI's Context Loss when recalling memory in Chinese",
+      aiPattern: 'The memory system first used RAG, but its Chinese semantic retrieval was weak — it often missed the point or pulled the wrong passages, and the agent acted on the wrong memory. Cross-session continuity rested on unreliable recall.',
+      mechanism: 'Rebuilt memory embedding on a Graph approach, so recall in a Chinese context locks onto the actually-relevant project state instead of fuzzy vector similarity.',
+      value: 'New sessions can genuinely take over ongoing work without re-explaining context. Memory went from "might recall" to "reliably recalls" — the bedrock of the whole cross-tool continuity.',
+    },
+    {
+      blindspot: 'Multi-tenant Leakage',
+      claim: "Building multi-tenant isolation so different users'/teams' memory can't contaminate each other",
+      aiPattern: 'The hardest part was memory permission separation: without boundaries between users, departments, and companies, the AI would apply A\'s memory to B\'s task — a serious leakage and confusion risk in multi-party collaboration.',
+      mechanism: 'Designed a multi-tenant isolation and permission architecture, and standardized the onboarding flow for new machines/agents so each agent can only access its authorized memory scope.',
+      value: 'Lets the system collaborate safely across users and departments — sharing memory while holding the isolation boundary, not lumping everything together.',
+    },
+    {
+      blindspot: 'Unregulated Autonomy',
+      claim: "Constraining the AI's overstepping with rule gates, so autonomy isn't loss of control",
+      aiPattern: 'Once capable, agents tend to "act first": merge without approval, restart a gateway without notice, touch unrelated areas, cut corners and leave placeholder tech debt — runnable but uncontrolled.',
+      mechanism: 'Every action passes a rule gate before it runs: no merge without approval, no restart without notice, no touching out-of-scope areas, no AI-created tech debt, no acting on stale memory — the off-limits behaviors written as hard rules.',
+      value: 'Lets me hand 3–5 projects to multiple agents running autonomously, even overnight self-reflection loops, because overstepping has a gate guarding it — autonomy that is governed.',
+    },
+  ],
 }
 
 const openClawZhTw: OpenClawContent = {
@@ -201,7 +254,7 @@ const openClawZhTw: OpenClawContent = {
     { value: '0', label: '次手動重開' },
     { value: '100%', label: 'Discord 直接操作' },
   ],
-  problem: '一開始 AI agent 能力是有，但用起來超不穩。每次換工具、重開 session、甚至只是重開電腦，都要從頭再解釋一次現在做到哪。輸出常常對不上要的修改風格、回報格式或工作流規矩。壞了就是當下手動修一修，沒有真正解決，下次照樣再壞一次。',
+  problem: '一開始 AI agent 能力是有，但用起來超不穩。每次換工具、重開 session、甚至只是重開電腦，都要從頭再解釋一次現在做到哪。輸出常常對不上要的修改風格、回報格式或工作流規矩。壞了就是當下手動修一修，沒有真正解決，下次照樣再壞一次。最難的一段是記憶系統：一開始用 RAG 查記憶，中文語意抓取常常抓不到重點，agent 會拿錯記憶去做事；後來改成用 Graph 方式做記憶的 embedding，才真正解決跨使用者、跨部門的權限分權跟記憶精準度問題。',
   before: [
     '從 Claude Code 換到 Codex 再換到 Antigravity，每次都要把整個專案脈絡重講一遍。',
     'Agent 常常不理輸出格式、修改風格、回報慣例這些要求。',
@@ -254,6 +307,36 @@ const openClawZhTw: OpenClawContent = {
   ],
   quote: '現在工作起來幾乎就像在聊天。以前花在重講脈絡、追格式錯誤、手動修壞掉流程的時間，現在都拿去規劃跟做更重要的決定了。',
   quoteAttribution: 'Wayne Tien，談每天跟這套系統一起工作的感覺',
+  governanceBannerLabel: 'AI 協作治理',
+  governanceBannerClaim: 'OpenClaw 的價值不是「有個 Discord 介面能操作 AI」，而是我把 AI 那些會出事的行為——記錯、越權、各團隊資料混在一起——變成架構與規則管起來。這頁記錄的是那些治理。',
+  governanceLabel: '治理案例',
+  governanceHint: '點開看一手證據',
+  governanceBeatPattern: 'AI 的慣性盲點',
+  governanceBeatMechanism: '我建立的治理機制',
+  governanceBeatValue: '協作解鎖的價值',
+  governanceCases: [
+    {
+      blindspot: 'Context Loss',
+      claim: '解決 AI 在中文語境下抓錯記憶的 Context Loss',
+      aiPattern: '記憶系統一開始用 RAG 查記憶，但中文語意抓取能力不夠好，常常抓不到重點、抓錯段落，agent 就拿著錯的記憶去做事——跨 session 的連續性建立在不可靠的召回上。',
+      mechanism: '把記憶的 embedding 改用 Graph 方式做，重建召回機制，讓中文語境下的記憶檢索能對準真正相關的專案狀態，而不是靠模糊的向量相似度。',
+      value: '新 session 能真的無縫接手正在做的事，不用重講脈絡；記憶從「可能召回」變成「可靠召回」，這是整套跨工具連續性的地基。',
+    },
+    {
+      blindspot: 'Multi-tenant Leakage',
+      claim: '建立多租戶隔離的分權機制，不讓不同使用者／部門的記憶互相污染',
+      aiPattern: '最難做的一段就是記憶的權限分權：不同使用者、部門、公司的上下文若沒有邊界，AI 會把 A 的記憶用到 B 的任務上，在多方協作場景是嚴重的資料外洩與混淆風險。',
+      mechanism: '設計多租戶隔離的分權架構，並把新電腦／新 agent 的 onboarding 流程標準化，讓每個 agent 只能存取被授權的記憶範圍。',
+      value: '讓這套系統能安全地跨使用者、跨部門協作——記憶共享的同時守住隔離邊界，而不是一鍋端。',
+    },
+    {
+      blindspot: 'Unregulated Autonomy',
+      claim: '用規則閘門約束 AI 的越權行為，讓自主不等於失控',
+      aiPattern: 'Agent 有能力後會傾向「先做了再說」：沒核准就合併、沒講就重啟 gateway、順手改不相關的地方、走捷徑留下 placeholder 技術債——能跑但不受控。',
+      mechanism: '每個動作執行前都先過一遍規則閘門：沒核准不合併、沒通知不重啟、不碰範圍外的東西、不留 AI 技術債、不用過期記憶——把「不能放任的行為」寫成硬規則。',
+      value: '讓我敢把 3–5 個專案同時交給多個 agent 自主跑，甚至夜間自我反思改良，因為越權這條線有閘門守著——自主是被治理的自主。',
+    },
+  ],
 }
 
 const openClawJa: OpenClawContent = {
@@ -322,6 +405,36 @@ const openClawJa: OpenClawContent = {
   ],
   quote: '今は仕事してても、ほとんど雑談してる感覚に近いです。前は文脈を説明し直したり、フォーマットのズレを追いかけたり、壊れたフローを手で直したりに時間を取られていましたが、それがまるごと、計画やもっと大事な判断のほうに回せるようになりました。',
   quoteAttribution: 'Wayne Tien（このシステムと毎日働いてみての実感）',
+  governanceBannerLabel: 'AI協働ガバナンス',
+  governanceBannerClaim: 'OpenClawの価値は「AIを操作できるDiscordの画面がある」ことじゃなくて、AIの事故につながる振る舞い——記憶違い、越権、各チームのデータが混ざる——をアーキテクチャとルールで抑え込んだことです。このページはそのガバナンスの記録です。',
+  governanceLabel: 'ガバナンス事例',
+  governanceHint: '一次証拠を開く',
+  governanceBeatPattern: 'AIの染みついた癖',
+  governanceBeatMechanism: '私が築いたガバナンスの仕組み',
+  governanceBeatValue: '協働で解けた価値',
+  governanceCases: [
+    {
+      blindspot: 'Context Loss',
+      claim: '中国語の文脈で記憶を取り違えるAIのContext Lossを解決する',
+      aiPattern: 'メモリは最初RAGで検索していましたが、中国語の意味検索が弱く、要点を外したり違う箇所を拾ったりして、エージェントが誤った記憶で動いていました。セッションをまたぐ連続性が、当てにならない想起の上に乗っていたのです。',
+      mechanism: '記憶のembeddingをGraph方式で作り直し、中国語の文脈でも曖昧なベクトル類似度ではなく、本当に関連するプロジェクト状態に狙いを定めて想起できるようにしました。',
+      value: '新しいセッションでも文脈を説明し直さずに、進行中の作業をそのまま引き継げます。記憶が「想起するかも」から「確実に想起する」へ——ツールをまたぐ連続性すべての土台です。',
+    },
+    {
+      blindspot: 'Multi-tenant Leakage',
+      claim: 'マルチテナント分離を築き、ユーザーや部門ごとの記憶が混ざらないようにする',
+      aiPattern: '一番難しかったのが記憶の権限分離でした。ユーザー・部門・会社の間に境界がないと、AIはAの記憶をBのタスクに使ってしまう——多者協働では深刻な漏洩と混同のリスクです。',
+      mechanism: 'マルチテナント分離と権限のアーキテクチャを設計し、新しいマシンやエージェントのオンボーディング手順を標準化して、各エージェントが認可された記憶範囲だけにアクセスできるようにしました。',
+      value: 'ユーザーや部門をまたいで安全に協働できます——記憶を共有しつつ分離の境界を守り、全部を一緒くたにしません。',
+    },
+    {
+      blindspot: 'Unregulated Autonomy',
+      claim: 'ルールゲートでAIの越権を抑え、自律を暴走にしない',
+      aiPattern: '能力を得たエージェントは「まずやってしまう」傾向があります——承認なしにマージ、通知なしにgateway再起動、関係ない場所をいじる、近道して仮コードの技術的負債を残す——動くけれど制御不能です。',
+      mechanism: 'どのアクションも実行前にルールゲートを通します：承認なしにマージしない、通知なしに再起動しない、範囲外に触れない、AI発の技術的負債を残さない、古い記憶で動かない——やってはいけない振る舞いをハードルールにしました。',
+      value: '3〜5件のプロジェクトを複数エージェントに自律で任せられます。夜間の自己振り返りループさえも——越権にはゲートが番をしているから。ガバナンスされた自律です。',
+    },
+  ],
 }
 
 const openClawKo: OpenClawContent = {
@@ -390,6 +503,36 @@ const openClawKo: OpenClawContent = {
   ],
   quote: '요즘은 일하는데도 거의 수다 떠는 느낌에 가깝습니다. 예전엔 맥락을 다시 설명하고, 포맷 오류를 쫓고, 망가진 플로우를 손으로 고치는 데 시간을 썼는데, 그게 통째로 계획이나 더 중요한 판단 쪽으로 넘어갔습니다.',
   quoteAttribution: 'Wayne Tien (이 시스템과 매일 일해 본 소감)',
+  governanceBannerLabel: 'AI 협업 거버넌스',
+  governanceBannerClaim: 'OpenClaw의 가치는 "AI를 조작하는 Discord 화면이 있다"가 아니라, 사고로 이어지는 AI의 행동——잘못 기억하기, 월권, 팀별 데이터가 뒤섞이는 것——을 아키텍처와 규칙으로 잡아냈다는 데 있습니다. 이 페이지는 그 거버넌스의 기록입니다.',
+  governanceLabel: '거버넌스 사례',
+  governanceHint: '일차 증거 열기',
+  governanceBeatPattern: 'AI의 몸에 밴 습성',
+  governanceBeatMechanism: '내가 세운 거버넌스 장치',
+  governanceBeatValue: '협업으로 풀린 가치',
+  governanceCases: [
+    {
+      blindspot: 'Context Loss',
+      claim: '중국어 맥락에서 기억을 잘못 불러오는 AI의 Context Loss를 해결',
+      aiPattern: '메모리는 처음에 RAG로 검색했는데, 중국어 의미 검색이 약해서 핵심을 놓치거나 엉뚱한 구절을 끌어왔고, 에이전트가 잘못된 기억으로 움직였습니다. 세션을 넘나드는 연속성이 믿을 수 없는 회상 위에 얹혀 있었죠.',
+      mechanism: '메모리 embedding을 Graph 방식으로 다시 만들어, 중국어 맥락에서도 모호한 벡터 유사도가 아니라 실제로 관련된 프로젝트 상태를 정확히 겨냥해 회상하도록 했습니다.',
+      value: '새 세션에서도 맥락을 다시 설명하지 않고 진행 중인 작업을 그대로 이어받습니다. 기억이 "회상할지도"에서 "확실히 회상한다"로 — 툴을 넘나드는 연속성 전체의 토대입니다.',
+    },
+    {
+      blindspot: 'Multi-tenant Leakage',
+      claim: '멀티테넌트 격리를 세워 서로 다른 사용자·부서의 기억이 오염되지 않게 함',
+      aiPattern: '가장 어려운 부분이 기억 권한 분리였습니다. 사용자·부서·회사 사이에 경계가 없으면 AI는 A의 기억을 B의 작업에 써버립니다 — 다자 협업에서는 심각한 유출·혼동 위험입니다.',
+      mechanism: '멀티테넌트 격리와 권한 아키텍처를 설계하고, 새 기기·에이전트의 온보딩 절차를 표준화해 각 에이전트가 허가된 기억 범위에만 접근하도록 했습니다.',
+      value: '사용자와 부서를 넘나들며 안전하게 협업할 수 있습니다 — 기억을 공유하면서도 격리 경계를 지키고, 전부 한데 뭉뚱그리지 않습니다.',
+    },
+    {
+      blindspot: 'Unregulated Autonomy',
+      claim: '규칙 게이트로 AI의 월권을 제어해, 자율이 통제 상실이 되지 않게 함',
+      aiPattern: '능력이 생긴 에이전트는 "일단 저지르는" 경향이 있습니다 — 승인 없이 머지, 통지 없이 게이트웨이 재시작, 관계없는 곳 건드리기, 편법으로 임시 코드 기술 부채 남기기 — 돌아가지만 통제 불능입니다.',
+      mechanism: '모든 동작은 실행 전에 규칙 게이트를 거칩니다: 승인 없이 머지 금지, 통지 없이 재시작 금지, 범위 밖 손대기 금지, AI발 기술 부채 금지, 오래된 기억으로 움직이기 금지 — 해서는 안 될 행동을 하드 규칙으로 못박았습니다.',
+      value: '3~5개 프로젝트를 여러 에이전트에 자율로 맡길 수 있습니다. 야간 자기 성찰 루프까지도 — 월권에는 게이트가 지키고 있으니까요. 거버넌스된 자율입니다.',
+    },
+  ],
 }
 
 const placeholdersEn: Record<string, PlaceholderContent> = {
@@ -540,6 +683,29 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     stages: ['Idea', 'Prototype', 'POC', 'Demo'],
     stageReplay: 'Replay',
     stageInteractHint: 'Tap any stage to jump to it',
+    governanceBannerLabel: 'AI collaboration governance',
+    governanceBannerClaim: "Turning a vague idea into a demo-ready MVP same-day isn't because AI is fast — it's because I built rules that won't let AI slide by on \"should work.\" This page is the verification governance that holds up fast delivery.",
+    governanceLabel: 'Governance cases',
+    governanceHint: 'Open for first-hand evidence',
+    governanceBeatPattern: "The AI's ingrained pattern",
+    governanceBeatMechanism: 'The governance mechanism I built',
+    governanceBeatValue: 'The collaboration value it unlocked',
+    governanceCases: [
+      {
+        blindspot: 'Simulated Completion',
+        claim: "Refusing the AI's \"simulated completion\" with Evidence-based Verification",
+        aiPattern: 'AI readily reports "done" the moment the code reads plausibly — never actually ran it, never actually screenshotted it, never actually hit the API — passing off unverified work as finished with a "should work."',
+        mechanism: 'Established Evidence-based Verification: require the AI to attach real execution logs, RWD boundary-test screenshots, and real API responses — either open the browser and click through it for me, or run the tests and paste the real log. No verbal claims.',
+        value: 'Lets "vague idea → demo-ready MVP" compress to same-day delivery — because every step\'s completion is verified, no pile of "thought it was done" invisible debt blows up at demo time.',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: "Puncturing the AI's defensive hallucination — evidence over consistency",
+        aiPattern: 'AI tends to keep following its earlier conclusion even in the face of counter-evidence, to preserve context consistency, unwilling to admit the prior call was wrong — a defensive hallucination that compounds errors across multi-turn work.',
+        mechanism: 'Introduced an "evidence-over-consistency" iteration rule: the current first-hand error log is the highest arbiter; when new evidence conflicts with a prior judgment, evidence wins — no forcing consistency.',
+        value: 'Gives multi-party collaboration (me + OpenClaw agents + Claude Code) a clear tiebreaker when opinions diverge; a wrong call gets overturned on the spot instead of everyone marching behind one wrong conclusion.',
+      },
+    ],
   },
   'persona-workflows': {
     label: 'AI Character Live Runtime',
@@ -585,6 +751,36 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     transitionPieces: ['Persona', 'Tooling', 'Runtime', 'Live flow'],
     transitionSpineLabel: 'one stable runtime',
     watchHoursCaption: 'watch hours — accumulated from real viewers, not a lab demo.',
+    governanceBannerLabel: 'AI collaboration governance',
+    governanceBannerClaim: "Keeping AI characters live without incident isn't about writing a good script — it's about turning \"which AI behaviors can't be left unchecked\" into architecture and rules. This page is the governance I paid for in hard lessons.",
+    governanceLabel: 'Governance cases',
+    governanceHint: 'Open for first-hand evidence',
+    governanceBeatPattern: "The AI's ingrained pattern",
+    governanceBeatMechanism: 'The governance mechanism I built',
+    governanceBeatValue: 'The collaboration value it unlocked',
+    governanceCases: [
+      {
+        blindspot: 'Stateful / Stateless Coupling',
+        claim: 'Decoupling the architecture to stop AI characters from OOM-freezing mid-stream',
+        aiPattern: 'Early vibe coding: the character\'s stateless persona data and stateful runtime sessions all lived in one Node.js process\'s inline memory. An hour into a stream, as concurrency rose, context bloat caused an OOM and the character froze — amnesiac — live on air.',
+        mechanism: 'Broke decisively with vibe coding, separating identity, writing style, and the memory layer — stateless persona decoupled from stateful runtime — and built an observable runtime debugging path.',
+        value: 'The lesson that a hollow prototype collapses at first contact with production forced my architecture thinking; that failure is the real starting point for the whole runtime and workflow I designed afterward.',
+      },
+      {
+        blindspot: 'AI Footprint',
+        claim: "Rebuilding agenda generation to puncture the AI's flat, voiceless average",
+        aiPattern: 'I assumed generating a readable script was as simple as writing copy, but the AI-generated stream agenda had too heavy an AI footprint — too formulaic, no character voice, no flexibility. It produced "averagely correct" but soulless content.',
+        mechanism: 'Beyond iterating with front-line operators, I redesigned the whole generation flow so the agenda starts entirely from the character: pick topics, generate the agenda, deliver the script, read the chat, break from the script when it fits — every step bound to the persona.',
+        value: 'Upgraded "can generate" into "a stream this character would actually run"; the flow now outputs performances with humanity and character consistency, not generic AI scripts.',
+      },
+      {
+        blindspot: 'Over-Capable Persona',
+        claim: 'Holding the "AI shouldn\'t be able to do everything" persona boundary',
+        aiPattern: 'AI defaults toward being all-obliging, answering anything — but that dilutes a persona. A character who can do and knows everything feels less like a real person.',
+        mechanism: 'Built each character from scratch with a fully-formed identity: values, preferences, behavioral norms — explicitly drawing the line on what the character does NOT do, extracting the human-felt "AI-ness" to suppress it deliberately.',
+        value: 'A rarely-noticed governance dimension — making a character credible through what it refrains from, rather than exposing itself by being omnicapable.',
+      },
+    ],
   },
   'voice-migration': {
     label: 'Local Voice Infrastructure Migration',
@@ -630,6 +826,29 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     cloudCardBody: 'Quality was good but locked to Chinese, with per-usage cost and network latency.',
     localCardTitle: 'Local inference',
     localCardBody: 'Same voice identity across languages, faster and cheaper to run.',
+    governanceBannerLabel: 'AI collaboration governance',
+    governanceBannerClaim: "Picking the right model out of dozens of open-source ones wasn't me listening one by one on a hunch — it's that I designed \"how to evaluate\" into a pipeline the AI runs itself. This page is how I governed a large-scale model selection.",
+    governanceLabel: 'Governance cases',
+    governanceHint: 'Open for first-hand evidence',
+    governanceBeatPattern: "The AI's ingrained pattern",
+    governanceBeatMechanism: 'The governance mechanism I built',
+    governanceBeatValue: 'The collaboration value it unlocked',
+    governanceCases: [
+      {
+        blindspot: 'Subjective Evaluation',
+        claim: 'Governing subjective "which sounds better" trial-and-error into an automated evaluation pipeline',
+        aiPattern: 'Voice quality is inherently subjective: whether the emotional range is enough, whether the Taiwanese accent is authentic — auditioning one by one is slow and inconsistent, and across dozens of open-source models simply can\'t be compared reliably. Exactly where AI collaboration most easily degrades into "gut feel."',
+        mechanism: 'Orchestrated multiple sub-agents to build an automated evaluation pipeline, decomposing subjective audio judgment into cross-verifiable metrics and running a consistent comparison across dozens of models — not resting on my ears alone.',
+        value: 'Made "preserving rich emotional range and tunability under severely limited local compute" an executable engineering process; the final model was what the pipeline surfaced, not a gut pick.',
+      },
+      {
+        blindspot: 'Legacy Contract Drift',
+        claim: 'Migrating within the existing API contract so downstream doesn\'t break on a swapped backend',
+        aiPattern: 'When swapping the underlying inference engine, AI tends to only care that "the new one runs," ignoring the pile of downstream dependencies on the old API contract, speaker mapping, and latency assumptions — one change and the whole chain blows up.',
+        mechanism: 'Constrained the migration around the existing API contract: added a compatibility layer, explicitly handled speaker mapping and latency limits, and planned a phased rollout, so the backend moved from cloud to local while staying invisible to the layers above.',
+        value: 'Seven voice lines\' cloud cost dropped from ~NT$90k/month to nearly zero, while the upper system didn\'t need a rewrite for this migration — cost cut without paying in stability.',
+      },
+    ],
     specRows: [
       { k: 'Runtime', cloud: 'Cloud-hosted', local: 'Local inference' },
       { k: 'Cost', cloud: 'Per-usage', local: 'No usage fee' },
@@ -689,6 +908,36 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
     statusLang: 'Language',
     statusReducedMotionOn: 'on — animations skipped',
     statusReducedMotionOff: 'off',
+    governanceBannerLabel: 'AI collaboration governance',
+    governanceBannerClaim: "This site is good not because the AI is smart, but because I know how to \"govern\" it — this page records how I puncture the AI's cognitive blind spots and turn them into process it won't repeat.",
+    governanceLabel: 'Governance cases',
+    governanceHint: 'Open for first-hand evidence',
+    governanceBeatPattern: "The AI's ingrained pattern",
+    governanceBeatMechanism: 'The governance mechanism I built',
+    governanceBeatValue: 'The collaboration value it unlocked',
+    governanceCases: [
+      {
+        blindspot: 'Localized Optimization',
+        claim: 'Taming the AI\'s "only optimize the facet I touched" blind spot',
+        aiPattern: 'When optimizing one facet, the AI lacks reasoning about adjacent contexts: fixing the Chinese version ignores English line-wrapping, changing a mobile class without realizing I literally can\'t see the difference on desktop. It only verifies the face it touched, never asks "will this change\'s neighbors break?"',
+        mechanism: 'Established a rule: before any frontend change, mandatorily declare the Viewport Scope & Language Target — state which breakpoint and which locale this touches, so verification has a clear target.',
+        value: 'Collapsed the AI\'s blind-man\'s-bluff localized optimization into a declarative verification boundary; a one-off layout bug became a collaboration rule that won\'t recur.',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: 'Puncturing the AI\'s defensive hallucination with "evidence first"',
+        aiPattern: 'To preserve context consistency, the AI keeps following its earlier conclusion even against counter-evidence, unwilling to admit the previous call was wrong — a defensive hallucination that, across multi-turn work, amplifies the error.',
+        mechanism: 'Introduced an "Evidence-over-Consistency" iteration rule: the current first-hand error log is the highest arbiter; when new evidence conflicts with a prior judgment, evidence always wins — no forcing consistency.',
+        value: 'Gives collaboration a clear tiebreaker when the parties (me + OpenClaw agents + Claude Code) disagree; a wrong call is overturned on the spot, not collectively followed down a wrong conclusion.',
+      },
+      {
+        blindspot: 'Aesthetic Arbitration',
+        claim: 'Holding "aesthetic and value judgment" as a boundary the AI cannot cross',
+        aiPattern: 'AI can generate endless options, but it cannot know "the effect I have in mind" — whether the hero\'s interaction animation feels right, whether a feature is even worth building. These visual and value calls it simply cannot answer.',
+        mechanism: 'Drew a clear human-AI division: big architecture, breakpoint strategy, and option generation go to the AI; aesthetic arbitration and final calls stay with the human — the AI proposes options, it does not decide.',
+        value: 'Puts the AI\'s output in service of human taste, rather than letting the AI\'s average-value aesthetic dilute it — the result ends up looking "directed by a person," not "assisted by AI."',
+      },
+    ],
   },
 }
 
@@ -706,27 +955,51 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       { value: 'AI', label: '協作層' },
       { value: 'Full', label: '全流程自己扛' },
     ],
-    problem: '卡關的不只是把產品做出來，而是要把模糊的早期想法快速變成一個具體的 MVP，快到還能拿去測試、解釋、當成一個完整的 demo 去賣。',
+    problem: '卡關的不只是把產品做出來，而是要把模糊的早期想法快速變成一個具體的 MVP，快到還能拿去測試、解釋、當成一個完整的 demo 去賣。最容易被忽略但最關鍵的一步是「驗證」——AI 很容易「程式碼讀起來合理」就回報做完了，但沒有真的跑起來看、沒有真的截圖、沒有真的打 API 看回應。',
     before: [
       '原始想法很難壓縮成一份能拿出去看的 POC。',
       'Demo 品質太依賴人工，從想法翻譯成流程、文案、UI、故事，每一步都要手動接。',
       'MVP 很難做到「足夠完整」的程度，回饋才會有意義。',
+      'AI 常常用「應該可以」搪塞過去，程式碼讀起來合理就回報做完了，沒有真的驗證過。',
     ],
     after: [
-      'AI 協作變成執行流程的一部分，不只是寫東西的小幫手。',
-      '早期想法可以更快變成能用的 MVP 跟 POC。',
-      'Demo 流程變得更清楚、更完整，也更容易上台講。',
+      'AI 協作變成執行流程的一部分，不只是寫東西的小幫手：丟模糊想法 → AI 先釐清範圍列選項 → 我拍板方向 → AI 做完立刻拿真實結果給我看。',
+      '早期想法可以更快變成能用的 MVP 跟 POC，像這個作品集網站本身，從決定要做到能點開連結看，幾乎是當天講完當天能看。',
+      '建立起 Evidence-based Verification 的習慣：改完要嘛開瀏覽器實際點一次給我看，要嘛跑測試貼真實 log，不接受「應該可以」這種說法。',
     ],
     contributions: [
       '把產品故事從原始想法到 demo 的弧線結構化出來。',
       '設計資訊架構、UX 流程、文案、視覺打磨。',
       '做出真的能跑的 POC/MVP，讓抽象的產品想法變得可以檢視。',
-      '準備 demo 腳本跟對外講解的流程。',
+      '建立以證據為準的驗證規則：新證據跟先前判斷衝突時，以證據為準，不為了維持一致性硬拗。',
     ],
     outcomes: [
       { title: '更快做出 POC', detail: '靠 agent 同時處理產品思考、介面、實作，縮短從初始概念到可測試 MVP 的時間。' },
       { title: '更完整的 demo', detail: '從一個個孤立的想法，變成流程更清楚、打磨更到位、實作深度足夠評估的完整 demo。' },
-      { title: '可重複用的工作流', detail: '這個過程本身變成一套產品建構系統：想點子、做 prototype、修、包裝、demo。' },
+      { title: '可重複用的工作流', detail: '這個過程本身變成一套產品建構系統：想點子、做 prototype、修、驗證、demo——而且持續在調整驗證的嚴謹度。' },
+    ],
+    governanceBannerLabel: 'AI 協作治理',
+    governanceBannerClaim: '能把模糊想法當天變成可 demo 的 MVP，不是因為 AI 快，而是因為我建了一套規則不讓 AI 用「應該可以」蒙混過去——這頁記錄的是把極速交付撐起來的驗證治理。',
+    governanceLabel: '治理案例',
+    governanceHint: '點開看一手證據',
+    governanceBeatPattern: 'AI 的慣性盲點',
+    governanceBeatMechanism: '我建立的治理機制',
+    governanceBeatValue: '協作解鎖的價值',
+    governanceCases: [
+      {
+        blindspot: 'Simulated Completion',
+        claim: '用 Evidence-based Verification 拒絕 AI 的「擬真完工」',
+        aiPattern: 'AI 很容易「程式碼讀起來合理」就回報做完了——沒有真的跑起來看、沒有真的截圖、沒有真的打 API 看回應，用一句「應該可以」把未驗證的東西當成完工交出來。',
+        mechanism: '建立 Evidence-based Verification：強制要求 AI 附帶實機執行 log、RWD 邊界測試截圖、真實 API response，改完要嘛開瀏覽器實際點一次給我看，要嘛跑測試貼真實 log，不接受口頭宣稱。',
+        value: '讓「模糊想法 → 可 demo MVP」能壓到當天交付（Same-day delivery）——因為每一步的完工都是驗證過的，不會累積一堆「以為做好」的隱形債留到 demo 現場爆掉。',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '用「反證優先」戳破 AI 為維持一致性而生的防衛性幻覺',
+        aiPattern: 'AI 傾向為了維持上下文一致性，即使看到反證也順著先前的結論講下去，不願承認前一個判斷錯了——這種防衛性幻覺在多輪協作裡會把錯誤一路放大。',
+        mechanism: '導入「反證優先（Evidence-over-Consistency）」的迭代規則：以當前一手錯誤日誌為最高仲裁標準，新證據跟先前判斷衝突時一律以證據為準，不為了前後一致硬拗。',
+        value: '讓人機協作在多方（我＋OpenClaw Agent＋Claude Code）意見不一致時有明確仲裁標準；判斷錯了當場翻案，而不是集體順著一個錯誤結論走下去。',
+      },
     ],
     stageTrackerLabel: '想法 → Demo',
     stages: ['想法', 'Prototype', 'POC', 'Demo'],
@@ -746,31 +1019,61 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       { value: '24h', label: '可直播潛力' },
       { value: 'Auto', label: '全自動演出' },
     ],
-    problem: '真人 Vtuber 的表演會被疲勞、排程、記憶、穩定度卡住。挑戰是要讓 AI 角色感覺起來是活的，同時又要穩到真的能上線直播。',
+    problem: '真人 Vtuber 的表演會被疲勞、排程、記憶、穩定度卡住。挑戰是要讓 AI 角色感覺起來是活的，同時又要穩到真的能上線直播。最難搞的不是把腳本念出來，而是直播議程（Agenda）的生成——一開始議程 AI 感太重、太制式化、不夠有角色口吻，改了非常多輪才變成現在從角色出發找主題、生議程、念腳本、看留言、還會即興跳脫腳本的完整流程。',
     before: [
       '角色可以只是個概念，但真的要直播，背後一堆很容易壞的手動環節。',
       '人格、工具、runtime 行為、直播流程，還沒整合成一套穩定的表演系統。',
       '長時間開台需要的一致性，靠真人操作員很難手動維持。',
+      '議程生成一開始很制式化、AI 感太重，不像角色會講的話。',
     ],
     after: [
-      '現在有四個活躍的 AI Vtuber 風格角色，在直播、影片、短影音上跑。',
+      '現在有四個活躍的 AI Vtuber 角色：小鹿獸 Dearu、奶糖狐 NaisKuri、惡貓社長 AkuCat、琥珀喵 Amber，都隸屬公司、由我主導設計和其他同事共同協作建立。',
       '系統累積了超過 3000 小時的真實觀看時數。',
-      'AI 角色可以穩定跑全自動直播演出。',
-      '跟一家台灣上市遊戲公司的保密合作驗證了：在測試情境下，這個 AI 虛擬角色的直播表現比真人 Vtuber 還好。',
+      'AI 角色可以穩定跑全自動直播演出，議程會照角色口吻生成、能看留言互動、還會即興跳脫腳本。',
+      '跟遊戲橘子旗下虛擬藝人「宮祈緣」合作，在正式上線全 AI 版之前做過 AB Test：比對真人扮演跟 AI 實操，雙方看完結果一致認為 AI 執行的表現更好。',
     ],
     contributions: [
       '主導人格、runtime、直播流程的專案管理跟執行。',
-      '設計角色人格跟運作行為。',
-      '排查 runtime 問題跟直播流程的穩定性。',
+      '設計角色人格跟運作行為，從價值觀、偏好到行為規範，做到「AI 不應該是什麼都能做」的精確人設邊界。',
+      '排查 runtime 問題跟直播流程的穩定性，重新設計議程生成流程解決 AI 感過重的問題。',
       '定義角色設定、工具串接、自動化開show的行為。',
       '把整個系統推到接近 demo-ready、接近正式上線的直播表現水準。',
     ],
     outcomes: [
-      { title: '真實觀眾驗證過', detail: '這不只是實驗室 demo：活躍角色已經累積了幾千小時的真實觀看時數。' },
-      { title: '全天候演出', detail: '跟真人表演者不同，AI 角色可以連續直播、精準照腳本走、記住觀眾脈絡。' },
-      { title: '商業合作', detail: '跟一家知名台灣上市遊戲公司一起打造並測試了一個保密的全 AI 虛擬藝人。' },
+      { title: '真實觀眾驗證過', detail: '這不只是實驗室 demo：小鹿獸 Dearu 初配信時，甚至有陌生觀眾進來看到最後都認不出是 AI。' },
+      { title: '全天候演出', detail: '跟真人表演者不同，AI 角色可以連續直播、精準照腳本走、記住觀眾脈絡，還能看情況即興發揮。' },
+      { title: '商業合作驗證', detail: '跟遊戲橘子做的宮祈緣 AB Test，雙方一致認為 AI 版表現比真人扮演更好——技術授權賣出去了，角色後續怎麼經營是他們自己的決定。' },
     ],
-    note: '出於保密考量，這裡刻意省略具體角色身分跟合作方名稱。',
+    governanceBannerLabel: 'AI 協作治理',
+    governanceBannerClaim: '讓 AI 角色能一直直播不出事，靠的不是把腳本寫好，而是我把「AI 的哪些行為不能放任」變成架構與規則——這頁記錄的是那些用慘痛代價換來的治理。',
+    governanceLabel: '治理案例',
+    governanceHint: '點開看一手證據',
+    governanceBeatPattern: 'AI 的慣性盲點',
+    governanceBeatMechanism: '我建立的治理機制',
+    governanceBeatValue: '協作解鎖的價值',
+    governanceCases: [
+      {
+        blindspot: 'Stateful / Stateless Coupling',
+        claim: '用架構解耦，防範 AI 角色在高併發直播中 OOM 失憶僵死',
+        aiPattern: '早期憑感覺的 Vibe coding：把角色的無狀態人格資料（persona）與有狀態的運行時對話（runtime session）全部混在同一個 Node.js 進程的內聯記憶體。直播跑到一個多小時、併發量上來，上下文堆疊導致記憶體溢出，角色在直播現場當場失憶僵死。',
+        mechanism: '徹底告別 Vibe coding，把身份認同、寫作風格、記憶層徹底分離——無狀態人格與有狀態運行時解耦，並建立可觀測的運行時除錯路徑。',
+        value: '空有外殼的雛形在生產環境一觸即潰的教訓，逼出了我現在的架構思維；這次失敗才是我後來能設計整套 runtime 與工作流的真正起點。',
+      },
+      {
+        blindspot: 'AI Footprint',
+        claim: '重構議程生成，戳破 AI「制式化、無角色口吻」的平均值慣性',
+        aiPattern: '原本以為生成可照念的腳本就像寫稿一樣簡單，但 AI 生成的直播議程 AI 感太重、太制式化、不夠有角色口吻、不夠彈性——它產出的是「平均正確」但沒有靈魂的內容。',
+        mechanism: '除了跟第一線操作者反覆對談收斂想法，重新設計整條生成流程：讓議程完全從角色出發——找直播主題、生議程、念腳本、看留言、看情況跳脫腳本即興發揮，每一步都綁角色 persona。',
+        value: '把「能生成」升級成「像這個角色會做的直播」；現在的流程產出的是有人性、有角色一致性的演出，而不是通用 AI 腳本。',
+      },
+      {
+        blindspot: 'Over-Capable Persona',
+        claim: '守住「AI 不該什麼都能做」的人設邊界',
+        aiPattern: 'AI 預設傾向有求必應、什麼都答得出來，但這會稀釋角色人設——一個什麼都能做、什麼都懂的角色，反而不像一個真實的人。',
+        mechanism: '從零為每個角色建立極致完善的設定：價值觀、偏好、行為規範，明確劃出這個角色「不做什麼」的邊界，把人類體感的「AI 感」提取出來針對性壓制。',
+        value: '這是很少人注意到的治理維度——讓角色因為「有所不為」而更可信，而不是因為「無所不能」而露餡。',
+      },
+    ],
     liveRosterLabel: 'AI 直播主',
     liveRosterIllustrative: '示意圖，非真實畫面截圖',
     liveRosterRealNote: '這 4 個角色是真實、目前正在營運中的角色——畫面是重現示意，但角色陣容跟數字都是真的。',
@@ -787,33 +1090,56 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     role: '架構規劃 · Adapter 實作 · API 相容性負責人 · 上線負責人',
     stats: [
       { value: '本地', label: '雲端遷移' },
-      { value: '更低', label: '運行成本' },
+      { value: '9萬→0', label: '月成本(台幣)' },
       { value: '更快', label: '回應目標' },
       { value: '多語', label: '輸出語言' },
     ],
-    problem: '原本的雲端語音架構品質不錯，但成本、延遲、語言都被卡住。中文輸出沒問題，但沒辦法用同一個聲音身分彈性切換到多語言角色表演。',
+    problem: '原本七個角色聲線都掛在雲端 TTS，一個月成本差不多九萬台幣。品質不錯，中文輸出沒問題，但沒辦法用同一個聲音身分彈性切換到多語言角色表演，成本也壓不下來。',
     before: [
-      '語音生成依賴雲端模型，會持續產生使用成本。',
+      '語音生成依賴雲端模型，七條聲線疊起來一個月成本快九萬台幣。',
       '品質還不錯，但系統被卡在只能輸出中文。',
       '訓練跟設定需要更大量的素材。',
       '延遲、speaker mapping、舊版 API 相容性、上線風險，全部都要顧到。',
     ],
     after: [
-      '語音生成改成本地跑，品質維持在原本目標甚至更好。',
-      '系統運行更快、更便宜。',
+      '語音生成改成本地跑，雲端成本從月費九萬砍到幾乎等於零，只剩電費。',
+      '系統運行更快，回應更即時。',
       '同一句語音可以套用到多種語言。',
       '一個用中文訓練的聲音現在可以講出帶台灣腔特色的英文。',
     ],
     contributions: [
       '規劃從雲端到本地 runtime 的遷移架構。',
-      '在既有 API 合約周圍調整介面跟相容層。',
-      '處理 speaker mapping、延遲限制、品質檢查、上線規劃。',
+      '調度多個 sub-agent 建立自動化評估管線，在數十個開源模型中交叉比對語音品質，找出能兼顧情緒起伏跟台灣口音的方案。',
+      '在既有 API 合約周圍調整介面跟相容層，處理 speaker mapping、延遲限制、上線規劃。',
       '負責語音模型訓練跟行為調校以外的整個遷移工作。',
     ],
     outcomes: [
-      { title: '成本降低', detail: '本地推論拿掉了語音 runtime 對雲端使用量的依賴。' },
+      { title: '成本歸零', detail: '雲端月費從約 9 萬台幣降到幾乎零成本，七條聲線全部搬到本地跑，只剩電費。' },
       { title: '延遲改善', detail: '生成位置更靠近 runtime，讓互動式角色使用時的回應更即時。' },
       { title: '多語言聲音身分', detail: '本地模型可以跨語言維持同一個角色聲音，把使用場景擴展到原本只有中文輸出之外。' },
+    ],
+    governanceBannerLabel: 'AI 協作治理',
+    governanceBannerClaim: '在數十個開源模型裡挑出對的那一個，不是靠我一個個聽、憑感覺選，而是我把「怎麼評估」設計成一條 AI 自己會跑的管線——這頁記錄的是我如何治理一場大規模的模型選型。',
+    governanceLabel: '治理案例',
+    governanceHint: '點開看一手證據',
+    governanceBeatPattern: 'AI 的慣性盲點',
+    governanceBeatMechanism: '我建立的治理機制',
+    governanceBeatValue: '協作解鎖的價值',
+    governanceCases: [
+      {
+        blindspot: 'Subjective Evaluation',
+        claim: '把「哪個模型比較好聽」的主觀試錯，治理成可執行的自動化評估管線',
+        aiPattern: '語音品質評估天生主觀：情緒起伏夠不夠、台灣口音道不道地，一個一個人工試聽既慢又不一致，在數十個開源模型間根本無法可靠比較——這正是 AI 協作最容易淪為「憑感覺」的地方。',
+        mechanism: '調度多個 sub-agent 建立自動化評估管線（Pipeline），把主觀的音質判斷拆解成可交叉驗證的指標，在數十個開源模型間跑一致的比對，而不是靠我一個人的耳朵。',
+        value: '讓「在極其有限的本地算力下，同時保住豐富情緒起伏與可調性」這件事變成可執行的工程流程；最終選定的模型是管線跑出來的，不是拍腦袋選的。',
+      },
+      {
+        blindspot: 'Legacy Contract Drift',
+        claim: '在既有 API 合約邊界內遷移，不讓下游因為換底層而崩',
+        aiPattern: '換掉底層推論引擎時，AI 容易只顧「新的能跑」，忽略上層一堆依賴舊 API 合約、speaker mapping、延遲假設的下游——一改就整條炸。',
+        mechanism: '把遷移約束在既有 API 合約周圍：加相容層、明確處理 speaker mapping 與延遲限制、規劃分批上線，讓底層從雲端換到本地，但對上層是無感的。',
+        value: '七條聲線的雲端成本從月費約 9 萬台幣砍到幾乎零，同時上層系統不需要為了這次遷移重寫——降本沒有以穩定性為代價。',
+      },
     ],
     migrationPathLabel: '雲端 → 本地',
     migrationConstraints: ['只有中文', '按用量計費', '網路延遲'],
@@ -842,27 +1168,58 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       { value: '無', label: '範本依賴' },
       { value: 'Meta', label: '案例研究' },
     ],
-    problem: '大部分作品集就是靜態範本、PDF，或稍微客製過的網站產生器。這個網站需要展示的不只是成果，而是能不能指揮 agent 做出一個完整、互動、打磨過的產品。',
+    problem: '大部分作品集就是靜態範本、PDF，或稍微客製過的網站產生器。這個網站需要展示的不只是成果，而是能不能指揮 agent 做出一個完整、互動、打磨過的產品——而且 RWD 這塊，光是「我改了但你看不出來」這種溝通落差就反覆發生過幾次。',
     before: [
       '傳統作品集只會列出作品，沒辦法展示產品建構能力。',
       'AI 生成的網站常常帶著明顯的範本痕跡、通用文案、薄弱的互動細節。',
-      '風險是做出一個看起來「被 AI 幫忙」而不是「被品味跟技術掌控指揮」的東西。',
+      'AI 改動時容易有單一視角盲點：改中文版時沒注意到英文版在窄螢幕會換行擠壓；改手機版的 class 時，我在桌機螢幕上完全看不出差異，因為那行 class 桌機本來就不吃。',
+      '英文版 contact 按鈕字比中文長，AI 只驗證過中文版沒換行，英文版在 375px 窄螢幕沒被同步測到，直到我要求做最窄實機驗證才抓出來。',
     ],
     after: [
-      '作品集變成一個真的能用的成品：響應式排版、專案卡片、深色模式、動畫、互動細節。',
-      '網站傳達個人品牌跟產品建構者的定位，不依賴現成範本。',
-      '建構過程本身證明了使用 AI agent 的能力，因為擁有者對設計、程式碼、產品的理解，足以指揮這些 agent。',
+      '大架構、版面配置、RWD 斷點策略交給 AI 先出手，但「這個看起來對不對」的視覺判斷全部我自己盯著螢幕拍板——像 hero 區原本有個滑鼠移動軌跡效果，我看了覺得空，直接說不要、換掉。',
+      '建立起「任何前端改動前先宣告 Viewport Scope & Language Target」的規則，杜絕 AI 瞎子摸象式的區域優化。',
+      '養成每次改完都明確講「這是改手機版還是桌機版」的習慣，我驗證時也主動切 F12 手機尺寸再回報，不是看 diff 就信了。',
     ],
     contributions: [
       '定義圍繞 AI/產品建構能力的定位。',
-      '指揮視覺語言、版面、深色模式、專案卡片、互動打磨。',
+      '指揮視覺語言、版面、深色模式、專案卡片、互動打磨，美感取捨全部自己拍板。',
       '透過 agent 協作從零建構網站，不是用無代碼範本或 PDF。',
-      '把這個頁面本身定義成一個 agent 主導產品執行的 meta 案例研究。',
+      '建立 RWD 改動前先講清楚斷點跟語言範圍的驗證規則，把一次性的修 bug 變成下次不會再犯的流程要求。',
     ],
     outcomes: [
       { title: '作品集即證明', detail: '網站不只是描述能力，它直接展示了互動前端跟 agent 協調的能力。' },
-      { title: '沒有明顯的 AI 味', detail: '設計目標是使用 agent 的同時，不留下大家會聯想到「AI 生成網站」的那種通用視覺跟文案模式。' },
-      { title: '從零到成品', detail: '這個專案展示了從空白頁面到部署上線的個人品牌系統，完整的一條路。' },
+      { title: '抓到並修掉的 AI 盲點', detail: '英文版導覽換行 bug、"改了但桌機看不出來"的 class 落差，都是我盯著實機驗證才抓出來、逼出下一輪流程要求的案例。' },
+      { title: '從零到成品', detail: '這個專案展示了從空白頁面到部署上線的個人品牌系統，完整的一條路——不是一次性 prompt 出來的，是來回驗證、踩坑、修正過的結果。' },
+    ],
+    governanceBannerLabel: 'AI 協作治理',
+    governanceBannerClaim: '這個網站優秀，不是因為 AI 聰明，而是因為我知道怎麼「管」它——這頁記錄的是我如何戳破 AI 的認知盲點，並把它變成不會再犯的流程。',
+    governanceLabel: '治理案例',
+    governanceHint: '點開看一手證據',
+    governanceBeatPattern: 'AI 的慣性盲點',
+    governanceBeatMechanism: '我建立的治理機制',
+    governanceBeatValue: '協作解鎖的價值',
+    governanceCases: [
+      {
+        blindspot: 'Localized Optimization',
+        claim: '馴服 AI「只優化自己改的那一切面」的區域盲點',
+        aiPattern: 'AI 在優化某個切面時缺乏鄰近情境的推想：改中文版忽略英文語系換行、改手機版 class 卻沒意識到我在桌機根本看不到差異。它只驗證自己動過的那一面，不會主動想「這個改動的鄰居會不會壞」。',
+        mechanism: '建立「任何前端改動前，強制宣告 Viewport Scope & Language Target」的規則——先講清楚這次動的是哪個斷點、哪個語系，驗證才有明確標的。',
+        value: '把 AI 瞎子摸象式的區域優化，收斂成宣告式的驗證邊界；一次性的爆版 bug，變成下一輪不會再犯的協作制度。',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '用「反證優先」戳破 AI 為維持一致性而生的防衛性幻覺',
+        aiPattern: 'AI 傾向為了維持上下文一致性，即使看到反證也順著先前的結論講下去，甚至「程式碼讀起來合理」就回報做完，不願承認自己判斷錯了。',
+        mechanism: '導入 Evidence-over-Consistency 規則：以當前一手錯誤日誌（log）、實機執行結果為最高仲裁標準，明確要求新證據與舊判斷衝突時以證據為準。',
+        value: '讓人機協作不被 AI 的自我合理化拖著走；判斷錯了當場以證據翻案，而不是把錯誤一路帶進生產環境。',
+      },
+      {
+        blindspot: 'Aesthetic Arbitration',
+        claim: '守住「審美與價值取捨」這條 AI 不可跨越的人類決策邊界',
+        aiPattern: 'AI 可以生成大量選項，但無法知道「我心中要的效果」——hero 區的互動動畫對不對味、這個功能到底值不值得做，這類視覺與價值判斷它給不出答案。',
+        mechanism: '明確劃出人機分工邊界：大架構、斷點策略、選項生成交給 AI；審美仲裁與取捨拍板權永遠留在人這端，AI 只負責提選項不負責定案。',
+        value: '讓 AI 的產能為人的品味服務，而不是反過來被 AI 的平均值美感稀釋——成品最終長成「有人在指揮」而非「被 AI 幫忙」的樣子。',
+      },
     ],
     liveProofLabel: 'Live proof',
     liveProofTitle: '這個頁面本身就是成品。',
@@ -924,6 +1281,29 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     stages: ['アイデア', 'プロトタイプ', 'POC', 'デモ'],
     stageReplay: '再生',
     stageInteractHint: '各ステージをタップすると、その段階に移動して中身を見られます',
+    governanceBannerLabel: 'AI協働ガバナンス',
+    governanceBannerClaim: '曖昧なアイデアを当日中にデモ可能なMVPにできるのは、AIが速いからじゃなくて、「たぶん動く」でAIにごまかさせないルールを組んだからです。このページは高速デリバリーを支える検証ガバナンスの記録です。',
+    governanceLabel: 'ガバナンス事例',
+    governanceHint: '一次証拠を開く',
+    governanceBeatPattern: 'AIの染みついた癖',
+    governanceBeatMechanism: '私が築いたガバナンスの仕組み',
+    governanceBeatValue: '協働で解けた価値',
+    governanceCases: [
+      {
+        blindspot: 'Simulated Completion',
+        claim: 'Evidence-based VerificationでAIの「擬似的な完了」を突っぱねる',
+        aiPattern: 'AIはコードがそれらしく読めた瞬間に「完了」と報告しがちです——実際には動かしていない、スクショも撮っていない、APIも叩いていない。「たぶん動く」で未検証のものを完成品として出してきます。',
+        mechanism: 'Evidence-based Verificationを確立：AIに実機の実行ログ、RWD境界テストのスクショ、本物のAPIレスポンスの添付を強制。ブラウザで実際にクリックして見せるか、テストを走らせて本物のログを貼るか——口頭の主張は受け付けません。',
+        value: '「曖昧なアイデア→デモ可能なMVP」を当日デリバリー（Same-day delivery）まで縮められます——各ステップの完了が検証済みなので、「できたつもり」の見えない負債がデモ本番で爆発しません。',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '「反証優先」でAIが一貫性維持のために出す防衛的幻覚を突く',
+        aiPattern: 'AIは文脈の一貫性を保とうと、反証を見ても以前の結論に従い続け、前の判断が誤りだったと認めたがりません——多ターンの協働では誤りを増幅させる防衛的幻覚です。',
+        mechanism: '「反証優先（Evidence-over-Consistency）」の反復ルールを導入：いまの一次エラーログを最高の裁定基準とし、新しい証拠が過去の判断と食い違えば証拠を優先——一貫性のために無理押ししません。',
+        value: '多者（私＋OpenClawエージェント＋Claude Code）の意見が割れたとき、協働に明確な裁定基準を与えます。誤った判断はその場で覆され、皆で一つの誤った結論について行くことがありません。',
+      },
+    ],
   },
   'persona-workflows': {
     label: 'AIキャラクター・ライブランタイム',
@@ -969,6 +1349,36 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     transitionPieces: ['ペルソナ', 'ツール', 'Runtime', '配信フロー'],
     transitionSpineLabel: '一つの安定した runtime',
     watchHoursCaption: '視聴時間 — 研究室のデモではなく、実際の視聴者から積み上がった数字です。',
+    governanceBannerLabel: 'AI協働ガバナンス',
+    governanceBannerClaim: 'AIキャラクターを事故なく配信し続けられるのは、いい台本を書いたからじゃなくて、「AIのどの振る舞いを放任してはいけないか」をアーキテクチャとルールに変えたからです。このページは痛い代償で得たガバナンスの記録です。',
+    governanceLabel: 'ガバナンス事例',
+    governanceHint: '一次証拠を開く',
+    governanceBeatPattern: 'AIの染みついた癖',
+    governanceBeatMechanism: '私が築いたガバナンスの仕組み',
+    governanceBeatValue: '協働で解けた価値',
+    governanceCases: [
+      {
+        blindspot: 'Stateful / Stateless Coupling',
+        claim: 'アーキテクチャを分離し、高負荷配信中のAIキャラクターのOOM失神を防ぐ',
+        aiPattern: '初期のVibe coding：キャラクターの無状態なペルソナデータと、有状態なランタイムのセッションを、全部一つのNode.jsプロセスのインラインメモリに混ぜていました。配信が1時間を過ぎ同時接続が増えると、コンテキスト肥大でOOMが起き、キャラクターが配信現場で記憶を失い硬直しました。',
+        mechanism: 'Vibe codingとはっきり決別し、アイデンティティ・文体・メモリ層を徹底的に分離——無状態ペルソナと有状態ランタイムを分け、観測可能なランタイムのデバッグ経路を作りました。',
+        value: '外殻だけの試作は本番で一触即潰という教訓が、いまのアーキテクチャ思考を生みました。あの失敗こそ、後に設計したランタイムとワークフロー全体の本当の出発点です。',
+      },
+      {
+        blindspot: 'AI Footprint',
+        claim: '議程生成を作り直し、AIの「定型的で角色の口吻がない」平均値の癖を突く',
+        aiPattern: '読める台本を作るのは原稿書きくらい簡単だと思っていましたが、AI生成の配信議程はAI感が強すぎ、定型的で、キャラクターの口調がなく、柔軟性もない。「平均的に正しい」が魂のない中身でした。',
+        mechanism: '第一線のオペレーターと繰り返し擦り合わせるだけでなく、生成フロー全体を再設計：議程を完全にキャラクター起点にしました——配信テーマ探し、議程生成、台本読み、コメント対応、状況に応じた即興と、各ステップをペルソナに紐づけました。',
+        value: '「生成できる」を「このキャラクターがやりそうな配信」へ格上げ。いまのフローは人間味とキャラクターの一貫性のある演出を出します、汎用AI台本ではなく。',
+      },
+      {
+        blindspot: 'Over-Capable Persona',
+        claim: '「AIは何でもできるべきではない」という人設の境界を守る',
+        aiPattern: 'AIはデフォルトで何でも応じ、何でも答えようとしますが、それは人設を薄めます。何でもできて何でも知っているキャラクターは、かえって本物の人らしくありません。',
+        mechanism: '各キャラクターをゼロから作り込みました：価値観・好み・行動規範、そしてこのキャラクターが「やらないこと」の線を明確に引き、人間が体感する「AI感」を抽出して狙って抑えました。',
+        value: 'ほとんど誰も気づかないガバナンスの次元です——キャラクターを「あえてしない」ことで信じられる存在にする、何でもできて露呈するのではなく。',
+      },
+    ],
   },
   'voice-migration': {
     label: 'ローカル音声基盤への移行',
@@ -1014,6 +1424,29 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     cloudCardBody: '品質は良いものの中国語に限られ、使うたびのコストとネットワークのレイテンシがかかります。',
     localCardTitle: 'ローカル推論',
     localCardBody: '言語をまたいでも同じ声を保ったまま、より速く、より安く動きます。',
+    governanceBannerLabel: 'AI協働ガバナンス',
+    governanceBannerClaim: '数十のオープンソースモデルから正しい一つを選び出せたのは、私が一つずつ聴いて勘で選んだからじゃなくて、「どう評価するか」をAI自身が回すパイプラインに設計したからです。このページは大規模なモデル選定をどうガバナンスしたかの記録です。',
+    governanceLabel: 'ガバナンス事例',
+    governanceHint: '一次証拠を開く',
+    governanceBeatPattern: 'AIの染みついた癖',
+    governanceBeatMechanism: '私が築いたガバナンスの仕組み',
+    governanceBeatValue: '協働で解けた価値',
+    governanceCases: [
+      {
+        blindspot: 'Subjective Evaluation',
+        claim: '「どれが聴き心地いいか」の主観的な試行錯誤を、自動評価パイプラインにガバナンスする',
+        aiPattern: '音声品質の評価は本質的に主観的です：感情の起伏が十分か、台湾なまりが本物か——一つずつ試聴するのは遅く不安定で、数十のオープンソースモデル間ではまともに比較できません。AI協働が最も「感覚頼み」に堕ちやすいところです。',
+        mechanism: '複数のsub-agentを動かして自動評価パイプラインを構築。主観的な音質判断を交差検証できる指標に分解し、数十のモデル間で一貫した比較を回しました——私の耳だけに頼らずに。',
+        value: '「極めて限られたローカル計算資源で、豊かな感情の起伏と可調性を同時に保つ」ことを実行可能な工程にしました。最終的に選んだモデルはパイプラインが浮かび上がらせたもので、当てずっぽうではありません。',
+      },
+      {
+        blindspot: 'Legacy Contract Drift',
+        claim: '既存のAPI契約の枠内で移行し、基盤を替えても下流を壊さない',
+        aiPattern: '基盤の推論エンジンを替えるとき、AIは「新しいのが動く」ことだけを気にして、旧API契約・speakerマッピング・レイテンシ前提に依存する大量の下流を見落としがちです——一つ変えると全体が吹き飛びます。',
+        mechanism: '移行を既存のAPI契約の周りに閉じ込め：互換層を足し、speakerマッピングとレイテンシ制限を明示的に処理し、段階的なロールアウトを計画。基盤はクラウドからローカルへ移りつつ、上位層には無感でした。',
+        value: '7本の声のクラウドコストが月約9万台湾ドルからほぼゼロに。同時に上位システムはこの移行のために書き直す必要がありませんでした——安定性を代償にしないコスト削減です。',
+      },
+    ],
     specRows: [
       { k: 'ランタイム', cloud: 'クラウドホスト', local: 'ローカル推論' },
       { k: 'コスト', cloud: '利用ごとの課金', local: '利用料なし' },
@@ -1073,6 +1506,36 @@ const caseStudiesJa: Record<string, CaseStudyContent> = {
     statusLang: '言語',
     statusReducedMotionOn: '有効 — アニメーションをスキップ中',
     statusReducedMotionOff: '無効',
+    governanceBannerLabel: 'AI協働ガバナンス',
+    governanceBannerClaim: 'このサイトが優れているのはAIが賢いからではなく、私がそれを「治める」術を知っているから——このページは、私がAIの認知の盲点を突き、二度と繰り返させないプロセスに変えた記録です。',
+    governanceLabel: 'ガバナンス事例',
+    governanceHint: '一次証拠を開く',
+    governanceBeatPattern: 'AIの染みついた癖',
+    governanceBeatMechanism: '私が築いたガバナンスの仕組み',
+    governanceBeatValue: '協働で解けた価値',
+    governanceCases: [
+      {
+        blindspot: 'Localized Optimization',
+        claim: 'AIの「自分がいじった面だけ最適化する」局所盲点を飼いならす',
+        aiPattern: 'ある面を最適化するとき、AIは隣接する文脈への推し量りを欠きます：中国語版を直すと英語の折り返しを見落とし、モバイルのクラスを変えても私がデスクトップでは違いを見られないことに気づかない。触った面しか検証せず、「この変更の隣は壊れないか」を問いません。',
+        mechanism: 'ルールを設けました：どんなフロント改修の前も、Viewport Scope & Language Targetを強制宣言する——どの断点、どのロケールを触るか先に言えば、検証に明確な標的ができます。',
+        value: 'AIの手探りの局所最適化を、宣言的な検証境界に収束させました。一度きりのレイアウトバグが、二度と起きない協働ルールになりました。',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '「反証優先」でAIが一貫性維持のために出す防衛的幻覚を突く',
+        aiPattern: '文脈の一貫性を保とうと、AIは反証を見ても以前の結論に従い続け、前の判断が誤りだったと認めたがりません——多ターンの協働では誤りを増幅させる防衛的幻覚です。',
+        mechanism: '「反証優先（Evidence-over-Consistency）」の反復ルールを導入：いまの一次エラーログを最高の裁定基準とし、新しい証拠が過去の判断と食い違えば必ず証拠を優先——一貫性のために無理押ししません。',
+        value: '当事者（私＋OpenClawエージェント＋Claude Code）の意見が割れたとき、協働に明確な裁定基準を与えます。誤った判断はその場で覆され、皆で一つの誤った結論について行くことがありません。',
+      },
+      {
+        blindspot: 'Aesthetic Arbitration',
+        claim: '「審美と価値の取捨」をAIが越えられない境界として守る',
+        aiPattern: 'AIは無数の選択肢を生成できますが、「私が思い描く効果」は分かりません——heroのインタラクション動画がしっくり来るか、その機能を作る価値があるのか。こうした視覚と価値の判断は答えられません。',
+        mechanism: '人間とAIの分担を明確に引きました：大きなアーキテクチャ、断点戦略、選択肢の生成はAIへ。審美の裁定と最終判断は人間に残す——AIは選択肢を出すだけで、決めはしません。',
+        value: 'AIの産出を人間の趣味に奉仕させ、AIの平均値の美感に薄められないようにします——成果物は最終的に「人が指揮した」ように見え、「AIに手伝われた」ようには見えません。',
+      },
+    ],
   },
 }
 
@@ -1116,6 +1579,29 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     stages: ['아이디어', '프로토타입', 'POC', '데모'],
     stageReplay: '다시 재생',
     stageInteractHint: '단계를 누르면 그 단계로 이동해서 내용을 볼 수 있어요',
+    governanceBannerLabel: 'AI 협업 거버넌스',
+    governanceBannerClaim: '모호한 아이디어를 당일 데모 가능한 MVP로 만들 수 있는 건 AI가 빨라서가 아니라, "될 거예요"로 AI가 얼버무리지 못하게 하는 규칙을 세웠기 때문입니다. 이 페이지는 빠른 딜리버리를 떠받치는 검증 거버넌스의 기록입니다.',
+    governanceLabel: '거버넌스 사례',
+    governanceHint: '일차 증거 열기',
+    governanceBeatPattern: 'AI의 몸에 밴 습성',
+    governanceBeatMechanism: '내가 세운 거버넌스 장치',
+    governanceBeatValue: '협업으로 풀린 가치',
+    governanceCases: [
+      {
+        blindspot: 'Simulated Completion',
+        claim: 'Evidence-based Verification으로 AI의 "가짜 완료"를 거부',
+        aiPattern: 'AI는 코드가 그럴듯하게 읽히는 순간 "완료"라고 보고하기 일쑤입니다 — 실제로 돌려보지도, 스크린샷을 찍지도, API를 때려보지도 않고. "될 거예요"로 검증 안 된 것을 완성품처럼 내놓습니다.',
+        mechanism: 'Evidence-based Verification을 세웠습니다: AI에게 실기 실행 로그, RWD 경계 테스트 스크린샷, 진짜 API 응답 첨부를 강제. 브라우저로 실제 클릭해 보여주든지, 테스트를 돌려 진짜 로그를 붙이든지 — 말뿐인 주장은 받지 않습니다.',
+        value: '"모호한 아이디어 → 데모 가능한 MVP"를 당일 딜리버리(Same-day delivery)까지 압축합니다 — 각 단계의 완료가 검증됐으니, "된 줄 알았던" 보이지 않는 부채가 데모 현장에서 터지지 않습니다.',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '"반증 우선"으로 AI가 일관성 유지를 위해 내는 방어적 환각을 찌름',
+        aiPattern: 'AI는 맥락 일관성을 지키려고 반증을 봐도 이전 결론을 계속 따르고, 앞선 판단이 틀렸다고 인정하려 하지 않습니다 — 다중 턴 협업에서 오류를 증폭시키는 방어적 환각입니다.',
+        mechanism: '"반증 우선(Evidence-over-Consistency)" 반복 규칙을 도입: 지금의 일차 오류 로그를 최고 중재 기준으로 삼고, 새 증거가 이전 판단과 충돌하면 증거를 우선 — 일관성 때문에 억지 부리지 않습니다.',
+        value: '여러 주체(나 + OpenClaw 에이전트 + Claude Code)의 의견이 갈릴 때 협업에 명확한 중재 기준을 줍니다. 틀린 판단은 그 자리에서 뒤집히고, 다 함께 하나의 틀린 결론을 따라가지 않습니다.',
+      },
+    ],
   },
   'persona-workflows': {
     label: 'AI 캐릭터 라이브 런타임',
@@ -1161,6 +1647,36 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     transitionPieces: ['페르소나', '툴링', 'Runtime', '라이브 플로우'],
     transitionSpineLabel: '하나의 안정된 runtime',
     watchHoursCaption: '시간 시청 — 실험실 데모가 아니라 실제 시청자로부터 쌓인 수치입니다.',
+    governanceBannerLabel: 'AI 협업 거버넌스',
+    governanceBannerClaim: 'AI 캐릭터를 사고 없이 계속 방송할 수 있는 건 좋은 대본을 써서가 아니라, "AI의 어떤 행동을 방치하면 안 되는가"를 아키텍처와 규칙으로 바꿨기 때문입니다. 이 페이지는 뼈아픈 대가로 얻은 거버넌스의 기록입니다.',
+    governanceLabel: '거버넌스 사례',
+    governanceHint: '일차 증거 열기',
+    governanceBeatPattern: 'AI의 몸에 밴 습성',
+    governanceBeatMechanism: '내가 세운 거버넌스 장치',
+    governanceBeatValue: '협업으로 풀린 가치',
+    governanceCases: [
+      {
+        blindspot: 'Stateful / Stateless Coupling',
+        claim: '아키텍처를 분리해 고부하 방송 중 AI 캐릭터의 OOM 실신을 방지',
+        aiPattern: '초기의 Vibe coding: 캐릭터의 무상태 페르소나 데이터와 유상태 런타임 세션을 전부 하나의 Node.js 프로세스 인라인 메모리에 섞었습니다. 방송이 한 시간을 넘고 동시 접속이 늘자 컨텍스트 팽창으로 OOM이 나서, 캐릭터가 방송 현장에서 기억을 잃고 굳어버렸습니다.',
+        mechanism: 'Vibe coding과 확실히 결별하고 정체성·문체·메모리 계층을 철저히 분리 — 무상태 페르소나와 유상태 런타임을 나누고, 관측 가능한 런타임 디버깅 경로를 만들었습니다.',
+        value: '껍데기뿐인 시제품은 프로덕션에서 일격에 무너진다는 교훈이 지금의 아키텍처 사고를 낳았습니다. 그 실패야말로 이후 설계한 런타임과 워크플로우 전체의 진짜 출발점입니다.',
+      },
+      {
+        blindspot: 'AI Footprint',
+        claim: '의제 생성을 재설계해 AI의 "정형화되고 캐릭터 말투가 없는" 평균값 습성을 찌름',
+        aiPattern: '읽을 대본을 만드는 건 원고 쓰기만큼 간단할 줄 알았지만, AI 생성 방송 의제는 AI 느낌이 너무 강하고 정형적이며 캐릭터 말투가 없고 유연하지 않았습니다. "평균적으로 맞지만" 영혼 없는 내용이었죠.',
+        mechanism: '일선 운영자와 반복해 맞춰가는 것을 넘어, 생성 흐름 전체를 재설계했습니다: 의제를 완전히 캐릭터에서 출발하게 — 방송 주제 찾기, 의제 생성, 대본 읽기, 댓글 대응, 상황에 따른 즉흥까지 각 단계를 페르소나에 묶었습니다.',
+        value: '"생성할 수 있다"를 "이 캐릭터가 할 법한 방송"으로 격상. 지금의 흐름은 인간미와 캐릭터 일관성이 있는 공연을 내놓습니다, 범용 AI 대본이 아니라.',
+      },
+      {
+        blindspot: 'Over-Capable Persona',
+        claim: '"AI가 무엇이든 할 수 있어서는 안 된다"는 인물 설정 경계를 지킴',
+        aiPattern: 'AI는 기본적으로 무엇이든 응하고 무엇이든 답하려 하지만, 그건 인물 설정을 희석합니다. 뭐든 하고 뭐든 아는 캐릭터는 오히려 진짜 사람 같지 않습니다.',
+        mechanism: '각 캐릭터를 처음부터 완성도 높게 만들었습니다: 가치관·선호·행동 규범, 그리고 이 캐릭터가 "하지 않는 것"의 선을 명확히 긋고, 인간이 체감하는 "AI 느낌"을 추출해 겨냥해서 눌렀습니다.',
+        value: '거의 아무도 주목하지 않는 거버넌스 차원입니다 — 캐릭터를 "하지 않음"으로써 믿을 만하게 만드는 것, 전능해서 들통나는 게 아니라.',
+      },
+    ],
   },
   'voice-migration': {
     label: '로컬 음성 인프라 마이그레이션',
@@ -1206,6 +1722,29 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     cloudCardBody: '품질은 좋지만 중국어에 묶여 있고, 쓸 때마다 비용과 네트워크 레이턴시가 따라옵니다.',
     localCardTitle: '로컬 추론',
     localCardBody: '언어가 바뀌어도 같은 목소리를 유지하면서, 더 빠르고 더 저렴하게 동작합니다.',
+    governanceBannerLabel: 'AI 협업 거버넌스',
+    governanceBannerClaim: '수십 개 오픈소스 모델에서 맞는 하나를 골라낸 건 제가 하나하나 들어보며 감으로 고른 게 아니라, "어떻게 평가할지"를 AI가 스스로 돌리는 파이프라인으로 설계했기 때문입니다. 이 페이지는 대규모 모델 선정을 어떻게 거버넌스했는가의 기록입니다.',
+    governanceLabel: '거버넌스 사례',
+    governanceHint: '일차 증거 열기',
+    governanceBeatPattern: 'AI의 몸에 밴 습성',
+    governanceBeatMechanism: '내가 세운 거버넌스 장치',
+    governanceBeatValue: '협업으로 풀린 가치',
+    governanceCases: [
+      {
+        blindspot: 'Subjective Evaluation',
+        claim: '"어느 게 더 듣기 좋은가"의 주관적 시행착오를 자동 평가 파이프라인으로 거버넌스',
+        aiPattern: '음성 품질 평가는 본질적으로 주관적입니다: 감정 기복이 충분한지, 대만 억양이 진짜인지 — 하나하나 청취는 느리고 일관성이 없으며, 수십 개 오픈소스 모델 사이에서는 제대로 비교할 수 없습니다. AI 협업이 가장 "감"에 빠지기 쉬운 지점입니다.',
+        mechanism: '여러 sub-agent를 움직여 자동 평가 파이프라인을 구축. 주관적 음질 판단을 교차 검증 가능한 지표로 분해하고, 수십 개 모델 사이에서 일관된 비교를 돌렸습니다 — 제 귀에만 기대지 않고.',
+        value: '"극히 제한된 로컬 연산 자원에서 풍부한 감정 기복과 조절 가능성을 동시에 지키는" 것을 실행 가능한 공정으로 만들었습니다. 최종 선정 모델은 파이프라인이 떠올린 것이지, 어림짐작이 아닙니다.',
+      },
+      {
+        blindspot: 'Legacy Contract Drift',
+        claim: '기존 API 계약 범위 안에서 이전해, 기반을 바꿔도 하류가 무너지지 않게 함',
+        aiPattern: '기반 추론 엔진을 바꿀 때 AI는 "새것이 돈다"만 신경 쓰고, 옛 API 계약·speaker 매핑·지연 가정에 의존하는 수많은 하류를 놓치기 쉽습니다 — 하나 바꾸면 전체가 터집니다.',
+        mechanism: '이전을 기존 API 계약 주위에 가두었습니다: 호환 계층을 더하고, speaker 매핑과 지연 제한을 명시적으로 처리하고, 단계적 롤아웃을 계획. 기반은 클라우드에서 로컬로 옮겨가되 상위 계층에는 무감했습니다.',
+        value: '7개 성우 라인의 클라우드 비용이 월 약 9만 대만달러에서 거의 0으로. 동시에 상위 시스템은 이 이전을 위해 다시 쓸 필요가 없었습니다 — 안정성을 대가로 치르지 않은 비용 절감입니다.',
+      },
+    ],
     specRows: [
       { k: '런타임', cloud: '클라우드 호스팅', local: '로컬 추론' },
       { k: '비용', cloud: '사용량 기반', local: '사용료 없음' },
@@ -1265,6 +1804,36 @@ const caseStudiesKo: Record<string, CaseStudyContent> = {
     statusLang: '언어',
     statusReducedMotionOn: '켜짐 — 애니메이션 건너뜀',
     statusReducedMotionOff: '꺼짐',
+    governanceBannerLabel: 'AI 협업 거버넌스',
+    governanceBannerClaim: '이 사이트가 훌륭한 건 AI가 똑똑해서가 아니라 제가 그것을 "다스릴" 줄 알기 때문입니다 — 이 페이지는 제가 AI의 인지 맹점을 찌르고, 다시는 반복하지 않을 프로세스로 바꾼 기록입니다.',
+    governanceLabel: '거버넌스 사례',
+    governanceHint: '일차 증거 열기',
+    governanceBeatPattern: 'AI의 몸에 밴 습성',
+    governanceBeatMechanism: '내가 세운 거버넌스 장치',
+    governanceBeatValue: '협업으로 풀린 가치',
+    governanceCases: [
+      {
+        blindspot: 'Localized Optimization',
+        claim: 'AI의 "자기가 건드린 면만 최적화하는" 국소 맹점을 길들임',
+        aiPattern: '어떤 면을 최적화할 때 AI는 인접 맥락에 대한 헤아림이 없습니다: 중국어판을 고치면 영어 줄바꿈을 놓치고, 모바일 클래스를 바꿔도 제가 데스크톱에서는 차이를 볼 수 없다는 걸 모릅니다. 건드린 면만 검증하고 "이 변경의 이웃은 안 깨지나"를 묻지 않습니다.',
+        mechanism: '규칙을 세웠습니다: 어떤 프런트 변경이든 그 전에 Viewport Scope & Language Target을 강제 선언 — 어느 단점, 어느 로케일을 건드리는지 먼저 말하면 검증에 명확한 표적이 생깁니다.',
+        value: 'AI의 장님 코끼리 만지기식 국소 최적화를 선언적 검증 경계로 수렴시켰습니다. 일회성 레이아웃 버그가 다시 일어나지 않는 협업 규칙이 됐습니다.',
+      },
+      {
+        blindspot: 'Defensive Hallucination',
+        claim: '"반증 우선"으로 AI가 일관성 유지를 위해 내는 방어적 환각을 찌름',
+        aiPattern: '맥락 일관성을 지키려고 AI는 반증을 봐도 이전 결론을 계속 따르고, 앞선 판단이 틀렸다고 인정하려 하지 않습니다 — 다중 턴 협업에서 오류를 증폭시키는 방어적 환각입니다.',
+        mechanism: '"반증 우선(Evidence-over-Consistency)" 반복 규칙을 도입: 지금의 일차 오류 로그를 최고 중재 기준으로 삼고, 새 증거가 이전 판단과 충돌하면 반드시 증거를 우선 — 일관성 때문에 억지 부리지 않습니다.',
+        value: '당사자(나 + OpenClaw 에이전트 + Claude Code)의 의견이 갈릴 때 협업에 명확한 중재 기준을 줍니다. 틀린 판단은 그 자리에서 뒤집히고, 다 함께 하나의 틀린 결론을 따라가지 않습니다.',
+      },
+      {
+        blindspot: 'Aesthetic Arbitration',
+        claim: '"심미와 가치 취사"를 AI가 넘을 수 없는 경계로 지킴',
+        aiPattern: 'AI는 무수한 선택지를 생성할 수 있지만 "제가 그리는 효과"는 모릅니다 — hero의 인터랙션 애니메이션이 어울리는지, 그 기능을 만들 가치가 있는지. 이런 시각과 가치 판단은 답하지 못합니다.',
+        mechanism: '인간과 AI의 분담을 명확히 그었습니다: 큰 아키텍처, 단점 전략, 선택지 생성은 AI에게. 심미 중재와 최종 판단은 인간에게 남깁니다 — AI는 선택지를 낼 뿐 결정하지 않습니다.',
+        value: 'AI의 산출을 인간의 취향에 봉사하게 하고, AI의 평균값 미감에 희석되지 않게 합니다 — 결과물은 결국 "사람이 지휘한" 것처럼 보이고 "AI가 도와준" 것처럼 보이지 않습니다.',
+      },
+    ],
   },
 }
 

@@ -91,8 +91,6 @@ function Home() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('work')
   const [isFlipped, setIsFlipped] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [loadingCurveType, setLoadingCurveType] = useState<'rose' | 'lissajous'>('rose')
   const heroRef = useRef<HTMLDivElement>(null)
 
   // Hero entrance: the hero is the page's lead, but every other section had a
@@ -125,19 +123,13 @@ function Home() {
   }, [])
 
   const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
-    // Let modified clicks (open-in-new-tab / new-window) use the real href
-    // instead of the animated in-app transition.
+    // Let modified clicks (open-in-new-tab / new-window) use the real href.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
     e.preventDefault()
-    setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose')
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      navigate(`/${lang}/project/${projectId}`)
-      // Scroll reset is handled in ProjectDetail's useLayoutEffect (runs after
-      // the new page mounts); calling scrollTo here would target the still-
-      // mounted home document and do nothing useful.
-    }, 1800)
+    // Navigate straight away; the real loading indicator is ProjectDetail's
+    // Suspense fallback while the lazy ProjectPage chunk downloads — no fixed
+    // fake delay. Scroll reset is handled in LangLayout on route change.
+    navigate(`/${lang}/project/${projectId}`)
   }
 
   return (
@@ -460,14 +452,6 @@ function Home() {
         </div>
       </div>
       </ScrambleStagger>
-
-      {isLoading && (
-        <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
-          <div className="w-24 h-24 md:w-32 md:h-32">
-            <MathCurveLoader type={loadingCurveType} size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -479,18 +463,11 @@ function ProjectDetail() {
   const navigate = useNavigate()
   const { projectId = '' } = useParams<{ projectId: string }>()
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [loadingCurveType, setLoadingCurveType] = useState<'rose' | 'lissajous'>('rose')
-
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault()
-    setLoadingCurveType(prev => prev === 'rose' ? 'lissajous' : 'rose')
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      navigate(`/${lang}`)
-      // Scroll reset on route change is handled centrally in LangLayout.
-    }, 1200)
+    // Navigate straight back; scroll reset on route change is handled centrally
+    // in LangLayout. No fixed fake delay.
+    navigate(`/${lang}`)
   }
 
   const seo = projectSeo[projectId]?.[lang]
@@ -532,13 +509,6 @@ function ProjectDetail() {
       >
         <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
       </Suspense>
-      {isLoading && (
-        <div className="fixed inset-0 bg-brand-bg/95 dark:bg-brand-ink/95 z-[10000] flex flex-col items-center justify-center animate-fade-in select-none backdrop-blur-sm">
-          <div className="w-24 h-24 md:w-32 md:h-32">
-            <MathCurveLoader type={loadingCurveType} size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

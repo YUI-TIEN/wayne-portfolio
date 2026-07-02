@@ -10,6 +10,7 @@ import { ContextLoss } from './ContextLoss'
 import { GuardGate } from './GuardGate'
 import { OutcomeIcon } from './OutcomeIcon'
 import { MorphusLayout, PersonaLayout, VoiceLayout, PortfolioLayout } from './CaseStudyLayouts'
+import { GovernanceBand } from './TurningPoints'
 import { themeFor } from './caseStudyTheme'
 
 interface ProjectPageProps {
@@ -245,6 +246,25 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           </div>
         </section>
         </ScrambleStagger>
+
+        {/* ── AI COLLABORATION GOVERNANCE ──────────────────────── */}
+        {c.governanceCases && c.governanceCases.length > 0 && (
+          <ScrambleStagger delay={0.42}>
+          <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+            <GovernanceBand
+              cases={c.governanceCases}
+              bannerLabel={c.governanceBannerLabel ?? 'AI collaboration governance'}
+              bannerClaim={c.governanceBannerClaim ?? ''}
+              gridLabel={c.governanceLabel ?? 'Governance cases'}
+              hint={c.governanceHint}
+              beatPatternLabel={c.governanceBeatPattern ?? "The AI's ingrained pattern"}
+              beatMechanismLabel={c.governanceBeatMechanism ?? 'The governance mechanism I built'}
+              beatValueLabel={c.governanceBeatValue ?? 'The collaboration value it unlocked'}
+              accentText="text-brand-orange"
+            />
+          </section>
+          </ScrambleStagger>
+        )}
 
         {/* ── QUOTE ────────────────────────────────────────────── */}
         <ScrambleStagger delay={0.44}>
