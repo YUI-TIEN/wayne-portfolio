@@ -329,9 +329,40 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
     return <MorphusLayout {...layoutProps} />
   }
 
-  // ── PLACEHOLDER ──────────────────────────────────────────────
+  // ── NOT FOUND ────────────────────────────────────────────────
+  // An unknown projectId (bad/stale URL) previously rendered a blank page.
+  // Show a real 404 with a way back instead of a white screen.
   const p = t.placeholders[projectId]
-  if (!p) return null
+  if (!p) {
+    return (
+      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans flex flex-col">
+        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-8 flex items-center justify-between">
+          <Magnetic scaleOnHover={1.08}>
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+            >
+              <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
+            </button>
+          </Magnetic>
+          {themeToggle}
+        </div>
+        <section className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-6">404</p>
+          <h1 className="font-serif text-4xl md:text-6xl leading-tight max-w-3xl mb-6"><ScrambleText text={t.notFoundTitle} /></h1>
+          <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-xl leading-relaxed mb-12"><ScrambleText text={t.notFoundBody} /></p>
+          <Magnetic scaleOnHover={1.06}>
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+            >
+              <ArrowLeft size={13} /> <ScrambleText text={t.backToAllProjects} />
+            </button>
+          </Magnetic>
+        </section>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">

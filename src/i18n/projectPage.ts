@@ -138,6 +138,8 @@ export interface ProjectPageCopy {
   caseStudyInProgress: string
   contributions: string // "Contributions" — shared label for the case-study contributions band
   whatIDid: string // "What I actually did." — shared headline for the case-study contributions band
+  notFoundTitle: string // shown when the URL's projectId matches no project
+  notFoundBody: string
   openClaw: OpenClawContent
   placeholders: Record<string, PlaceholderContent>
   caseStudies: Record<string, CaseStudyContent>
@@ -1847,6 +1849,8 @@ const en: ProjectPageCopy = {
   caseStudyInProgress: 'Case study in progress',
   contributions: 'Contributions',
   whatIDid: 'What I actually did.',
+  notFoundTitle: 'Project not found',
+  notFoundBody: "This project doesn't exist — the link may be outdated. Head back to see everything I've built.",
   openClaw: openClawEn,
   placeholders: placeholdersEn,
   caseStudies: caseStudiesEn,
@@ -1862,6 +1866,8 @@ const zhTw: ProjectPageCopy = {
   caseStudyInProgress: '這個案例還在整理，晚點回來看',
   contributions: '我做了什麼',
   whatIDid: '實際動手做的事。',
+  notFoundTitle: '找不到這個專案',
+  notFoundBody: '這個專案不存在，連結可能已經失效。回去看看我做過的所有東西吧。',
   openClaw: openClawZhTw,
   placeholders: placeholdersZhTw,
   caseStudies: caseStudiesZhTw,
@@ -1877,6 +1883,8 @@ const ja: ProjectPageCopy = {
   caseStudyInProgress: 'ケーススタディ準備中',
   contributions: '担当したこと',
   whatIDid: '実際にやったこと。',
+  notFoundTitle: 'プロジェクトが見つかりません',
+  notFoundBody: 'このプロジェクトは存在しません。リンクが古い可能性があります。これまで作ってきたものを見に戻ってください。',
   openClaw: openClawJa,
   placeholders: placeholdersJa,
   caseStudies: caseStudiesJa,
@@ -1892,6 +1900,8 @@ const ko: ProjectPageCopy = {
   caseStudyInProgress: '케이스 스터디 준비 중',
   contributions: '담당한 일',
   whatIDid: '실제로 한 일.',
+  notFoundTitle: '프로젝트를 찾을 수 없습니다',
+  notFoundBody: '이 프로젝트는 존재하지 않습니다. 링크가 오래된 것일 수 있어요. 제가 만든 모든 것을 보러 돌아가세요.',
   openClaw: openClawKo,
   placeholders: placeholdersKo,
   caseStudies: caseStudiesKo,
