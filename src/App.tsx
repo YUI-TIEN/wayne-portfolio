@@ -9,6 +9,7 @@ import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { HeroDotGrid } from './components/HeroDotGrid'
 import { PixelCritter } from './components/PixelCritter'
+import { PaperTexture } from '@paper-design/shaders-react'
 // Lazy: ProjectPage pulls in every case-study demo component (OpsDemo,
 // SystemTopology, GuardGate, CaseStudyLayouts, …). Splitting it out keeps
 // that weight off the home page's initial bundle — it only loads when a
@@ -414,13 +415,30 @@ function Home() {
                 <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                   <div className="absolute inset-0 bg-white p-2.5 pb-8 md:p-3 md:pb-12 shadow-xl backface-hidden flex flex-col border border-neutral-200">
                     <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-                      {/* display:contents so the <img> stays the flex child (w/h-full
-                          resolve as before). WebP is ~11KB vs the 434KB PNG; the PNG
-                          stays as the <img> fallback and the JSON-LD person image. */}
-                      <picture className="contents">
-                        <source srcSet={`${import.meta.env.BASE_URL}avatar.webp`} type="image/webp" />
-                        <img src={`${import.meta.env.BASE_URL}avatar.png`} alt={t.footer.photoAlt} width={400} height={400} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-110" />
-                      </picture>
+                      {/* PaperTexture renders the avatar through a WebGL paper-grain
+                          shader (crumples/folds/fiber). role/aria-label keep the
+                          canvas accessible since it replaces the <img> alt. */}
+                      <PaperTexture
+                        className="w-full h-full transition-transform duration-500 group-hover:scale-110"
+                        image={`${import.meta.env.BASE_URL}avatar.png`}
+                        colorBack="#ffffff"
+                        colorFront="#9fadbc"
+                        contrast={0.3}
+                        roughness={0.4}
+                        fiber={0.3}
+                        fiberSize={0.2}
+                        crumples={0.3}
+                        crumpleSize={0.35}
+                        folds={0.65}
+                        foldCount={5}
+                        drops={0.2}
+                        fade={0}
+                        seed={5.8}
+                        scale={1}
+                        fit="cover"
+                        role="img"
+                        aria-label={t.footer.photoAlt}
+                      />
                     </div>
                   </div>
                   <div className="absolute inset-0 bg-white p-2.5 pb-2 md:p-3 md:pb-3 shadow-xl rotate-y-180 backface-hidden flex flex-col items-center justify-between border border-neutral-200">
