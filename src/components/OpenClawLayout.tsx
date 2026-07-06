@@ -27,7 +27,7 @@ interface OpenClawLayoutProps {
 
 export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayoutProps) {
   return (
-      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
+      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-clip">
 
         {/* Top Nav */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">

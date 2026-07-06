@@ -184,7 +184,12 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
+    // `overflow-x-clip`, not `-hidden`: per spec, `overflow-x: hidden` forces
+    // computed `overflow-y: auto`, turning this div into its own scroll
+    // container — reveal items pre-positioned just past the fold (e.g.
+    // y: +32px) then poke past its bottom edge and grow a second scrollbar
+    // until they animate in. `clip` never establishes a scroll container.
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
       <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[profilePageSchema, faqPageSchema(t.faq.items)]} />
       <CustomCursor />
       <ScrollProgress />
@@ -556,7 +561,7 @@ function ProjectDetail() {
   const project = homeCopy[lang].projects.find(p => p.id === projectId)
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
       {seo ? (
         <Seo
           title={seo.title}

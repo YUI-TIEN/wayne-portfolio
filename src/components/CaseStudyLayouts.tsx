@@ -201,7 +201,7 @@ export interface LayoutProps {
   onBack: (e: React.MouseEvent) => void
 }
 
-const shell = 'min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-hidden'
+const shell = 'min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-clip'
 
 // ── morphus-website: pipeline / stage tracker ──────────────────────────────
 // Content is a funnel (idea -> prototype -> POC -> demo); show it as a literal

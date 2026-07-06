@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
   // CJK webfonts (Noto Sans/Serif TC/JP etc.) load late and reflow text,
   // which shifts section heights after ScrollTrigger has already measured
   // trigger positions off the fallback-font layout. Once fonts settle,
-  // re-measure so `start: 'top 70%'` fires at the right scroll offset.
+  // re-measure so `start: 'clamp(top 70%)'` fires at the right scroll offset.
   // `document.fonts` is undefined during SSR/prerender — guard accordingly.
   document.fonts?.ready.then(() => ScrollTrigger.refresh())
 }
@@ -29,7 +29,11 @@ export const REVEAL = {
   distance: 32,
   // Fraction of the viewport height the element's top must cross before the
   // reveal fires. 0.7 => trigger when the element is ~30% into view.
-  start: 'top 70%',
+  // Wrapped in clamp(...) so short sections near the very bottom of a page
+  // (whose top can never reach the 70% line, even at max scroll) still get
+  // their trigger position clamped to the scrollable bounds — otherwise the
+  // reveal never fires and the element stays frozen at its `gsap.from` state.
+  start: 'clamp(top 70%)',
 } as const
 
 export type RevealVariant = 'fade' | 'up' | 'left' | 'right' | 'scale' | 'flip' | 'clip' | 'blur'
