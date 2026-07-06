@@ -8,6 +8,13 @@ import { skipsScrollAnimation } from './motionGuards'
 if (typeof window !== 'undefined') {
   ;(window as typeof window & { gsap?: typeof gsap }).gsap = gsap
   gsap.registerPlugin(ScrollTrigger)
+
+  // CJK webfonts (Noto Sans/Serif TC/JP etc.) load late and reflow text,
+  // which shifts section heights after ScrollTrigger has already measured
+  // trigger positions off the fallback-font layout. Once fonts settle,
+  // re-measure so `start: 'top 70%'` fires at the right scroll offset.
+  // `document.fonts` is undefined during SSR/prerender — guard accordingly.
+  document.fonts?.ready.then(() => ScrollTrigger.refresh())
 }
 
 export { gsap, ScrollTrigger }
@@ -25,7 +32,7 @@ export const REVEAL = {
   start: 'top 70%',
 } as const
 
-export type RevealVariant = 'fade' | 'up' | 'left' | 'right' | 'scale' | 'flip' | 'clip'
+export type RevealVariant = 'fade' | 'up' | 'left' | 'right' | 'scale' | 'flip' | 'clip' | 'blur'
 
 // The FROM state for each variant. gsap.from() animates FROM these values TO
 // each element's settled JSX state, so the static markup is always the final
@@ -48,6 +55,11 @@ export function fromVars(variant: RevealVariant, distance: number = REVEAL.dista
     case 'clip':
       // Wipe reveal from the left edge.
       return { opacity: 0, clipPath: 'inset(0 100% 0 0)' }
+    case 'blur':
+      // Soft focus-pull entrance. GPU-heavy (filter), so reserve for a
+      // handful of standalone display moments (big serif headlines, hero
+      // text) — never on staggered grids.
+      return { opacity: 0, y: 16, filter: 'blur(8px)' }
   }
 }
 

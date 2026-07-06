@@ -58,7 +58,7 @@ export function Reveal({
           duration: REVEAL.duration,
           ease: REVEAL.ease,
           delay,
-          clearProps: 'transform,opacity,clipPath',
+          clearProps: 'transform,opacity,clipPath,filter',
           scrollTrigger: { trigger: root, start, once: true },
         })
       } else {
@@ -80,7 +80,7 @@ export function Reveal({
             duration: REVEAL.duration,
             ease: REVEAL.ease,
             delay: delay + i * (staggerEach ?? REVEAL.stagger),
-            clearProps: 'transform,opacity,clipPath',
+            clearProps: 'transform,opacity,clipPath,filter',
             scrollTrigger: { trigger: el, start, once: true },
           })
         })

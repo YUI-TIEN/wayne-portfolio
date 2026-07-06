@@ -4,6 +4,7 @@ import type { Lang } from '../i18n/locales'
 import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage.types'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
+import { Reveal } from './Reveal'
 import { StatValue } from './StatValue'
 import { IdeaPipeline } from './IdeaPipeline'
 import { LiveRoster } from './LiveRoster'
@@ -26,7 +27,7 @@ function GovernanceBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudyThe
   if (!p.governanceCases || p.governanceCases.length === 0) return null
   return (
     <ScrambleStagger delay={0.3}>
-      <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+      <Reveal as="section" variant="up" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
         <GovernanceCards
           cases={p.governanceCases}
           bannerLabel={p.governanceBannerLabel ?? 'AI collaboration governance'}
@@ -38,7 +39,7 @@ function GovernanceBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudyThe
           beatValueLabel={p.governanceBeatValue ?? 'The collaboration value it unlocked'}
           accentText={theme.accentText}
         />
-      </section>
+      </Reveal>
     </ScrambleStagger>
   )
 }
@@ -56,8 +57,8 @@ type StatsVariant = 'sequence' | 'emphasis' | 'specList' | 'pills'
 function Hero({ p, theme, statsVariant = 'emphasis' }: { p: CaseStudyContent; theme: CaseStudyTheme; statsVariant?: StatsVariant }) {
   return (
     <ScrambleStagger delay={0.08}>
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
-        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
+      <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
+        <div data-reveal-item className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
           <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
           <span className="text-neutral-300 dark:text-neutral-600">·</span>
           {p.tags.map((tag, ti) => (
@@ -66,12 +67,14 @@ function Hero({ p, theme, statsVariant = 'emphasis' }: { p: CaseStudyContent; th
             </span>
           ))}
         </div>
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-[96px] leading-[0.96] md:leading-[0.92] tracking-tight max-w-5xl mb-8"><ScrambleText text={p.label} /></h1>
-        <p className="font-serif text-2xl md:text-4xl leading-tight max-w-4xl mb-8"><ScrambleText text={p.headline} /></p>
-        <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-14"><ScrambleText text={p.subheadline} /></p>
+        {/* Big serif display headline — one of this page's sparing `blur`
+            (focus-pull) moments, reserved for hero-scale text. */}
+        <h1 data-reveal-item data-reveal="blur" className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-[96px] leading-[0.96] md:leading-[0.92] tracking-tight max-w-5xl mb-8"><ScrambleText text={p.label} /></h1>
+        <p data-reveal-item className="font-serif text-2xl md:text-4xl leading-tight max-w-4xl mb-8"><ScrambleText text={p.headline} /></p>
+        <p data-reveal-item className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-14"><ScrambleText text={p.subheadline} /></p>
 
         <HeroStats p={p} theme={theme} variant={statsVariant} />
-      </section>
+      </Reveal>
     </ScrambleStagger>
   )
 }
@@ -84,7 +87,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
     return (
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-4 border-t border-neutral-200 dark:border-neutral-800 pt-8">
         {p.stats.map((s, i) => (
-          <span key={i} className="flex items-baseline gap-3">
+          <span key={i} data-reveal-item data-reveal="flip" className="flex items-baseline gap-3">
             {i > 0 && <ArrowRight size={14} className="text-neutral-300 dark:text-neutral-600 self-center" />}
             <span className="flex items-baseline gap-2">
               <span className={`font-serif text-2xl md:text-3xl ${theme.accentText}`}><StatValue value={s.value} /></span>
@@ -106,7 +109,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
     return (
       <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-px bg-neutral-200 dark:bg-neutral-800">
         {p.stats.map((s, i) => (
-          <div key={i} className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
+          <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
             <p className={`font-serif ${i === lead ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl'} ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
             <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
           </div>
@@ -122,7 +125,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
     return (
       <div className="max-w-md border-t border-neutral-200 dark:border-neutral-800">
         {p.stats.map((s, i) => (
-          <div key={i} className="flex items-baseline justify-between gap-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+          <div key={i} data-reveal-item data-reveal="flip" className="flex items-baseline justify-between gap-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></span>
             <span className={`font-serif text-xl md:text-2xl ${theme.accentText}`}><StatValue value={s.value} /></span>
           </div>
@@ -137,7 +140,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
   return (
     <div className="flex flex-wrap gap-3">
       {p.stats.map((s, i) => (
-        <div key={i} className={`flex items-baseline gap-2 px-4 py-2 rounded-full border ${theme.accentText} border-current/30`}>
+        <div key={i} data-reveal-item data-reveal="flip" className={`flex items-baseline gap-2 px-4 py-2 rounded-full border ${theme.accentText} border-current/30`}>
           <span className="font-serif text-lg md:text-xl"><StatValue value={s.value} /></span>
           <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-400">{s.label}</span>
         </div>
@@ -147,9 +150,13 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
 }
 
 function ProblemBand({ p, t, children }: { p: CaseStudyContent; t: ProjectPageCopy; children?: ReactNode }) {
+  // Every project page's dark problem band gets the same wipe-reveal
+  // identity (matches OpenClaw's bespoke layout) — a consistent motif
+  // rather than template fatigue, since it's the same recurring section
+  // shape across all five project pages.
   return (
     <ScrambleStagger delay={0.16}>
-      <section className="bg-brand-ink dark:bg-black py-16 md:py-24">
+      <Reveal as="section" variant="clip" className="bg-brand-ink dark:bg-black py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-8"><ScrambleText text={t.theProblem} /></p>
           <p className="font-serif text-2xl sm:text-3xl md:text-5xl leading-tight text-white max-w-4xl">
@@ -160,15 +167,16 @@ function ProblemBand({ p, t, children }: { p: CaseStudyContent; t: ProjectPageCo
           </p>
           {children}
         </div>
-      </section>
+      </Reveal>
     </ScrambleStagger>
   )
 }
 
 function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEvent) => void }) {
+  // Closing moment: a small `scale` pop on the way out (matches OpenClaw).
   return (
     <ScrambleStagger delay={0.4}>
-      <div className="border-t border-neutral-100 dark:border-neutral-800">
+      <Reveal variant="scale" className="border-t border-neutral-100 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
           <Magnetic scaleOnHover={1.08}>
             <button
@@ -179,7 +187,7 @@ function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEven
             </button>
           </Magnetic>
         </div>
-      </div>
+      </Reveal>
     </ScrambleStagger>
   )
 }
@@ -209,9 +217,11 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 
       {/* Stage tracker as a playable maturing-idea pipeline: the token grows
           detail as it advances idea -> demo, the funnel narrative shown as a
-          literal animation instead of four static cards. */}
+          literal animation instead of four static cards. Morphus's
+          distinctive moment — the whole tracker wipes into view like the
+          funnel is being revealed stage by stage. */}
       <ScrambleStagger delay={0.22}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <Reveal as="section" variant="clip" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
           <IdeaPipeline
             stages={stages}
@@ -221,22 +231,22 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             replayLabel={p.stageReplay ?? 'Replay'}
             interactHint={p.stageInteractHint}
           />
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       {/* Contributions as a light 2-col skill list, no heavy color band. */}
       <ScrambleStagger delay={0.28}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 pb-16 md:pb-24">
-          <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></p>
+        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pb-16 md:pb-24">
+          <p data-reveal-item className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-5">
             {p.contributions.map((item, i) => (
-              <div key={i} className="flex gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5">
+              <div key={i} data-reveal-item data-reveal="fade" className="flex gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5">
                 <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">{String(i + 1).padStart(2, '0')}</span>
                 <p className="font-mono text-xs md:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed"><ScrambleText text={item} /></p>
               </div>
             ))}
           </div>
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       <GovernanceBand p={p} theme={theme} />
@@ -278,24 +288,26 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         />
       </ProblemBand>
 
-      {/* Watch-hours banner — the standout number gets its own full-width row,
-          with a live audio-waveform backdrop so it reads as "on air." */}
+      {/* Watch-hours banner — Persona's distinctive moment. The standout
+          number gets its own full-width row with a live audio-waveform
+          backdrop so it reads as "on air"; the giant serif stat gets a
+          sparing `blur` focus-pull, the caption trails in beside it. */}
       <ScrambleStagger delay={0.2}>
-        <section className={`${theme.accentBandBg} relative overflow-hidden min-h-[240px] md:min-h-[420px] py-12 md:py-20 flex items-center`}>
+        <Reveal as="section" stagger className={`${theme.accentBandBg} relative overflow-hidden min-h-[240px] md:min-h-[420px] py-12 md:py-20 flex items-center`}>
           <WatchWaveform />
           <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <p className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
-            <p className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
+            <p data-reveal-item data-reveal="blur" className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
+            <p data-reveal-item className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
               <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
             </p>
           </div>
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       <ScrambleStagger delay={0.26}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <div>
+            <div data-reveal-item data-reveal="left">
               <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></p>
               <ul className="space-y-6">
                 {p.before.map((item, i) => (
@@ -306,7 +318,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
                 ))}
               </ul>
             </div>
-            <div>
+            <div data-reveal-item data-reveal="right">
               <p className={`font-serif text-2xl ${theme.accentText} mb-8 leading-none`}><ScrambleText text={t.after} /></p>
               <ul className="space-y-6">
                 {p.after.map((item, i) => (
@@ -322,13 +334,15 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
           {/* Consolidation visual — the four formerly-manual pieces snapping
               onto one runtime spine, making the Before→After story something
               you watch resolve rather than just read. */}
-          <PersonaTransition
-            accentText={theme.accentText}
-            accentBg={theme.accentBandBg}
-            spineLabel={p.transitionSpineLabel ?? 'one stable runtime'}
-            pieces={p.transitionPieces}
-          />
-        </section>
+          <div data-reveal-item data-reveal="fade">
+            <PersonaTransition
+              accentText={theme.accentText}
+              accentBg={theme.accentBandBg}
+              spineLabel={p.transitionSpineLabel ?? 'one stable runtime'}
+              pieces={p.transitionPieces}
+            />
+          </div>
+        </Reveal>
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
@@ -351,16 +365,16 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 function ContributionsBand({ p, t, theme }: { p: CaseStudyContent; t: ProjectPageCopy; theme: CaseStudyTheme }) {
   return (
     <ScrambleStagger delay={0.28}>
-      <section className={`${theme.accentBandBg} py-16 md:py-24`}>
+      <Reveal as="section" stagger className={`${theme.accentBandBg} py-16 md:py-24`}>
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12">
-            <div>
+            <div data-reveal-item data-reveal="left">
               <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={t.contributions} /></p>
               <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight"><ScrambleText text={t.whatIDid} /></h2>
             </div>
             <div className={`space-y-px ${theme.accentTileBg}`}>
               {p.contributions.map((item, i) => (
-                <div key={i} className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5 hover:bg-white/5 transition-colors`}>
+                <div key={i} data-reveal-item data-reveal="fade" className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5 hover:bg-white/5 transition-colors`}>
                   <span className={`font-mono text-[10px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
                   <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} leading-relaxed`}><ScrambleText text={item} /></p>
                 </div>
@@ -368,7 +382,7 @@ function ContributionsBand({ p, t, theme }: { p: CaseStudyContent; t: ProjectPag
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
     </ScrambleStagger>
   )
 }
@@ -392,9 +406,11 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <ProblemBand p={p} t={t} />
 
       {/* Playable cloud -> local migration: constraints fall away, cost/
-          latency bars drop, local bars rise, spec rows reveal in sequence. */}
+          latency bars drop, local bars rise, spec rows reveal in sequence.
+          Voice's distinctive moment — the demo scales in, echoing the
+          cloud-to-local "settling into place" story. */}
       <ScrambleStagger delay={0.22}>
-        <section className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <Reveal as="section" variant="scale" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <MigrationDemo
             accentText={theme.accentText}
             pathLabel={p.migrationPathLabel ?? 'Cloud → Local'}
@@ -406,7 +422,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
             constraints={p.migrationConstraints}
             replayLabel={p.migrationReplay ?? 'Replay'}
           />
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       <ContributionsBand p={p} t={t} theme={theme} />
@@ -435,61 +451,70 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <Hero p={p} theme={theme} statsVariant="pills" />
       <ProblemBand p={p} t={t} />
 
-      {/* Live proof: the page demonstrates an interaction it's describing. */}
+      {/* Live proof: the page demonstrates an interaction it's describing.
+          Portfolio's distinctive moment — a richly choreographed accent
+          band where the heading, the two live-proof demos, and the
+          contributions grid each stagger in with their own beat. */}
       <ScrambleStagger delay={0.22}>
-        <section className={`${theme.accentBandBg} py-16 md:py-24`}>
+        <Reveal as="section" stagger className={`${theme.accentBandBg} py-16 md:py-24`}>
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={p.liveProofLabel ?? 'Live proof'} /></p>
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight max-w-3xl mb-4">
-              <ScrambleText text={p.liveProofTitle ?? 'This page is the artifact.'} />
-            </h2>
-            <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-6`}>
-              <ScrambleText text={p.liveProofBody ?? 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.'} />
-            </p>
+            <div data-reveal-item>
+              <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={p.liveProofLabel ?? 'Live proof'} /></p>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight max-w-3xl mb-4">
+                <ScrambleText text={p.liveProofTitle ?? 'This page is the artifact.'} />
+              </h2>
+              <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-6`}>
+                <ScrambleText text={p.liveProofBody ?? 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.'} />
+              </p>
+            </div>
 
             {/* Interactive proof: trigger the page's own scramble effect by
                 clicking a script — demonstrating the claim instead of asserting
                 it. */}
-            <ScrambleProof
-              hint={p.scrambleProofHint ?? 'Tap a script — this is the same effect every heading uses.'}
-              accentBandText={theme.accentBandText}
-            />
+            <div data-reveal-item data-reveal="fade">
+              <ScrambleProof
+                hint={p.scrambleProofHint ?? 'Tap a script — this is the same effect every heading uses.'}
+                accentBandText={theme.accentBandText}
+              />
+            </div>
 
             {/* Second live-proof beat: instead of describing the site's
                 reduced-motion/dark-mode/responsive awareness, read its actual
                 runtime state right now. Toggling theme or resizing updates a
                 row live, in the same scramble-decode style as every other
                 text on the page. */}
-            <LiveSystemStatus
-              title={p.statusTitle ?? 'Live, right now — not a screenshot'}
-              rowLabels={{
-                reducedMotion: p.statusReducedMotion ?? 'Reduced motion',
-                theme: p.statusTheme ?? 'Theme',
-                breakpoint: p.statusBreakpoint ?? 'Breakpoint',
-                lang: p.statusLang ?? 'Language',
-              }}
-              reducedMotionOn={p.statusReducedMotionOn ?? 'on — animations skipped'}
-              reducedMotionOff={p.statusReducedMotionOff ?? 'off'}
-              rowMeanings={{
-                reducedMotion: p.statusMeaningReducedMotion ?? 'honors your OS motion setting',
-                theme: p.statusMeaningTheme ?? 'follows your saved theme choice',
-                breakpoint: p.statusMeaningBreakpoint ?? 'layout tier for this width — resize to move it',
-                lang: p.statusMeaningLang ?? 'active locale, decoded in its own script',
-              }}
-              resizeHint={p.statusResizeHint}
-              themeHint={p.statusThemeHint}
-            />
+            <div data-reveal-item data-reveal="fade">
+              <LiveSystemStatus
+                title={p.statusTitle ?? 'Live, right now — not a screenshot'}
+                rowLabels={{
+                  reducedMotion: p.statusReducedMotion ?? 'Reduced motion',
+                  theme: p.statusTheme ?? 'Theme',
+                  breakpoint: p.statusBreakpoint ?? 'Breakpoint',
+                  lang: p.statusLang ?? 'Language',
+                }}
+                reducedMotionOn={p.statusReducedMotionOn ?? 'on — animations skipped'}
+                reducedMotionOff={p.statusReducedMotionOff ?? 'off'}
+                rowMeanings={{
+                  reducedMotion: p.statusMeaningReducedMotion ?? 'honors your OS motion setting',
+                  theme: p.statusMeaningTheme ?? 'follows your saved theme choice',
+                  breakpoint: p.statusMeaningBreakpoint ?? 'layout tier for this width — resize to move it',
+                  lang: p.statusMeaningLang ?? 'active locale, decoded in its own script',
+                }}
+                resizeHint={p.statusResizeHint}
+                themeHint={p.statusThemeHint}
+              />
+            </div>
 
             <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">
               {p.contributions.map((item, i) => (
-                <div key={i} className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5`}>
+                <div key={i} data-reveal-item data-reveal="flip" className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5`}>
                   <span className={`font-mono text-[10px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
                   <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} leading-relaxed`}><ScrambleText text={item} /></p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       {/* AI-collaboration governance: named blind spots + the process Wayne
@@ -499,12 +524,12 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 
       {/* Outcomes as pull-quotes — self-referential copy reads better large. */}
       <ScrambleStagger delay={0.34}>
-        <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
+        <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
             <div className="space-y-12 md:space-y-16 max-w-4xl">
               {p.outcomes.map((o, i) => (
-                <div key={i} className="flex flex-col md:flex-row gap-4 md:gap-8">
+                <div key={i} data-reveal-item className="flex flex-col md:flex-row gap-4 md:gap-8">
                   <span className={`font-serif text-4xl md:text-6xl ${theme.accentText} leading-none shrink-0 md:w-20`}>{String(i + 1).padStart(2, '0')}</span>
                   <div>
                     <p className="font-serif text-2xl md:text-4xl text-neutral-900 dark:text-white mb-3 leading-tight"><ScrambleText text={o.title} /></p>
@@ -514,10 +539,10 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               ))}
             </div>
             {p.note && (
-              <p className="font-mono text-[11px] text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
+              <p data-reveal-item className="font-mono text-[11px] text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
             )}
           </div>
-        </section>
+        </Reveal>
       </ScrambleStagger>
 
       <Footer t={t} onBack={onBack} />

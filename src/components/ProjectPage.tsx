@@ -1,10 +1,11 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { ArrowLeft, Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { useProjectPageCopy } from '../i18n/projectPageLoader'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { themeFor } from './caseStudyTheme'
+import { ScrollTrigger } from './scrollReveal'
 import type { LayoutProps } from './CaseStudyLayouts'
 
 interface CaseStudyLayoutsProps {
@@ -44,6 +45,16 @@ interface ProjectPageProps {
 
 export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: ProjectPageProps) {
   const t = useProjectPageCopy(lang)
+
+  // Copy loads async per-locale and swaps in place on a language switch,
+  // changing section heights (different scripts/word lengths reflow the
+  // page). Reveals are `once: true`, so this only matters for triggers below
+  // the fold that haven't fired yet — refreshing keeps their positions
+  // accurate against the just-relaid-out page instead of the old locale's.
+  useEffect(() => {
+    if (!t) return
+    ScrollTrigger.refresh()
+  }, [t])
 
   // First-ever visit: the locale chunk is still in flight and there's no
   // previously-loaded copy (any language) to keep showing. Same minimal

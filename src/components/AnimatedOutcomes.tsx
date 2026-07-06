@@ -8,6 +8,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
+import { Reveal } from './Reveal'
 import { skipsScrollAnimation } from './motionGuards'
 
 // Shared upgraded outcomes grid used across all case studies. The original
@@ -95,9 +96,9 @@ export function AnimatedOutcomes({
 
   return (
     <ScrambleStagger delay={0.34}>
-      <section className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
+      <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
         <div ref={rootRef} className="max-w-7xl mx-auto px-6 md:px-12">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">
+          <p data-reveal-item className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">
             <ScrambleText text={outcomesLabel} />
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -107,6 +108,7 @@ export function AnimatedOutcomes({
               return (
                 <div
                   key={i}
+                  data-reveal-item
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
                   className={`group relative overflow-hidden border border-neutral-200 dark:border-neutral-700 p-8 min-h-[260px] flex flex-col transition-colors duration-300 ${on ? accentBg : 'bg-transparent'}`}
@@ -134,12 +136,12 @@ export function AnimatedOutcomes({
             })}
           </div>
           {note && (
-            <p className="font-mono text-[11px] text-neutral-400 mt-8 max-w-2xl leading-relaxed">
+            <p data-reveal-item className="font-mono text-[11px] text-neutral-400 mt-8 max-w-2xl leading-relaxed">
               <ScrambleText text={note} />
             </p>
           )}
         </div>
-      </section>
+      </Reveal>
     </ScrambleStagger>
   )
 }

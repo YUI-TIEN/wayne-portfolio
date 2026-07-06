@@ -245,7 +245,10 @@ function Home() {
         </section>
       </div>
 
-      {/* Marquee Ribbon */}
+      {/* Marquee Ribbon — Reveal wraps OUTSIDE .marquee-container so the
+          entrance transform never lands on the same element as the
+          continuous .marquee-scroll translateX loop. */}
+      <Reveal variant="fade" distance={12}>
       <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-brand-blue py-3 marquee-container">
         <div className="marquee-scroll flex gap-8 whitespace-nowrap text-[11px] font-mono lowercase tracking-wider text-white">
           {[...t.stack, ...t.stack, ...t.stack, ...t.stack].map((item, i) => (
@@ -255,6 +258,7 @@ function Home() {
           ))}
         </div>
       </div>
+      </Reveal>
       </ScrambleStagger>
 
       {/* About Section */}
