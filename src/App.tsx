@@ -3,10 +3,12 @@ import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 're
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import gsap from 'gsap'
 import { skipsScrollAnimation } from './components/motionGuards'
+import { ScrollProgress } from './components/ScrollProgress'
 import { MathCurveLoader } from './components/MathCurveLoader'
 import { CustomCursor } from './components/CustomCursor'
 import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
+import { Reveal } from './components/Reveal'
 import { HeroDotGrid } from './components/HeroDotGrid'
 import { PixelCritter } from './components/PixelCritter'
 import { PaperTexture } from '@paper-design/shaders-react'
@@ -123,6 +125,39 @@ function Home() {
     return () => { tween.kill() }
   }, [])
 
+  // Hero parallax: distinct from the mount-in tween above (that one fires once
+  // via gsap.from + clearProps and is done after ~1s; this one is a persistent
+  // scrub tied to scroll position). Different targets too — this drives the
+  // whole heroRef block plus the dot-grid canvas, not the staggered card/tags
+  // — so the two never fight over the same tween.
+  useLayoutEffect(() => {
+    if (skipsScrollAnimation() || !heroRef.current) return
+    const heroSection = heroRef.current.closest('section')
+    const heroWrap = heroSection?.parentElement // the outer `relative` div holding HeroDotGrid + nav + section
+    if (!heroWrap) return
+    const dotCanvas = heroWrap.querySelector<HTMLCanvasElement>('canvas')
+
+    const mm = gsap.matchMedia()
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroWrap,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      })
+      tl.to(heroRef.current, { y: -80, opacity: 0.4, ease: 'none' }, 0)
+      if (dotCanvas) {
+        // Slower than the card (0.5x travel) for a depth cue, not a hard rule.
+        tl.to(dotCanvas, { y: -40, ease: 'none' }, 0)
+      }
+      return () => { tl.scrollTrigger?.kill(); tl.kill() }
+    })
+
+    return () => mm.revert()
+  }, [])
+
   const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
     // Let modified clicks (open-in-new-tab / new-window) use the real href.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
@@ -137,6 +172,7 @@ function Home() {
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
       <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[profilePageSchema, faqPageSchema(t.faq.items)]} />
       <CustomCursor />
+      <ScrollProgress />
 
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
@@ -208,9 +244,9 @@ function Home() {
 
       {/* About Section */}
       <ScrambleStagger delay={0.16}>
-      <section id="about" className="max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-8 w-full">
+      <Reveal as="section" stagger id="about" className="max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-8">
-          <div className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
+          <div data-reveal-item data-reveal="left" className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-8"><ScrambleText text={t.about.eyebrow} /></p>
               <h2 className="font-serif text-4xl md:text-6xl leading-tight max-w-lg">
@@ -222,7 +258,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="bg-brand-blue text-white p-8 md:p-12 min-h-[320px] relative overflow-hidden border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
+          <div data-reveal-item data-reveal="right" className="bg-brand-blue text-white p-8 md:p-12 min-h-[320px] relative overflow-hidden border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
             <div className="inline-flex md:absolute md:top-8 md:right-8 bg-brand-lime text-neutral-900 font-mono text-[10px] uppercase tracking-widest px-3 py-2 -rotate-3 mb-8 md:mb-0">
               <ScrambleText text={t.about.badge} />
             </div>
@@ -241,30 +277,30 @@ function Home() {
 
         {/* Quick facts — plain-language summary for search and AI assistants */}
         <dl className="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800 text-[11px] font-mono">
-          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
             <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.name.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.name.value} /></dd>
           </div>
-          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
             <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.role.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.role.value} /></dd>
           </div>
-          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
             <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.location.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.location.value} /></dd>
           </div>
-          <div className="bg-brand-bg dark:bg-brand-ink p-5">
+          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
             <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.contact.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.contact.value} /></dd>
           </div>
         </dl>
-      </section>
+      </Reveal>
       </ScrambleStagger>
 
       {/* Projects Grid */}
       <ScrambleStagger delay={0.24}>
-      <section id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
-        <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <Reveal as="section" stagger id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
+        <div data-reveal-item className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
               <ScrambleText text={t.work.eyebrow} />
@@ -281,7 +317,7 @@ function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-8 auto-rows-auto">
           {t.projects.map((p, i) => (
-            <div key={i} className={`${p.layout} p-8 md:p-12 lg:p-14 flex flex-col justify-start min-h-[360px] rounded-none ${p.bg} transition-[transform,box-shadow,border-color] duration-300 ease-out border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
+            <div key={i} data-reveal-item data-reveal="flip" className={`${p.layout} p-8 md:p-12 lg:p-14 flex flex-col justify-start min-h-[360px] rounded-none ${p.bg} transition-[transform,box-shadow,border-color] duration-300 ease-out border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
               <div className="flex items-start justify-between gap-4 mb-6 md:mb-8">
                 <div className="flex flex-wrap gap-2">
                   {p.tags.map((tag, ti) => (
@@ -317,15 +353,15 @@ function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
       </ScrambleStagger>
 
       {/* FAQ — visible Q&A, also emitted as FAQPage structured data (see the
           faqPageSchema in jsonLd above). Plain-language answers double as
           grounding for search and AI assistants. */}
       <ScrambleStagger delay={0.28}>
-      <section id="faq" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
-        <div className="mb-8 md:mb-10">
+      <Reveal as="section" stagger id="faq" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
+        <div data-reveal-item className="mb-8 md:mb-10">
           <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
             <ScrambleText text={t.faq.eyebrow} />
           </span>
@@ -335,7 +371,7 @@ function Home() {
         </div>
         <dl className="border-t border-neutral-200 dark:border-neutral-800">
           {t.faq.items.map((item, i) => (
-            <div key={i} className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-2 md:gap-8 py-6 md:py-8 border-b border-neutral-200 dark:border-neutral-800">
+            <div key={i} data-reveal-item className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-2 md:gap-8 py-6 md:py-8 border-b border-neutral-200 dark:border-neutral-800">
               <dt className="font-serif text-xl md:text-2xl leading-snug text-neutral-900 dark:text-white">
                 <ScrambleText text={item.q} />
               </dt>
@@ -345,12 +381,12 @@ function Home() {
             </div>
           ))}
         </dl>
-      </section>
+      </Reveal>
       </ScrambleStagger>
 
       {/* Footer Container */}
       <ScrambleStagger delay={0.32}>
-      <div className="relative z-10 mt-16 w-full">
+      <Reveal variant="up" className="relative z-10 mt-16 w-full">
         {/* Folder Tabs */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[8px] md:gap-[12px] -mb-[1px] relative z-20 overflow-x-auto no-scrollbar">
           {(['work', 'about', 'contact'] as const).map((tab) => {
@@ -468,7 +504,7 @@ function Home() {
             <a href="https://www.svgrepo.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">SVG Repo</a>
           </div>
         </div>
-      </div>
+      </Reveal>
       </ScrambleStagger>
     </div>
   )
