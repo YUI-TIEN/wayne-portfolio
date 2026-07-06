@@ -18,13 +18,16 @@ const CJK_FONT_HREF = {
   ko: 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap',
 }
 
-// react-helmet-async's React 19 head-hoisting path does not reliably clear
-// the previous route's <title>/<meta>/<link> tags before the new route's
-// tags are committed (confirmed: duplicates exist even at domcontentloaded,
-// across fresh browser instances and isolated pages — not a render race).
-// Rather than depend on that runtime behavior, strip every Helmet-managed
-// tag from the prerendered snapshot and rewrite them from a static lookup
-// table (seoData.mjs), so each route's output HTML is unambiguous.
+// Each prerendered route needs deterministic, crawler-facing head tags that
+// don't depend on the client-rendered SPA's runtime state at snapshot time.
+// Strip every SEO-managed tag from the puppeteer-rendered snapshot and
+// rewrite them from a static lookup table (seoData.mjs), so each route's
+// output HTML is unambiguous. (This also used to work around a duplicate-tag
+// bug in react-helmet-async's React 19 head-hoisting path; that dependency
+// has since been removed in favor of React 19's native <title>/<meta>/<link>
+// hoisting in src/seo/Seo.tsx, which doesn't have the issue — but the
+// rewrite here stays, since deterministic prerendered output is still the
+// goal on its own merits.)
 const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description|image|image:alt)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
 
 function rewriteHead(html, route) {

@@ -25,6 +25,7 @@ import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPage
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { homeCopy } from './i18n/home'
+import { preloadProjectPageCopy } from './i18n/projectPageLoader'
 import { ThemeProvider, useTheme } from './theme/ThemeContext'
 
 const SITE_TITLE: Record<Lang, string> = {
@@ -48,6 +49,20 @@ const SITE_DESCRIPTION: Record<Lang, string> = {
   'zh-tw': '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
   ja: '台湾を拠点とするAIプロダクトビルダー — ワークフロー、エージェント運用、デモから実装までの仕組み。',
   ko: '대만 기반의 AI 프로덕트 빌더 — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
+}
+
+// Fallback <Seo> copy for /project/:projectId with an id that matches no
+// project (projectSeo[projectId] is undefined). Without this, ProjectDetail
+// rendered no <Seo> at all and the 404 UI shipped with whatever title/meta
+// the previous route left behind, unflagged for indexing. projectPage's
+// i18n copy has an equivalent notFoundTitle/notFoundBody, but that copy
+// lives in ProjectPage's lazy chunk — keep this small static table here
+// instead of pulling that chunk forward.
+const NOT_FOUND_SEO: Record<Lang, { title: string; description: string }> = {
+  en: { title: 'Page not found — Yui (Wayne) Tien', description: "This project doesn't exist — the link may be outdated." },
+  'zh-tw': { title: '找不到頁面 — Yui (Wayne) Tien', description: '這個專案不存在，連結可能已經失效。' },
+  ja: { title: 'ページが見つかりません — Yui (Wayne) Tien', description: 'このプロジェクトは存在しません。リンクが古い可能性があります。' },
+  ko: { title: '페이지를 찾을 수 없습니다 — Yui (Wayne) Tien', description: '이 프로젝트는 존재하지 않습니다. 링크가 오래된 것일 수 있어요.' },
 }
 
 // ── Scroll helper (no hash in URL) ──
@@ -76,7 +91,7 @@ function LangSwitcher({ lang }: { lang: Lang }) {
           <button
             onClick={() => switchTo(l)}
             className={`py-2.5 -my-2.5 px-1.5 -mx-0.5 inline-flex items-center ${l === lang ? 'text-brand-orange' : 'hover:text-brand-orange transition-colors'}`}
-            aria-current={l === lang}
+            aria-current={l === lang ? 'true' : undefined}
           >
             {LANG_LABEL[l]}
           </button>
@@ -517,6 +532,15 @@ function ProjectDetail() {
   const navigate = useNavigate()
   const { projectId = '' } = useParams<{ projectId: string }>()
 
+  // Kick off the locale copy's dynamic import right away, in parallel with
+  // the lazy ProjectPage component chunk below, instead of waterfalling
+  // after it (ProjectPage itself wouldn't request the copy until it — and
+  // its lazy chunk — has already mounted). Fire-and-forget: preloadProjectPageCopy
+  // dedupes against the module-level cache/in-flight map, so calling it again
+  // on re-render or when ProjectPage's own useProjectPageCopy hook fires is a
+  // no-op.
+  preloadProjectPageCopy(lang)
+
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault()
     // Navigate straight back; scroll reset on route change is handled centrally
@@ -529,7 +553,7 @@ function ProjectDetail() {
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-hidden">
-      {seo && (
+      {seo ? (
         <Seo
           title={seo.title}
           description={seo.description}
@@ -549,6 +573,16 @@ function ProjectDetail() {
               name: seo.title,
             }),
           ]}
+        />
+      ) : (
+        // Unknown projectId — ProjectPage will render its own 404 UI below.
+        // Ship generic, noindexed metadata instead of leaving the previous
+        // route's title/description hanging around.
+        <Seo
+          title={NOT_FOUND_SEO[lang].title}
+          description={NOT_FOUND_SEO[lang].description}
+          path={`/${lang}/project/${projectId}`}
+          noindex
         />
       )}
       <CustomCursor />
@@ -625,10 +659,31 @@ function LangLayout() {
   )
 }
 
-// ── Root: redirects bare "/" to the preferred or default language ───────────
+// Best-effort match of the browser's language list against our supported
+// langs, for first-time visitors who haven't picked a language yet. Checked
+// in navigator.languages order (the user's actual preference order), with a
+// simple prefix match per tag — e.g. "zh-TW"/"zh-Hant-*" → 'zh-tw', "ja-JP"
+// → 'ja', "ko-KR" → 'ko'. Falls back to DEFAULT_LANG if nothing matches.
+function detectBrowserLang(): Lang {
+  const tags = typeof navigator !== 'undefined' ? navigator.languages ?? [navigator.language] : []
+  for (const tag of tags) {
+    const lower = tag.toLowerCase()
+    if (lower.startsWith('zh-tw') || lower.startsWith('zh-hant')) return 'zh-tw'
+    if (lower.startsWith('ja')) return 'ja'
+    if (lower.startsWith('ko')) return 'ko'
+    if (lower.startsWith('en')) return 'en'
+  }
+  return DEFAULT_LANG
+}
+
+// ── Root: redirects bare "/" to the preferred, browser, or default language ─
+// Note: dist/index.html (the prerendered fallback for non-JS crawlers) is
+// always the EN snapshot with canonical pointing at /en/ — this redirect
+// only runs for browsers with JS enabled, after that snapshot has already
+// been served, so no prerender change is needed for the browser-language case.
 function RootRedirect() {
   const preferred = typeof localStorage !== 'undefined' ? localStorage.getItem('preferred-lang') : null
-  const lang = isLang(preferred ?? undefined) ? preferred : DEFAULT_LANG
+  const lang = isLang(preferred ?? undefined) ? preferred : detectBrowserLang()
   return <Navigate to={`/${lang}`} replace />
 }
 

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { ArrowLeft, Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
-import { projectPageCopy } from '../i18n/projectPage'
+import { useProjectPageCopy } from '../i18n/projectPageLoader'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { themeFor } from './caseStudyTheme'
@@ -43,7 +43,15 @@ interface ProjectPageProps {
 }
 
 export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: ProjectPageProps) {
-  const t = projectPageCopy[lang]
+  const t = useProjectPageCopy(lang)
+
+  // First-ever visit: the locale chunk is still in flight and there's no
+  // previously-loaded copy (any language) to keep showing. Same minimal
+  // placeholder as the Suspense fallbacks below, so there's no visible seam
+  // between "chunk loading" and "copy loading".
+  if (!t) {
+    return <div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />
+  }
 
   const themeToggle = (
     <Magnetic scaleOnHover={1.2}>

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
-import type { OpenClawContent, ProjectPageCopy } from '../i18n/projectPage'
+import type { OpenClawContent, ProjectPageCopy } from '../i18n/projectPage.types'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { OpsDemo } from './OpsDemo'

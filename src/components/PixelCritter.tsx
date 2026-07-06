@@ -51,6 +51,13 @@ export function PixelCritter({ className }: { className?: string }) {
     const current = { rot: 0, flip: 1, eyeX: 0, eyeY: 0 }
     let rafId = 0
 
+    // Single choke point for the rAF lifecycle: no-ops if already running, so
+    // both pointer handlers below can call it unconditionally to (re)start.
+    const startLoop = () => {
+      if (rafId !== 0) return
+      rafId = requestAnimationFrame(tick)
+    }
+
     const onPointerMove = (e: PointerEvent) => {
       const rect = svg.getBoundingClientRect()
       if (rect.width === 0) return
@@ -77,6 +84,10 @@ export function PixelCritter({ className }: { className?: string }) {
       const len = Math.hypot(ex, ey) || 1
       target.eyeX = (ex / len) * MAX_SHIFT
       target.eyeY = (ey / len) * MAX_SHIFT
+
+      // The cursor moved, which is what can un-settle the lerp below — wake
+      // the loop back up if it had idle-stopped.
+      startLoop()
     }
 
     const onPointerLeave = () => {
@@ -84,6 +95,10 @@ export function PixelCritter({ className }: { className?: string }) {
       target.flip = 1
       target.eyeX = 0
       target.eyeY = 0
+
+      // Leaving changes the targets back to rest, so the loop needs to keep
+      // (or start) running until it eases back to that rest pose.
+      startLoop()
     }
 
     const tick = () => {
@@ -91,19 +106,42 @@ export function PixelCritter({ className }: { className?: string }) {
       current.flip += (target.flip - current.flip) * FLIP_EASE
       current.eyeX += (target.eyeX - current.eyeX) * EASE
       current.eyeY += (target.eyeY - current.eyeY) * EASE
+
+      // Idle-stop: once all four values have converged to within epsilon of
+      // their targets, snap to the exact targets (no residual drift) and stop
+      // scheduling frames — onPointerMove/onPointerLeave restart it whenever
+      // a target changes again.
+      const settled =
+        Math.abs(target.rot - current.rot) < 0.01 &&
+        Math.abs(target.flip - current.flip) < 0.001 &&
+        Math.abs(target.eyeX - current.eyeX) < 0.01 &&
+        Math.abs(target.eyeY - current.eyeY) < 0.01
+      if (settled) {
+        current.rot = target.rot
+        current.flip = target.flip
+        current.eyeX = target.eyeX
+        current.eyeY = target.eyeY
+      }
+
       svg.style.transform = `scaleX(${current.flip.toFixed(3)}) rotate(${current.rot.toFixed(2)}deg)`
       pupil.setAttribute('transform', `translate(${current.eyeX.toFixed(2)} ${current.eyeY.toFixed(2)})`)
+
+      if (settled) {
+        rafId = 0
+        return
+      }
       rafId = requestAnimationFrame(tick)
     }
 
     window.addEventListener('pointermove', onPointerMove)
     document.addEventListener('pointerleave', onPointerLeave)
-    rafId = requestAnimationFrame(tick)
+    startLoop()
 
     return () => {
       window.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerleave', onPointerLeave)
       cancelAnimationFrame(rafId)
+      rafId = 0
     }
     // Re-run when the animal changes so the new eye geometry and pupil node are
     // captured (and the pose resets to facing-right, which reads as a fresh hop-in).

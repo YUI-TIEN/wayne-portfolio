@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { Hash, Bot, Plus, Smile, Gift } from 'lucide-react'
 import { Magnetic } from './Magnetic'
 import { skipsScrollAnimation } from './motionGuards'
-import type { OpsDemoContent } from '../i18n/projectPage'
+import type { OpsDemoContent } from '../i18n/projectPage.types'
 import type { Lang } from '../i18n/locales'
 
 type Status = 'idle' | 'active' | 'done' | 'error'

@@ -4,7 +4,7 @@ import gsap from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin'
 import { skipsScrollAnimation } from './motionGuards'
-import type { TopologyContent } from '../i18n/projectPage'
+import type { TopologyContent } from '../i18n/projectPage.types'
 import type { Lang } from '../i18n/locales'
 
 gsap.registerPlugin(MotionPathPlugin, MorphSVGPlugin)

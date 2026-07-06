@@ -15,7 +15,7 @@ export default defineConfig({
         // as a function only, so we match by module path.
         manualChunks(id: string) {
           if (!id.includes('node_modules')) return
-          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|react-helmet-async|scheduler)[\\/]/.test(id)) {
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(id)) {
             return 'react-vendor'
           }
           if (/[\\/]node_modules[\\/]gsap[\\/]/.test(id)) {

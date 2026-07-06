@@ -22,7 +22,14 @@ export const CustomCursor: React.FC = () => {
     const scaleLerpFactor = 0.2;
 
     let isPointer = false;
-    let animationId: number;
+    let animationId = 0;
+
+    // Single choke point for the rAF lifecycle: no-ops if already running, so
+    // every restart trigger (mousemove) can call it unconditionally.
+    const startLoop = () => {
+      if (animationId !== 0) return;
+      animationId = requestAnimationFrame(updateCursor);
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
@@ -41,6 +48,10 @@ export const CustomCursor: React.FC = () => {
 
       isPointer = !!clickable;
       scale.target = isPointer ? 2.5 : 1;
+
+      // The mouse just moved, which is the only thing that can un-settle the
+      // lerp below — wake the loop back up if it had idle-stopped.
+      startLoop();
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -59,15 +70,33 @@ export const CustomCursor: React.FC = () => {
       // Smoothly lerp cursor scale expansion
       scale.current += (scale.target - scale.current) * scaleLerpFactor;
 
+      // Idle-stop: once position and scale have both converged to within a
+      // hair of their targets, snap to the exact values (so there's no
+      // permanent residual drift) and stop scheduling frames. handleMouseMove
+      // restarts the loop the next time the mouse actually moves.
+      const settled =
+        Math.abs(mouse.x - pos.x) < 0.1 &&
+        Math.abs(mouse.y - pos.y) < 0.1 &&
+        Math.abs(scale.target - scale.current) < 0.001;
+      if (settled) {
+        pos.x = mouse.x;
+        pos.y = mouse.y;
+        scale.current = scale.target;
+      }
+
       // Apply transform directly to DOM ref (bypasses React state and render cycle completely)
       if (cursor) {
         cursor.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) scale(${scale.current})`;
       }
 
+      if (settled) {
+        animationId = 0;
+        return;
+      }
       animationId = requestAnimationFrame(updateCursor);
     };
 
-    animationId = requestAnimationFrame(updateCursor);
+    startLoop();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);

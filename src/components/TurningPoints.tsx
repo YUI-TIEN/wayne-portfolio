@@ -80,13 +80,10 @@ function Case({
   const didMount = useRef(false)
   const accent = ACCENT_HEX[accentText] ?? '#F94E0A'
 
-  // The parent flips startExpanded from true (settled/prerender default) to
-  // false once JS runs, so the cards collapse to their first-glance layer.
-  // Sync that prop change into local open state — without this, useState's
-  // initial value would keep every card stuck open.
-  useEffect(() => {
-    setOpen(startExpanded)
-  }, [startExpanded])
+  // The parent computes startExpanded synchronously (true only while
+  // prerendering, see GovernanceBand below) and it never changes after mount
+  // for a given card instance, so useState's initial value is enough — no
+  // effect needed to keep local state in sync with the prop.
 
   // Drive the body height off `open`. First commit and reduced-motion users
   // snap with no tween (collapsing is structure, not decoration — it still
@@ -181,16 +178,15 @@ export function GovernanceBand({
   accentText,
 }: GovernanceBandProps) {
   // Settled default = expanded, so the prerendered/no-JS snapshot ships the
-  // full evidence for crawlers. Once JS runs, collapse to the first-glance
-  // layer — collapsing is an interaction structure, not decoration, so it must
-  // happen even under prefers-reduced-motion (only the expand/collapse TWEEN is
-  // suppressed for those users, in the Card effect below). The one case that
-  // stays expanded is prerendering, where there's no interaction to reveal.
-  const [collapsed, setCollapsed] = useState(false)
-  useEffect(() => {
-    if (isPrerendering()) return
-    setCollapsed(true)
-  }, [])
+  // full evidence for crawlers. Real browsers start collapsed to the
+  // first-glance layer — collapsing is an interaction structure, not
+  // decoration, so it must happen even under prefers-reduced-motion (only the
+  // expand/collapse TWEEN is suppressed for those users, in the Card effect
+  // below). `window.__PRERENDER__` is stamped onto the page before any React
+  // code runs (see isPrerendering()'s doc comment) and never changes during
+  // the page's lifetime, so this is knowable synchronously up front — no
+  // state or mount effect (and no flash of the wrong state) required.
+  const collapsed = !isPrerendering()
 
   return (
     <div>

@@ -2,18 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Set the dark class synchronously, before first paint, so returning
+         dark-mode visitors never see a light-mode flash and first-time
+         visitors get their OS preference honored immediately. Mirrors the
+         fallback chain in src/theme/ThemeContext.tsx's getInitialIsDark():
+         explicit stored choice wins, otherwise prefers-color-scheme. Wrapped
+         in try/catch because localStorage can throw in some privacy modes. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme')
+          var isDark = stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (isDark) document.documentElement.classList.add('dark')
+        } catch (e) {}
+      })()
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#1A1A1A" />
+    <meta name="theme-color" content="#f5f4f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1A1A1A" media="(prefers-color-scheme: dark)" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta name="author" content="Yui (Wayne) Tien" />
 
     <!-- Constant OG/Twitter bits (type, site_name, card, image dimensions — all
          our OG images are 1200×630). Per-route title/description/url/locale and
-         the og:image/twitter:image URL itself are set by react-helmet-async
-         (src/seo/Seo.tsx) and rewritten in the prerender step (scripts/prerender.mjs). -->
+         the og:image/twitter:image URL itself are set via React 19's native
+         document-metadata hoisting (src/seo/Seo.tsx) and rewritten in the
+         prerender step (scripts/prerender.mjs). -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Yui (Wayne) Tien" />
     <meta property="og:image:width" content="1200" />

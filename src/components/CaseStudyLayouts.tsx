@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
-import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage'
+import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage.types'
 import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { StatValue } from './StatValue'

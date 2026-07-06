@@ -144,13 +144,23 @@ export function LiveSystemStatus({
   const [reduced, setReduced] = useState(() => prefersReducedMotion())
 
   useEffect(() => {
-    const onResize = () => setWidth(window.innerWidth)
+    // Throttle to one width update per animation frame instead of one per
+    // native resize event (which can fire many times per frame while dragging).
+    let resizeRaf = 0
+    const onResize = () => {
+      if (resizeRaf !== 0) return
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0
+        setWidth(window.innerWidth)
+      })
+    }
     window.addEventListener('resize', onResize)
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onChange = () => setReduced(mq.matches)
     mq.addEventListener('change', onChange)
     return () => {
       window.removeEventListener('resize', onResize)
+      cancelAnimationFrame(resizeRaf)
       mq.removeEventListener('change', onChange)
     }
   }, [])
