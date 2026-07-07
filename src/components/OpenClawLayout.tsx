@@ -34,7 +34,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
           <Magnetic scaleOnHover={1.08}>
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
             >
               <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
             </button>
@@ -46,7 +46,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         <ScrambleStagger delay={0.08}>
         <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-32">
           <div data-reveal-item className="flex flex-wrap items-center gap-3 mb-10">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={c.eyebrow} /></span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={c.eyebrow} /></span>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             {c.tags.map((tag, ti) => (
               <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
@@ -69,7 +69,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
             {c.stats.map((s, i) => (
               <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
                 <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2"><StatValue value={s.value} /></p>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></p>
               </div>
             ))}
           </div>
@@ -218,7 +218,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         <ScrambleStagger delay={0.38}>
         <Reveal as="section" stagger variant="flip" className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></p>
 
             {/* Asymmetric strip: large first item spanning full width, then 3 below */}
             <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
@@ -283,7 +283,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
             <blockquote data-reveal-item data-reveal="blur" className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-neutral-900 dark:text-white">
               <ScrambleText as="span" text={c.quote} />
             </blockquote>
-            <p data-reveal-item className="font-mono text-[11px] text-neutral-400 mt-10 uppercase tracking-widest">
+            <p data-reveal-item className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400 mt-10 uppercase tracking-widest">
               <ScrambleText text={c.quoteAttribution} />
             </p>
           </div>
@@ -298,7 +298,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
             <Magnetic scaleOnHover={1.08}>
               <button
                 onClick={onBack}
-                className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+                className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
               >
                 <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
               </button>

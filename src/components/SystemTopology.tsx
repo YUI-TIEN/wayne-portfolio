@@ -320,10 +320,13 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
         ref={rootRef}
         className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
       >
+        {/* role="group" (not "img"): the tool tiles inside are clickable —
+            role="img" would flatten the tree into one static picture and
+            hide them from assistive tech. */}
         <svg
           viewBox={`0 0 ${VB.w} ${VB.h}`}
           className="w-full h-auto block"
-          role="img"
+          role="group"
           aria-label={`${copy.hub}: Claude Code, Codex, Antigravity, Discord`}
         >
           {/* Tool tiles — drawn FIRST so the curved wires (drawn after) are
@@ -342,11 +345,24 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
               <g ref={(el) => { groupRefs.current[i] = el }}>
                 <g
                   ref={(el) => { tileLiftRefs.current[i] = el }}
-                  className="cursor-pointer"
+                  className="cursor-pointer focus:outline-none"
                   onMouseEnter={() => liftTile(i, true)}
                   onMouseLeave={() => liftTile(i, false)}
                   onClick={() => sendClickBurst(i)}
-                  style={{ cursor: 'pointer' }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      sendClickBurst(i)
+                    }
+                  }}
+                  // Focus reuses the hover lift as its visible indicator —
+                  // SVG elements don't get a default focus outline in all
+                  // browsers.
+                  onFocus={() => liftTile(i, true)}
+                  onBlur={() => liftTile(i, false)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={n.label}
                 >
                   <rect x={-H + 3} y={-H + 3} width={TILE} height={TILE} rx={11} fill="rgba(0,0,0,0.18)" />
                   <rect x={-H} y={-H} width={TILE} height={TILE} rx={11} fill={n.color} />

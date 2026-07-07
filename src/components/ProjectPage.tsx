@@ -68,7 +68,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
     <Magnetic scaleOnHover={1.2}>
       <button
         onClick={onToggleTheme}
-        className="p-2.5 -m-1.5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer flex items-center"
+        className="p-2.5 -m-1.5 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer flex items-center"
         aria-label="Toggle theme"
       >
         {isDark ? <Sun size={14} /> : <Moon size={14} />}
@@ -92,7 +92,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         <Magnetic scaleOnHover={1.08}>
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
           >
             <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
           </button>
@@ -127,7 +127,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
           <Magnetic scaleOnHover={1.08}>
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
             >
               <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
             </button>
@@ -157,7 +157,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
         <Magnetic scaleOnHover={1.08}>
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+            className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
           >
             <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
           </button>
@@ -168,7 +168,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
       <ScrambleStagger delay={0.08}>
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
         <div className="flex flex-wrap items-center gap-3 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
           <span className="text-neutral-300 dark:text-neutral-600">·</span>
           {p.tags.map((tag, ti) => (
             <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">

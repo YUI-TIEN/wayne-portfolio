@@ -20,6 +20,13 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
     let width = 0;
     let height = 0;
 
+    // prefers-reduced-motion: draw one settled frame instead of the endless
+    // rAF loop — this is a loading indicator / decorative curve, so it still
+    // needs a visual, just not a moving one. A fixed mid-cycle time keeps the
+    // "breathing" detail term at a representative amplitude.
+    const isStatic = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const staticTime = type === 'rose' ? 1050 : 1350;
+
     // Setup ResizeObserver to dynamically scale canvas with Retina display (DPR) support
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -32,6 +39,9 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
         canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
+        // Static mode has no rAF loop to pick up the new size — repaint the
+        // single frame here each time the box (or DPR) changes.
+        if (isStatic) render(staticTime);
       }
     });
 
@@ -71,7 +81,9 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
 
     const render = (time: number) => {
       if (width === 0 || height === 0) {
-        animationId = requestAnimationFrame(render);
+        // Static mode: the ResizeObserver callback re-invokes render once the
+        // box has a size, so there's nothing to schedule here.
+        if (!isStatic) animationId = requestAnimationFrame(render);
         return;
       }
 
@@ -155,10 +167,14 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
 
       ctx.restore();
 
-      animationId = requestAnimationFrame(render);
+      if (!isStatic) animationId = requestAnimationFrame(render);
     };
 
-    animationId = requestAnimationFrame(render);
+    if (isStatic) {
+      render(staticTime);
+    } else {
+      animationId = requestAnimationFrame(render);
+    }
 
     return () => {
       cancelAnimationFrame(animationId);

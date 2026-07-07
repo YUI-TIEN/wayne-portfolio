@@ -59,7 +59,7 @@ function Hero({ p, theme, statsVariant = 'emphasis' }: { p: CaseStudyContent; th
     <ScrambleStagger delay={0.08}>
       <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
         <div data-reveal-item className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
           <span className="text-neutral-300 dark:text-neutral-600">·</span>
           {p.tags.map((tag, ti) => (
             <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
@@ -91,7 +91,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
             {i > 0 && <ArrowRight size={14} className="text-neutral-300 dark:text-neutral-600 self-center" />}
             <span className="flex items-baseline gap-2">
               <span className={`font-serif text-2xl md:text-3xl ${theme.accentText}`}><StatValue value={s.value} /></span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></span>
             </span>
           </span>
         ))}
@@ -111,7 +111,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
         {p.stats.map((s, i) => (
           <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
             <p className={`font-serif ${i === lead ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl'} ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></p>
           </div>
         ))}
       </div>
@@ -126,7 +126,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
       <div className="max-w-md border-t border-neutral-200 dark:border-neutral-800">
         {p.stats.map((s, i) => (
           <div key={i} data-reveal-item data-reveal="flip" className="flex items-baseline justify-between gap-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400"><ScrambleText text={s.label} /></span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></span>
             <span className={`font-serif text-xl md:text-2xl ${theme.accentText}`}><StatValue value={s.value} /></span>
           </div>
         ))}
@@ -142,7 +142,7 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
       {p.stats.map((s, i) => (
         <div key={i} data-reveal-item data-reveal="flip" className={`flex items-baseline gap-2 px-4 py-2 rounded-full border ${theme.accentText} border-current/30`}>
           <span className="font-serif text-lg md:text-xl"><StatValue value={s.value} /></span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-400">{s.label}</span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">{s.label}</span>
         </div>
       ))}
     </div>
@@ -181,7 +181,7 @@ function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEven
           <Magnetic scaleOnHover={1.08}>
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
+              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
             >
               <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
             </button>
@@ -222,7 +222,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
           funnel is being revealed stage by stage. */}
       <ScrambleStagger delay={0.22}>
         <Reveal as="section" variant="clip" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
           <IdeaPipeline
             stages={stages}
             before={p.before}
@@ -526,7 +526,7 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <ScrambleStagger delay={0.34}>
         <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
             <div className="space-y-12 md:space-y-16 max-w-4xl">
               {p.outcomes.map((o, i) => (
                 <div key={i} data-reveal-item className="flex flex-col md:flex-row gap-4 md:gap-8">
@@ -539,7 +539,7 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               ))}
             </div>
             {p.note && (
-              <p data-reveal-item className="font-mono text-[11px] text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
+              <p data-reveal-item className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
             )}
           </div>
         </Reveal>

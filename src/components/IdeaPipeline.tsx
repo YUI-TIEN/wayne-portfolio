@@ -209,7 +209,10 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
 
   return (
     <div ref={rootRef} className="w-full">
-      <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="img" aria-label={`Idea pipeline: ${stages.join(' to ')}`}>
+      {/* role="group" (not "img"): the stage stops inside are interactive —
+          role="img" would flatten the whole tree into one static picture and
+          hide them from assistive tech. */}
+      <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="group" aria-label={`Idea pipeline: ${stages.join(' to ')}`}>
         {/* Track base */}
         <line x1={STAGE_X[0]} y1={TRACK_Y} x2={STAGE_X[FINAL]} y2={TRACK_Y} stroke="currentColor" strokeWidth={2} className="text-neutral-200 dark:text-neutral-700" />
         {/* Track fill (accent, grows as token advances) — uses a thin rect so
@@ -227,7 +230,20 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(-1)}
               onClick={() => goTo(i)}
-              className="cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  goTo(i)
+                }
+              }}
+              // Focus reuses the hover ring as its visible indicator — SVG
+              // elements don't get a default focus outline in all browsers.
+              onFocus={() => setHovered(i)}
+              onBlur={() => setHovered(-1)}
+              role="button"
+              tabIndex={0}
+              aria-label={stage}
+              className="cursor-pointer focus:outline-none"
             >
               {/* hit area + node dot */}
               <circle r={16} fill="transparent" />

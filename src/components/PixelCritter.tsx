@@ -90,7 +90,13 @@ export function PixelCritter({ className }: { className?: string }) {
       startLoop()
     }
 
-    const onPointerLeave = () => {
+    // Listens to document `pointerout` instead of `pointerleave`:
+    // pointerleave doesn't bubble, so a document-level listener for it isn't
+    // reliably fired across browsers when the pointer exits the window.
+    // pointerout bubbles from every element, and a null relatedTarget is the
+    // dependable "left the window" signal.
+    const onPointerOut = (e: PointerEvent) => {
+      if (e.relatedTarget !== null) return
       target.rot = 0
       target.flip = 1
       target.eyeX = 0
@@ -109,7 +115,7 @@ export function PixelCritter({ className }: { className?: string }) {
 
       // Idle-stop: once all four values have converged to within epsilon of
       // their targets, snap to the exact targets (no residual drift) and stop
-      // scheduling frames — onPointerMove/onPointerLeave restart it whenever
+      // scheduling frames — onPointerMove/onPointerOut restart it whenever
       // a target changes again.
       const settled =
         Math.abs(target.rot - current.rot) < 0.01 &&
@@ -134,12 +140,12 @@ export function PixelCritter({ className }: { className?: string }) {
     }
 
     window.addEventListener('pointermove', onPointerMove)
-    document.addEventListener('pointerleave', onPointerLeave)
+    document.addEventListener('pointerout', onPointerOut)
     startLoop()
 
     return () => {
       window.removeEventListener('pointermove', onPointerMove)
-      document.removeEventListener('pointerleave', onPointerLeave)
+      document.removeEventListener('pointerout', onPointerOut)
       cancelAnimationFrame(rafId)
       rafId = 0
     }

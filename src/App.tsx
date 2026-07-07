@@ -24,7 +24,7 @@ import { projectSeo } from './seo/projectSeo'
 import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
-import { homeCopy } from './i18n/home'
+import { useHomeCopy } from './i18n/homeLoader'
 import { preloadProjectPageCopy } from './i18n/projectPageLoader'
 import { ThemeProvider, useTheme } from './theme/ThemeContext'
 
@@ -104,7 +104,13 @@ function LangSwitcher({ lang }: { lang: Lang }) {
 // ── Home page ───────────────────────────────────────────────────────────────
 function Home() {
   const lang = useLang()
-  const t = homeCopy[lang]
+  // Home copy loads per-locale via dynamic import (see homeLoader.ts) so the
+  // main bundle no longer carries all four languages' strings. First-ever
+  // visit renders the same minimal placeholder ProjectPage uses while the
+  // locale chunk is in flight; language switches keep showing the previous
+  // locale's copy until the new one resolves (no blank flash).
+  const t = useHomeCopy(lang)
+  const copyReady = t !== null
   const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('work')
@@ -138,7 +144,11 @@ function Home() {
       clearProps: 'opacity,transform',
     })
     return () => { tween.kill() }
-  }, [])
+    // copyReady flips false→true exactly once (async home copy resolving);
+    // the hero doesn't exist in the placeholder render, so the entrance has
+    // to wait for it. Later lang switches don't change copyReady, so the
+    // entrance still plays only once per visit.
+  }, [copyReady])
 
   // Hero parallax: distinct from the mount-in tween above (that one fires once
   // via gsap.from + clearProps and is done after ~1s; this one is a persistent
@@ -171,7 +181,8 @@ function Home() {
     })
 
     return () => mm.revert()
-  }, [])
+    // Same single-flip dependency as the entrance tween above.
+  }, [copyReady])
 
   const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
     // Let modified clicks (open-in-new-tab / new-window) use the real href.
@@ -181,6 +192,12 @@ function Home() {
     // Suspense fallback while the lazy ProjectPage chunk downloads — no fixed
     // fake delay. Scroll reset is handled in LangLayout on route change.
     navigate(`/${lang}/project/${projectId}`)
+  }
+
+  // First-ever visit only: no locale's copy resolved yet. Same placeholder
+  // ProjectPage uses, so "chunk loading" and "copy loading" look identical.
+  if (!t) {
+    return <div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />
   }
 
   return (
@@ -194,6 +211,9 @@ function Home() {
       <CustomCursor />
       <ScrollProgress />
 
+      {/* <main> landmark for screen-reader navigation; unstyled so it doesn't
+          disturb the section layout. The footer stays outside as contentinfo. */}
+      <main>
       {/* Hero Section */}
       <ScrambleStagger delay={0.08}>
       {/* Full-width wrapper hosts the ambient dot grid so it covers the whole
@@ -302,19 +322,19 @@ function Home() {
         {/* Quick facts — plain-language summary for search and AI assistants */}
         <dl className="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800 text-[11px] font-mono">
           <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.name.label} /></dt>
+            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.name.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.name.value} /></dd>
           </div>
           <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.role.label} /></dt>
+            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.role.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.role.value} /></dd>
           </div>
           <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.location.label} /></dt>
+            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.location.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.location.value} /></dd>
           </div>
           <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.contact.label} /></dt>
+            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.contact.label} /></dt>
             <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.contact.value} /></dd>
           </div>
         </dl>
@@ -326,7 +346,7 @@ function Home() {
       <Reveal as="section" stagger id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
         <div data-reveal-item className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
               <ScrambleText text={t.work.eyebrow} />
             </span>
             <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
@@ -386,7 +406,7 @@ function Home() {
       <ScrambleStagger delay={0.28}>
       <Reveal as="section" stagger id="faq" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
         <div data-reveal-item className="mb-8 md:mb-10">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
             <ScrambleText text={t.faq.eyebrow} />
           </span>
           <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
@@ -407,6 +427,7 @@ function Home() {
         </dl>
       </Reveal>
       </ScrambleStagger>
+      </main>
 
       {/* Footer Container */}
       <ScrambleStagger delay={0.32}>
@@ -467,6 +488,16 @@ function Home() {
             <div className="w-full md:w-1/3 flex justify-center md:justify-end relative z-20 select-none">
               <div
                 onClick={() => setIsFlipped(!isFlipped)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setIsFlipped(!isFlipped)
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isFlipped}
+                aria-label={t.footer.flipIt}
                 className="relative w-32 h-40 md:w-48 md:h-56 perspective-1000 group cursor-pointer active:scale-95 transition-transform duration-300 rotate-6 hover:rotate-2 origin-bottom-right"
               >
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[9px] font-mono py-1 px-2.5 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-40">
@@ -521,7 +552,7 @@ function Home() {
             <div><ScrambleText text={t.footer.meta} /></div>
           </div>
           {/* Required attribution for the hero's pixel-animal set (CC Attribution). */}
-          <div className="mt-4 text-center sm:text-right text-[10px] font-mono text-neutral-400 dark:text-neutral-500">
+          <div className="mt-4 text-center sm:text-right text-[10px] font-mono text-neutral-500 dark:text-neutral-500">
             Pixel animals by{' '}
             <a href="https://www.behance.net/thiagopontes00?ref=svgrepo.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">Thiago</a>
             {' '}(CC Attribution) via{' '}
@@ -558,7 +589,12 @@ function ProjectDetail() {
   }
 
   const seo = projectSeo[projectId]?.[lang]
-  const project = homeCopy[lang].projects.find(p => p.id === projectId)
+  // Only feeds the JSON-LD keywords array. Home copy now loads async
+  // per-locale; until it resolves the schema ships without keywords for a
+  // frame, then Seo re-renders with them — prerendered snapshots wait for
+  // network idle so crawlers always get the full version.
+  const homeT = useHomeCopy(lang)
+  const project = homeT?.projects.find(p => p.id === projectId)
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
@@ -595,17 +631,19 @@ function ProjectDetail() {
         />
       )}
       <CustomCursor />
-      <Suspense
-        fallback={
-          <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
-            <div className="w-24 h-24 md:w-32 md:h-32">
-              <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
+      <main>
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
+              <div className="w-24 h-24 md:w-32 md:h-32">
+                <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
+              </div>
             </div>
-          </div>
-        }
-      >
-        <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
-      </Suspense>
+          }
+        >
+          <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
+        </Suspense>
+      </main>
     </div>
   )
 }
