@@ -7,7 +7,7 @@ export const personSchema = {
   '@type': 'Person',
   '@id': `${SITE_URL}/#person`,
   name: 'Yui Tien',
-  alternateName: 'Wayne Tien',
+  alternateName: ['Wayne Tien', '田祐維'],
   url: SITE_URL,
   image: `${SITE_URL}/avatar.png`,
   email: 'mailto:youwei0112@gmail.com',
@@ -18,7 +18,7 @@ export const personSchema = {
   jobTitle: 'Digital Persona Technical Director',
   worksFor: { '@type': 'Organization', name: 'MorphusAI' },
   description:
-    'Yui (Wayne) Tien is a Taipei-based product builder and Digital Persona Technical Director at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
+    'Yui (Wayne) Tien (Chinese name: 田祐維) is a Taipei-based product builder and Digital Persona Technical Director at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
   knowsAbout: [
     'AI agent workflow operations',
     'AI persona and character systems',

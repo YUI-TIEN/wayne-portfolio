@@ -100,7 +100,7 @@ export const en: HomeCopy = {
   },
   quickFacts: {
     name: { label: 'Name', value: 'Yui Tien, also known as Wayne Tien' },
-    role: { label: 'Role', value: 'Product builder — AI workflows, agent operations, demo-to-delivery systems' },
+    role: { label: 'Role', value: 'Digital Persona Technical Director at MorphusAI — AI workflows, agent operations, demo-to-delivery systems' },
     location: { label: 'Location', value: 'Taiwan' },
     contact: { label: 'Contact', value: 'youwei0112@gmail.com' },
   },

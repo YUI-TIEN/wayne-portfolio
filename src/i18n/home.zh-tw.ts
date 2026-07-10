@@ -72,7 +72,7 @@ export const zhTw: HomeCopy = {
   nav: { work: '作品', about: '關於', contact: '聯絡' },
   hero: {
     tag: 'AI 維運',
-    leadIn: '我是 Yui，也可以叫我 Wayne，擅長建立',
+    leadIn: '我是田祐維（Yui），也可以叫我 Wayne，擅長建立',
     highlight1: 'AI 工作流',
     midText: '跟',
     highlight2: '從 DEMO 到落地',
@@ -89,7 +89,7 @@ export const zhTw: HomeCopy = {
   about: {
     eyebrow: '關於',
     heading: '把天馬行空的 AI 點子，變成真正能用的產品。',
-    subtext: '人在台灣。平時忙 AI 產品、原型系統、agent 工作流，也會幫忙把上線故事講好。',
+    subtext: '人在台灣，目前是 MorphusAI 的數位人格技術總監。平時忙 AI 產品、原型系統、agent 工作流，也會幫忙把上線故事講好。',
     badge: 'product / ops / ai',
     body: '我幫小團隊把 AI 的點子做得具體一點：把故事講清楚、把介面設計好、把工作流接起來，順手把整套流程寫成文件，下次再做就不用從頭來一遍。',
     notes: [
@@ -99,8 +99,8 @@ export const zhTw: HomeCopy = {
     ],
   },
   quickFacts: {
-    name: { label: '姓名', value: 'Yui Tien，朋友都叫我 Wayne' },
-    role: { label: '在做什麼', value: '做產品的 — AI 工作流、agent 維運、演示到落地系統' },
+    name: { label: '姓名', value: '田祐維（Yui Tien），朋友都叫我 Wayne' },
+    role: { label: '在做什麼', value: 'MorphusAI 數位人格技術總監 — AI 工作流、agent 維運、演示到落地系統' },
     location: { label: '在哪', value: '台灣' },
     contact: { label: '怎麼找我', value: 'youwei0112@gmail.com' },
   },
@@ -119,7 +119,7 @@ export const zhTw: HomeCopy = {
     eyebrow: '常見問題',
     heading: '快速了解。',
     items: [
-      { q: 'Yui（Wayne）Tien 是誰？', a: '常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
+      { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director（數位人格技術總監）。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
       { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
       { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
       { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },

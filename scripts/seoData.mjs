@@ -9,7 +9,7 @@ const personSchema = {
   '@type': 'Person',
   '@id': `${SITE_URL}/#person`,
   name: 'Yui Tien',
-  alternateName: 'Wayne Tien',
+  alternateName: ['Wayne Tien', '田祐維'],
   url: SITE_URL,
   image: `${SITE_URL}/avatar.png`,
   email: 'mailto:youwei0112@gmail.com',
@@ -20,7 +20,7 @@ const personSchema = {
   jobTitle: 'Digital Persona Technical Director',
   worksFor: { '@type': 'Organization', name: 'MorphusAI' },
   description:
-    'Yui (Wayne) Tien is a Taipei-based product builder and Digital Persona Technical Director at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
+    'Yui (Wayne) Tien (Chinese name: 田祐維) is a Taipei-based product builder and Digital Persona Technical Director at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
   knowsAbout: [
     'AI agent workflow operations',
     'AI persona and character systems',
@@ -83,20 +83,20 @@ function breadcrumbSchema({ lang, routePath, name }) {
 // Per-language home page copy.
 const homeSeo = {
   en: {
-    title: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio',
-    description: 'AI product builder from Taiwan — workflows, agent ops, demo-to-launch systems.',
+    title: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio · MorphusAI',
+    description: 'Yui (Wayne) Tien — AI product builder and Digital Persona Technical Director at MorphusAI, Taipei. Workflows, agent ops, demo-to-launch systems.',
   },
   'zh-tw': {
-    title: 'Yui (Wayne) Tien | AI 產品與 Agent 工作流作品集',
-    description: '在台灣的產品建構者，做 AI 工作流、Agent 維運、POC 到落地的系統。',
+    title: '田祐維 Yui (Wayne) Tien｜MorphusAI 數位人格技術總監 · AI Agent 作品集',
+    description: '田祐維（Yui / Wayne Tien），MorphusAI 數位人格技術總監，在台北做 AI 工作流、Agent 維運、POC 到落地的系統。',
   },
   ja: {
-    title: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ',
-    description: '台湾を拠点とするAIプロダクトビルダー — ワークフロー、エージェント運用、デモから実装までの仕組み。',
+    title: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ · MorphusAI',
+    description: '台湾を拠点とするAIプロダクトビルダー、MorphusAIのDigital Persona Technical Director — ワークフロー、エージェント運用、デモから実装までの仕組み。',
   },
   ko: {
-    title: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오',
-    description: '대만 기반의 AI 프로덕트 빌더 — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
+    title: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오 · MorphusAI',
+    description: '대만 기반의 AI 프로덕트 빌더이자 MorphusAI Digital Persona Technical Director — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
   },
 }
 
@@ -111,7 +111,7 @@ const homeFaq = {
     { q: 'How can you reach him?', a: 'By email at youwei0112@gmail.com, or on LinkedIn (/in/yui-tien) and GitHub (@YUI-TIEN).' },
   ],
   'zh-tw': [
-    { q: 'Yui（Wayne）Tien 是誰？', a: '常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
+    { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director（數位人格技術總監）。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
     { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
     { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
     { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },

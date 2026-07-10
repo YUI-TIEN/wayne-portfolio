@@ -1,10 +1,10 @@
-# Yui (Wayne) Tien
+# Yui (Wayne) Tien 田祐維
 
 > Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI. Works across 0-to-1 AI product design/launch and the technical orchestration of AI agent behavior — AI persona/character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery (POC → MVP → launch) systems.
 
-Yui Tien (also known as Wayne Tien) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products. He currently leads a small technical team at MorphusAI.
+Yui Tien (also known as Wayne Tien; Chinese name: 田祐維) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products. He currently leads a small technical team at MorphusAI.
 
-- Name: Yui Tien (English name: Wayne Tien)
+- Name: Yui Tien (English name: Wayne Tien; Chinese name: 田祐維)
 - Role: Digital Persona Technical Director & Virtual Character Systems Engineer, MorphusAI (since 2024)
 - Location: Taipei, Taiwan
 - Focus: AI agent workflow operations, AI persona/character systems, runtime diagnostics, demo-to-delivery systems, UI/UX engineering
