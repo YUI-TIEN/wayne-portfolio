@@ -128,6 +128,7 @@ export interface CaseStudyContent extends GovernanceContent {
 
 export interface ProjectPageCopy {
   backToAllProjects: string
+  moreWork: string // heading over the sibling case-study links at the foot of every project page
   theProblem: string
   before: string
   after: string

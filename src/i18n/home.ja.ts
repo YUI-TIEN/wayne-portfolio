@@ -91,6 +91,7 @@ export const ja: HomeCopy = {
     heading: '突拍子もないAIのアイデアを、ちゃんと使えるプロダクトに橋渡しします。',
     subtext: '台湾を拠点に、AIプロダクトやプロトタイプ、エージェントのワークフロー、それからローンチに向けたストーリーづくりまで、いろいろやっています。',
     badge: 'product / ops / ai',
+    methodologyCta: '仕事の進め方',
     body: '小さなチームがAIを「実際に使える形」にするお手伝いをしています。やることはシンプルで、ストーリーを整理して、画面を設計して、ワークフローをつないで、その仕組みをちゃんとドキュメントに残す。そうやって、次のデモが前回より楽になるようにしています。',
     notes: [
       'プロダクトとデザイン、エージェント運用のあいだに立って動いています。',
@@ -104,6 +105,49 @@ export const ja: HomeCopy = {
     location: { label: '拠点', value: '台湾' },
     contact: { label: '連絡先', value: 'youwei0112@gmail.com' },
   },
+  career: {
+    eyebrow: '経歴',
+    heading: '時系列で、実際にやってきたこと。',
+    entries: [
+      {
+        period: '2026 — 現在',
+        role: 'Forward Deployed Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入。あわせてランタイム診断とエージェント運用規約も担当しています。',
+      },
+      {
+        period: '2024 — 2026',
+        role: 'Digital Persona Technical Director 兼 Virtual Character Systems Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'AIペルソナとバーチャルキャラクターシステムを主導し、エージェントのワークフローを再現可能なSOPへ標準化。POCからローンチまでのデモ・トゥ・デリバリー運用も担いました。',
+      },
+      {
+        period: '2021 — 2025',
+        role: '情報・財務管理学士',
+        org: '国立台北科技大学',
+        detail: '2025年6月卒業。',
+      },
+    ],
+  },
+  now: {
+    eyebrow: '現在',
+    heading: 'いま手を動かしていること。',
+    updatedLabel: '更新',
+    doingLabel: '取り組み中',
+    doing: [
+      'MorphusAIで、専門家の判断と統制されたメモリを実際の顧客ワークフローに組み込んでいます。',
+      'OpenClaw — 自分の仕事を実際に回している個人用エージェント運用システム。Discordから直接操作でき、記憶が途切れず、ルールで統制されています。',
+      'このサイト。エージェントとの協働そのものをケーススタディとして、公開しながら作り直しています。',
+    ],
+    openToLabel: '関心のあるテーマ',
+    openTo: [
+      'AIエージェント基盤とランタイム運用',
+      'ペルソナ・キャラクターシステム',
+      'エージェントのメモリと統制',
+      '少人数で実行力の高いプロダクトチーム',
+    ],
+    ctaLabel: '話してみる',
+  },
   work: {
     eyebrow: '主な実績',
     heading: '「全部自分の手柄」ではなく、関わった記録として。',
@@ -116,11 +160,14 @@ export const ja: HomeCopy = {
     viewProject: 'プロジェクトを見る',
   },
   faq: {
+    moreLabel: '仕事の進め方を読む',
     eyebrow: 'よくある質問',
     heading: 'クイックアンサー。',
     items: [
-      { q: 'Yui（Wayne）Tienとは？', a: '台北を拠点とするAIプロダクトビルダーで、MorphusAIのDigital Persona Technical Director。0→1のプロダクト設計と、AIエージェントの挙動の技術的なオーケストレーションの両方を手がけています。' },
+      { q: 'Yui（Wayne）Tienとは？', a: '台北を拠点とするAIプロダクトビルダーで、MorphusAIのForward Deployed Engineer。0→1のプロダクト設計と、AIエージェントの挙動の技術的なオーケストレーションの両方を手がけています。' },
       { q: '何に取り組んでいますか？', a: 'AIペルソナ・キャラクターシステム、エージェントのメモリと文脈の保持、ランタイム診断、そしてアイデアをPOCからMVP、ローンチへと運ぶデモ・トゥ・デリバリーのワークフロー。' },
+      { q: 'AIエージェントとはどう仕事をしていますか？', a: '実際に運用している五つの規則に沿って進めます。自律の前に運用規約、証拠にもとづく検証、作り直す前に診断、プロンプトの工夫より持続する文脈、そして引き継ぎまでが成果物。どれも、それが無くて事故ったから足したものです。' },
+      { q: 'MorphusAIでは何を作っていますか？', a: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入し、あわせてランタイム診断とエージェント運用規約も担当しています。2026年より前は、同社でDigital Persona Technical Directorとして、AIペルソナとバーチャルキャラクターシステムを主導していました。' },
       { q: '拠点はどこですか？', a: '台湾・台北。英語と中国語（北京語）で対応します。' },
       { q: '連絡方法は？', a: 'メール（youwei0112@gmail.com）、またはLinkedIn（/in/yui-tien）とGitHub（@YUI-TIEN）から。' },
     ],

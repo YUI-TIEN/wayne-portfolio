@@ -1,7 +1,7 @@
 # wayne-portfolio — waynetien.com
 
-Personal portfolio of Yui (Wayne) Tien / 田祐維 (Digital Persona Technical
-Director at MorphusAI — never claim "Founder"; that is a known AI-search
+Personal portfolio of Yui (Wayne) Tien / 田祐維 (Forward Deployed Engineer at
+MorphusAI — never claim "Founder"; that is a known AI-search
 hallucination). React 19 + TypeScript (strict) + Vite 8 (Rolldown) + Tailwind 4,
 deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
 Four locales: `en` (default), `zh-tw`, `ja`, `ko`.
@@ -19,6 +19,8 @@ Four locales: `en` (default), `zh-tw`, `ja`, `ko`.
   run when a project title changes)
 - `node scripts/optimize-images.mjs` — image optimization (manual)
 - No test suite. The build + sync check + lint are the safety net.
+- `npm run preview` — serve `dist/` locally (run a build first; this is the
+  only way to review the prerendered, crawler-facing output).
 
 ## Definition of done
 
@@ -71,7 +73,16 @@ A change is NOT done until, in this order:
   trick (`media="print"` → `onload`), inject per-language CJK font links, and
   set `<html lang>`. `/` is an extra copy of the `en` page as fallback.
 - **GEO (AI-crawler) surface**: `public/llms.txt` — keep it consistent with
-  the Person schema when bio facts change.
+  the Person schema when bio facts change. Its `Last updated:` line is
+  rewritten at prerender from the file's own last git commit, so edit the
+  content and let the build stamp the date; `public/robots.txt` names the
+  AI crawlers explicitly and points at llms.txt, which `index.html` also
+  advertises via `<link rel="alternate" type="text/markdown">`.
+- **Freshness comes from git**: `scripts/gitDates.mjs` reads per-file commit
+  times; `seoData.mjs` turns them into each route's sitemap `lastmod` and
+  the JSON-LD `datePublished`/`dateModified`. Two consequences: CI must
+  check out full history (`fetch-depth: 0`), and dates only move when a
+  change is *committed*, so a local build shows the previous commit's date.
 - **Perf patterns** (do not regress): lazy `ProjectPage`, per-locale copy
   chunks, function `manualChunks` (react-vendor / gsap), non-blocking Google
   Fonts in `index.html`, rAF loops stop when idle/offscreen.

@@ -89,8 +89,9 @@ export const zhTw: HomeCopy = {
   about: {
     eyebrow: '關於',
     heading: '把天馬行空的 AI 點子，變成真正能用的產品。',
-    subtext: '人在台灣，目前是 MorphusAI 的數位人格技術總監。平時忙 AI 產品、原型系統、agent 工作流，也會幫忙把上線故事講好。',
+    subtext: '人在台灣，目前在 MorphusAI 當 Forward Deployed Engineer。平時忙 AI 產品、原型系統、agent 工作流，也會幫忙把上線故事講好。',
     badge: 'product / ops / ai',
+    methodologyCta: '我怎麼做事',
     body: '我幫小團隊把 AI 的點子做得具體一點：把故事講清楚、把介面設計好、把工作流接起來，順手把整套流程寫成文件，下次再做就不用從頭來一遍。',
     notes: [
       '工作橫跨產品、設計，跟 agent 維運。',
@@ -100,9 +101,52 @@ export const zhTw: HomeCopy = {
   },
   quickFacts: {
     name: { label: '姓名', value: '田祐維（Yui Tien），朋友都叫我 Wayne' },
-    role: { label: '在做什麼', value: 'MorphusAI 數位人格技術總監 — AI 工作流、agent 維運、演示到落地系統' },
+    role: { label: '在做什麼', value: 'MorphusAI Forward Deployed Engineer — AI 工作流、agent 維運、演示到落地系統' },
     location: { label: '在哪', value: '台灣' },
     contact: { label: '怎麼找我', value: 'youwei0112@gmail.com' },
+  },
+  career: {
+    eyebrow: '經歷',
+    heading: '照時間排，我實際做過什麼。',
+    entries: [
+      {
+        period: '2026 — 現在',
+        role: 'Forward Deployed Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。',
+      },
+      {
+        period: '2024 — 2026',
+        role: '數位人格技術總監 Digital Persona Technical Director',
+        org: 'MorphusAI · 源神科技',
+        detail: '主導 AI 人格與虛擬角色系統，把 agent 工作流標準化成可重複的 SOP，並負責從 POC 到上線的 demo-to-delivery 維運。',
+      },
+      {
+        period: '2021 — 2025',
+        role: '資訊與財金管理系 學士',
+        org: '國立臺北科技大學',
+        detail: '2025 年 6 月畢業。',
+      },
+    ],
+  },
+  now: {
+    eyebrow: '近況',
+    heading: '最近手上在做的事。',
+    updatedLabel: '更新於',
+    doingLabel: '正在做',
+    doing: [
+      '在 MorphusAI 把專家判斷與受治理記憶，實際裝進客戶的工作流裡。',
+      'OpenClaw —— 我自己每天在用的個人 agent 作業系統：Discord 直接操作、記憶不斷、照規則走。',
+      '這個網站，公開重做，本身就是一個跟 agent 協作的案例。',
+    ],
+    openToLabel: '想聊的題目',
+    openTo: [
+      'AI agent 基礎設施與 runtime 維運',
+      '人格與角色系統',
+      'Agent 記憶與治理',
+      '小而高執行力的產品團隊',
+    ],
+    ctaLabel: '聊聊',
   },
   work: {
     eyebrow: '挑幾個來看看',
@@ -116,11 +160,14 @@ export const zhTw: HomeCopy = {
     viewProject: '看這個專案',
   },
   faq: {
+    moreLabel: '看完整的做事方法',
     eyebrow: '常見問題',
     heading: '快速了解。',
     items: [
-      { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 AI 產品建構者，MorphusAI 的 Digital Persona Technical Director（數位人格技術總監）。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
+      { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 AI 產品建構者，MorphusAI 的 Forward Deployed Engineer。一邊做 0 到 1 的產品設計，一邊負責 AI agent 行為的技術調度。' },
       { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
+      { q: '他跟 AI agent 協作的方式是什麼？', a: '靠五條會被實際執行的規則：先有操作規範再談自主、用證據驗收、先診斷再重建、用持久脈絡取代提示詞技巧、交接算在交付範圍內。每一條都是因為少了它出過事，才補上去的。' },
+      { q: '他在 MorphusAI 做什麼？', a: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。2026 年之前，他在那裡以數位人格技術總監（Digital Persona Technical Director）的身分，主導 AI 人格與虛擬角色系統。' },
       { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
       { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },
     ],

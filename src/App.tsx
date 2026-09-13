@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react'
-import { Routes, Route, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom'
+import { Routes, Route, Navigate, Link, useNavigate, useLocation, useParams } from 'react-router-dom'
 import { ArrowRight, Sun, Moon } from 'lucide-react'
 import gsap from 'gsap'
 import { skipsScrollAnimation } from './components/motionGuards'
@@ -19,18 +19,23 @@ import { PaperTexture } from '@paper-design/shaders-react'
 const ProjectPage = lazy(() =>
   import('./components/ProjectPage').then(m => ({ default: m.ProjectPage })),
 )
+const HowIWorkPage = lazy(() =>
+  import('./components/HowIWorkPage').then(m => ({ default: m.HowIWorkPage })),
+)
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
-import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema } from './seo/schema'
+import { howIWorkSeo } from './seo/howIWorkSeo'
+import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema, websiteSchema, articleSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { useHomeCopy } from './i18n/homeLoader'
 import { preloadProjectPageCopy } from './i18n/projectPageLoader'
+import { useHowIWorkCopy } from './i18n/howIWorkLoader'
 import { ThemeProvider, useTheme } from './theme/ThemeContext'
 
 const SITE_TITLE: Record<Lang, string> = {
   en: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio · MorphusAI',
-  'zh-tw': '田祐維 Yui (Wayne) Tien｜MorphusAI 數位人格技術總監 · AI Agent 作品集',
+  'zh-tw': '田祐維 Yui (Wayne) Tien｜MorphusAI Forward Deployed Engineer · AI Agent 作品集',
   ja: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ · MorphusAI',
   ko: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오 · MorphusAI',
 }
@@ -45,10 +50,10 @@ const CJK_FONT_HREF: Partial<Record<Lang, string>> = {
 }
 
 const SITE_DESCRIPTION: Record<Lang, string> = {
-  en: 'Yui (Wayne) Tien — AI product builder and Digital Persona Technical Director at MorphusAI, Taipei. Workflows, agent ops, demo-to-launch systems.',
-  'zh-tw': '田祐維（Yui / Wayne Tien），MorphusAI 數位人格技術總監，在台北做 AI 工作流、Agent 維運、POC 到落地的系統。',
-  ja: '台湾を拠点とするAIプロダクトビルダー、MorphusAIのDigital Persona Technical Director — ワークフロー、エージェント運用、デモから実装までの仕組み。',
-  ko: '대만 기반의 AI 프로덕트 빌더이자 MorphusAI Digital Persona Technical Director — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
+  en: 'Yui (Wayne) Tien — AI product builder and Forward Deployed Engineer at MorphusAI, Taipei. Workflows, agent ops, demo-to-launch systems.',
+  'zh-tw': '田祐維（Yui / Wayne Tien），MorphusAI Forward Deployed Engineer，在台北做 AI 工作流、Agent 維運、POC 到落地的系統。',
+  ja: '台湾を拠点とするAIプロダクトビルダー、MorphusAIのForward Deployed Engineer — ワークフロー、エージェント運用、デモから実装までの仕組み。',
+  ko: '대만 기반의 AI 프로덕트 빌더이자 MorphusAI Forward Deployed Engineer — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
 }
 
 // Fallback <Seo> copy for /project/:projectId with an id that matches no
@@ -207,7 +212,7 @@ function Home() {
     // y: +32px) then poke past its bottom edge and grow a second scrollbar
     // until they animate in. `clip` never establishes a scroll container.
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
-      <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[profilePageSchema, faqPageSchema(t.faq.items)]} />
+      <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[websiteSchema, profilePageSchema({ lang, name: SITE_TITLE[lang] }), faqPageSchema(t.faq.items)]} />
       <CustomCursor />
       <ScrollProgress />
 
@@ -297,9 +302,21 @@ function Home() {
                 <ScrambleText text={t.about.heading} />
               </h2>
             </div>
-            <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-sm mt-10">
-              <ScrambleText text={t.about.subtext} />
-            </p>
+            <div className="mt-10">
+              <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-sm">
+                <ScrambleText text={t.about.subtext} />
+              </p>
+              {/* The methodology route is the only page here nobody else could
+                  have written, so the home page links into it explicitly. */}
+              <Magnetic scaleOnHover={1.06}>
+                <Link
+                  to={`/${lang}/how-i-work`}
+                  className="inline-flex items-center gap-2 mt-6 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+                >
+                  <ScrambleText text={t.about.methodologyCta} /> <ArrowRight size={13} />
+                </Link>
+              </Magnetic>
+            </div>
           </div>
 
           <div data-reveal-item data-reveal="right" className="bg-brand-blue text-white p-8 md:p-12 min-h-[320px] relative overflow-hidden border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
@@ -341,6 +358,67 @@ function Home() {
       </Reveal>
       </ScrambleStagger>
 
+      {/* Experience + Now — a career spine and a dated "currently" block.
+          Both exist for answer engines as much as for readers: the Person
+          schema's hasOccupation says the same thing, but LLMs weight visible
+          page text above JSON-LD, and a profile with no timeline reads as a
+          snapshot with no way to tell whether it is still true. The previous
+          job title lives here on purpose — it left every other surface when
+          the title changed, and this is where its search weight is kept. */}
+      <ScrambleStagger delay={0.2}>
+      <Reveal as="section" stagger id="experience" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 md:gap-8">
+
+          <div data-reveal-item data-reveal="left">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-6"><ScrambleText text={t.career.eyebrow} /></p>
+            <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-10 max-w-xl">
+              <ScrambleText text={t.career.heading} />
+            </h2>
+            <ol className="border-t border-neutral-200 dark:border-neutral-800">
+              {t.career.entries.map((e, i) => (
+                <li key={i} className="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-2 sm:gap-6 border-b border-neutral-200 dark:border-neutral-800 py-6">
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 sm:pt-1.5"><ScrambleText text={e.period} /></p>
+                  <div>
+                    <h3 className="font-serif text-xl md:text-2xl leading-snug"><ScrambleText text={e.role} /></h3>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mt-2"><ScrambleText text={e.org} /></p>
+                    <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 mt-3 max-w-xl"><ScrambleText text={e.detail} /></p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div data-reveal-item data-reveal="right" className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-10 border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-6">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange"><ScrambleText text={t.now.eyebrow} /></p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+                <ScrambleText text={t.now.updatedLabel} />{' '}
+                <time dateTime={__CONTENT_UPDATED__}>{__CONTENT_UPDATED__}</time>
+              </p>
+            </div>
+            <h2 className="font-serif text-2xl md:text-3xl leading-tight mb-8"><ScrambleText text={t.now.heading} /></h2>
+
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-3"><ScrambleText text={t.now.doingLabel} /></h3>
+            <ul className="space-y-3 mb-8">
+              {t.now.doing.map((d, i) => (
+                <li key={i} className="font-mono text-[11px] leading-relaxed text-neutral-700 dark:text-neutral-300"><ScrambleText text={d} /></li>
+              ))}
+            </ul>
+
+            <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-3"><ScrambleText text={t.now.openToLabel} /></h3>
+            <ul className="flex flex-wrap gap-2 mb-8">
+              {t.now.openTo.map((o, i) => (
+                <li key={i} className="font-mono text-[10px] leading-relaxed bg-white/70 dark:bg-white/10 px-2.5 py-1.5"><ScrambleText text={o} /></li>
+              ))}
+            </ul>
+
+            <a href="mailto:youwei0112@gmail.com" className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors">
+              <ScrambleText text={t.now.ctaLabel} /> <ArrowRight size={13} />
+            </a>
+          </div>
+        </div>
+      </Reveal>
+      </ScrambleStagger>
       {/* Projects Grid */}
       <ScrambleStagger delay={0.24}>
       <Reveal as="section" stagger id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
@@ -425,6 +503,16 @@ function Home() {
             </div>
           ))}
         </dl>
+        <div data-reveal-item className="mt-8 md:mt-10">
+          <Magnetic scaleOnHover={1.06}>
+            <Link
+              to={`/${lang}/how-i-work`}
+              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+            >
+              <ScrambleText text={t.faq.moreLabel} /> <ArrowRight size={13} />
+            </Link>
+          </Magnetic>
+        </div>
       </Reveal>
       </ScrambleStagger>
       </main>
@@ -648,6 +736,46 @@ function ProjectDetail() {
   )
 }
 
+// ── /{lang}/how-i-work ──────────────────────────────────────────────────────
+// Lazy for the same reason as ProjectPage: the methodology page is a
+// destination, not part of the home page’s critical path.
+function HowIWork() {
+  const lang = useLang()
+  const seo = howIWorkSeo[lang]
+  const t = useHowIWorkCopy(lang)
+  return (
+    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink">
+      <Seo
+        title={seo.title}
+        description={seo.description}
+        path={`/${lang}/how-i-work`}
+        jsonLd={[
+          articleSchema({
+            lang,
+            headline: seo.title,
+            description: seo.description,
+            path: `/${lang}/how-i-work`,
+          }),
+          breadcrumbSchema({ lang, path: `/${lang}/how-i-work`, name: seo.title }),
+          ...(t ? [faqPageSchema(t.faq.items)] : []),
+        ]}
+      />
+      <CustomCursor />
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
+            <div className="w-24 h-24 md:w-32 md:h-32">
+              <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
+            </div>
+          </div>
+        }
+      >
+        <HowIWorkPage lang={lang} />
+      </Suspense>
+    </div>
+  )
+}
+
 // ── Language-scoped layout: validates :lang param and provides context ──────
 function LangLayout() {
   const { lang: langParam } = useParams<{ lang: string }>()
@@ -700,6 +828,7 @@ function LangLayout() {
     <LangContext.Provider value={langParam}>
       <Routes>
         <Route index element={<Home />} />
+        <Route path="how-i-work" element={<HowIWork />} />
         <Route path="project/:projectId" element={<ProjectDetail />} />
       </Routes>
     </LangContext.Provider>

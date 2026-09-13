@@ -98,9 +98,9 @@ export function AnimatedOutcomes({
     <ScrambleStagger delay={0.34}>
       <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
         <div ref={rootRef} className="max-w-7xl mx-auto px-6 md:px-12">
-          <p data-reveal-item className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">
+          <h2 data-reveal-item className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">
             <ScrambleText text={outcomesLabel} />
-          </p>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {outcomes.map((o, i) => {
               const Icon = icons[i % icons.length]

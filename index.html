@@ -26,6 +26,12 @@
 
     <meta name="author" content="Yui (Wayne) Tien" />
 
+    <!-- LLM-oriented summary of the site. Advertised here as well as in
+         robots.txt so answer engines do not have to guess the path.
+         scripts/prerender.mjs only strips hreflang alternates, so this
+         survives into every prerendered page. -->
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt" />
+
     <!-- Constant OG/Twitter bits (type, site_name, card, image dimensions — all
          our OG images are 1200×630). Per-route title/description/url/locale and
          the og:image/twitter:image URL itself are set via React 19's native

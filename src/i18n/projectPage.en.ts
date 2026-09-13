@@ -6,7 +6,7 @@ const openClawEn: OpenClawContent = {
   tags: ['Runtime', 'Discord', 'Multi-Agent', 'Memory', 'Tooling'],
   headline: 'Turning fragile single-session helpers into a controllable work layer.',
   subheadline: 'Persistent across tools. Obedient to workflow. Recoverable under failure. Operable through everyday conversation.',
-  role: 'Founder · System Designer · Agent Ops Engineer · Product Owner · Runtime Implementer',
+  role: 'Creator · System Designer · Agent Ops Engineer · Product Owner · Runtime Implementer',
   stats: [
     { value: '3–5', label: 'parallel projects' },
     { value: '∞', label: 'session continuity' },
@@ -108,7 +108,7 @@ const placeholdersEn: Record<string, PlaceholderContent> = {
   },
   'persona-workflows': {
     label: 'AI Character Live Runtime',
-    eyebrow: 'Collaborated · SHIKI',
+    eyebrow: 'Collaborated · MorphusAI',
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: 'Making AI characters demo-ready through persona ops and runtime debugging.',
   },
@@ -146,6 +146,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
       'Raw concepts were difficult to compress into a presentable POC.',
       'Demo quality depended too much on manual translation from idea to flow, copy, UI, and story.',
       'MVPs were harder to generate at the level of completeness needed for meaningful feedback.',
+      'Agents would wave work through with a "should work" — reporting a task finished because the code read plausibly, having never actually verified it.',
     ],
     after: [
       'AI collaboration became part of the execution workflow, not just a writing helper.',
@@ -193,7 +194,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
   },
   'persona-workflows': {
     label: 'AI Character Live Runtime',
-    eyebrow: 'Led · SHIKI',
+    eyebrow: 'Led · MorphusAI',
     tags: ['AI Vtuber', 'Persona', 'Live Ops', 'Runtime'],
     headline: 'Building AI characters that can perform live without getting tired.',
     subheadline: 'A live runtime for AI Vtuber-style characters that can stream, publish videos and shorts, remember viewers, follow scripts, and run fully automated shows.',
@@ -204,31 +205,31 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
       { value: '24h', label: 'stream potential' },
       { value: 'Auto', label: 'live performance' },
     ],
-    problem: 'Human Vtuber performance is constrained by fatigue, scheduling, memory, and consistency. The challenge was making AI characters feel alive while also being stable enough for real livestream operation.',
+    problem: 'Human Vtuber performance is constrained by fatigue, scheduling, memory, and consistency. The challenge was making AI characters feel alive while also being stable enough for real livestream operation. The hardest part was never reading a script out loud — it was generating the stream agenda. Early agendas were too formulaic and too obviously machine-written to sound like the character, and it took many rounds to reach the current flow: start from the character, find a topic, generate the agenda, deliver the script, read the chat, and go off-script when the moment calls for it.',
     before: [
       'Characters could exist as concepts, but live operation required many fragile manual pieces.',
       'Persona, tooling, runtime behavior, and livestream flow were not yet unified into a stable performance system.',
       'Long-running shows needed better consistency than a human operator could maintain manually.',
+      'Agenda generation started out formulaic and obviously machine-written — not anything the character would actually say.',
     ],
     after: [
-      'Four active AI Vtuber-style characters now run across livestreams, videos, and shorts.',
-      'The system has accumulated more than 3000 watch hours from real users.',
-      'AI characters can run stable fully automated livestream performances.',
-      'A confidential collaboration with a listed Taiwanese game company validated that the AI virtual talent could perform better live than a human-played Vtuber in the tested context.',
+      'Four AI Vtuber characters are in active operation — Dearu (小鹿獸), NaisKuri (奶糖狐), AkuCat (惡貓社長), and Amber (琥珀喵). All are company-owned, designed under my lead and built together with colleagues.',
+      'The system has accumulated more than 3000 watch hours from real viewers, cumulative across livestreams, videos, and shorts.',
+      'AI characters can run stable, fully automated livestream performances: the agenda is generated in the character voice, the character reacts to chat, and it goes off-script when the moment calls for it.',
+      'A collaboration with Gamania on their virtual talent 宮祈緣: before the fully-AI version went live we ran an A/B test of a human performer against the AI, and both sides agreed the AI ran it better.',
     ],
     contributions: [
       'Led project management and execution across persona, runtime, and live workflow.',
-      'Designed character personas and operating behavior.',
-      'Debugged runtime issues and livestream flow stability.',
+      'Designed character personas and operating behavior — values, preferences and behavioural rules, down to the precise boundary of what the character should refuse to do.',
+      'Debugged runtime issues and livestream flow stability, and redesigned the agenda generation flow to get rid of the machine-written tone.',
       'Defined character settings, tool connections, and automated show behavior.',
       'Coordinated the system toward demo-ready and production-like livestream performance.',
     ],
     outcomes: [
-      { title: 'Validated with real viewers', detail: 'The system is not only a lab demo: active characters have produced thousands of hours of watch time.' },
+      { title: 'Validated with real viewers', detail: 'Not a lab demo: at the debut stream for Dearu, viewers who wandered in watched to the end without realising it was AI.' },
       { title: 'Always-on performance', detail: 'Unlike human performers, AI characters can stream continuously, follow scripts precisely, and remember viewer context.' },
-      { title: 'Commercial collaboration', detail: 'Built and tested a confidential all-AI virtual entertainer with a known Taiwanese public game company.' },
+      { title: 'Commercial collaboration', detail: 'The 宮祈緣 A/B test with Gamania concluded that the AI version outperformed the human-played one. The technology was licensed out; how the character is run from there is their call.' },
     ],
-    note: 'Specific character identities and partner names are intentionally omitted for confidentiality.',
     liveRosterLabel: 'AI Streamer',
     liveRosterIllustrative: 'Illustrative — not a real screenshot',
     liveRosterRealNote: 'These 4 characters are real and currently in active operation — the cards are a recreation, but the roster and the numbers are not.',
@@ -358,6 +359,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
       'A conventional portfolio would only list work, not demonstrate product-building ability.',
       'AI-generated websites often carry obvious template patterns, generic copy, and weak interaction details.',
       'The risk was making something that looked assisted by AI rather than directed with taste and technical control.',
+      'The English contact label runs longer than the Chinese one. The agent checked only the Chinese version for wrapping, so the English label stayed broken at 375px until I asked for a real narrowest-viewport check.',
     ],
     after: [
       'The portfolio became a working artifact with responsive layout, project cards, dark mode, animation, and interaction details.',
@@ -428,6 +430,7 @@ const caseStudiesEn: Record<string, CaseStudyContent> = {
 
 export const en: ProjectPageCopy = {
   backToAllProjects: 'All Projects',
+  moreWork: 'More work',
   theProblem: 'The Problem',
   before: 'Before',
   after: 'After',

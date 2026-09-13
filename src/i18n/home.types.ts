@@ -28,6 +28,7 @@ export interface HomeCopy {
     heading: string
     subtext: string
     badge: string
+    methodologyCta: string // links the About card into /{lang}/how-i-work
     body: string
     notes: string[]
   }
@@ -36,6 +37,24 @@ export interface HomeCopy {
     role: { label: string; value: string }
     location: { label: string; value: string }
     contact: { label: string; value: string }
+  }
+  career: {
+    eyebrow: string
+    heading: string
+    // Visible career spine. Mirrors Person.hasOccupation in seoData.mjs /
+    // src/seo/schema.ts, and is the page-text home of the previous job
+    // title — LLMs weight visible text above JSON-LD.
+    entries: { period: string; role: string; org: string; detail: string }[]
+  }
+  now: {
+    eyebrow: string
+    heading: string
+    updatedLabel: string // the date itself is build-injected (__CONTENT_UPDATED__)
+    doingLabel: string
+    doing: string[]
+    openToLabel: string
+    openTo: string[]
+    ctaLabel: string
   }
   work: {
     eyebrow: string
@@ -47,6 +66,7 @@ export interface HomeCopy {
     eyebrow: string
     heading: string
     items: { q: string; a: string }[]
+    moreLabel: string // links the FAQ block into /{lang}/how-i-work
   }
   projects: ProjectCard[]
   footer: {

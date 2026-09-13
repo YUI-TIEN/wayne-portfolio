@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react'
-import { ArrowLeft } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import type { OpenClawContent, ProjectPageCopy } from '../i18n/projectPage.types'
-import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { Reveal } from './Reveal'
 import { OpsDemo } from './OpsDemo'
@@ -12,6 +10,7 @@ import { ContextLoss } from './ContextLoss'
 import { GuardGate } from './GuardGate'
 import { OutcomeIcon } from './OutcomeIcon'
 import { GovernanceBand } from './TurningPoints'
+import { BackLink, MoreWork } from './ProjectNav'
 
 // OpenClaw's bespoke layout, split into its own module so the case-study pages
 // (which use a different demo set) don't ship OpsDemo / SystemTopology /
@@ -31,14 +30,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
 
         {/* Top Nav */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-          <Magnetic scaleOnHover={1.08}>
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
-            >
-              <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
-            </button>
-          </Magnetic>
+          <BackLink t={t} lang={lang} onBack={onBack} />
           {themeToggle}
         </div>
 
@@ -84,7 +76,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         <ScrambleStagger delay={0.16}>
         <Reveal as="section" variant="clip" className="bg-brand-ink dark:bg-black py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10"><ScrambleText text={t.theProblem} /></p>
+            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10"><ScrambleText text={t.theProblem} /></h2>
             <p className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-white max-w-4xl">
               <ScrambleText text={c.problem} />
             </p>
@@ -109,7 +101,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div data-reveal-item data-reveal="left">
-              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></p>
+              <h3 className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></h3>
               <ul className="space-y-6">
                 {c.before.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -126,7 +118,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
 
             {/* After */}
             <div data-reveal-item data-reveal="right">
-              <p className="font-serif text-2xl text-brand-orange mb-8 leading-none"><ScrambleText text={t.after} /></p>
+              <h3 className="font-serif text-2xl text-brand-orange mb-8 leading-none"><ScrambleText text={t.after} /></h3>
               <ul className="space-y-6">
                 {c.after.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -218,7 +210,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         <ScrambleStagger delay={0.38}>
         <Reveal as="section" stagger variant="flip" className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></p>
+            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></h2>
 
             {/* Asymmetric strip: large first item spanning full width, then 3 below */}
             <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
@@ -294,15 +286,9 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         {/* Closing moment: a small `scale` pop on the way out. */}
         <ScrambleStagger delay={0.5}>
         <Reveal variant="scale" className="border-t border-neutral-100 dark:border-neutral-800">
+          <MoreWork t={t} lang={lang} currentId="openclaw-ops" />
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-            <Magnetic scaleOnHover={1.08}>
-              <button
-                onClick={onBack}
-                className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
-              >
-                <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
-              </button>
-            </Magnetic>
+            <BackLink t={t} lang={lang} onBack={onBack} />
           </div>
         </Reveal>
         </ScrambleStagger>

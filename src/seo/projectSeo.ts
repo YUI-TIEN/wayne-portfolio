@@ -47,19 +47,19 @@ export const projectSeo: Record<string, Record<Lang, ProjectSeo>> = {
   'persona-workflows': {
     en: {
       title: 'AI Character Live Runtime | Yui (Wayne) Tien',
-      description: 'Wayne Tien helped make the SHIKI AI character system demo-ready through persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff documentation.',
+      description: 'Wayne Tien helped make the SHIKI-based AI character live runtime at MorphusAI demo-ready through persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff documentation.',
     },
     'zh-tw': {
       title: 'AI 角色直播運行系統 | Yui (Wayne) Tien',
-      description: 'Wayne Tien 幫 SHIKI 的 AI 角色系統弄到能上線直播：人格就緒檢查、直播連結流程、OBS 跟系統除錯，還有操作交接文件都包了。',
+      description: 'Wayne Tien 幫 MorphusAI 以 SHIKI 為底的 AI 角色直播 runtime 弄到能上線：人格就緒檢查、直播連結流程、OBS 跟系統除錯，還有操作交接文件都包了。',
     },
     ja: {
       title: 'AIキャラクター ライブ運用システム | Yui (Wayne) Tien',
-      description: 'Wayne TienがSHIKIのAIキャラクターシステムをデモ可能にした方法 — ペルソナ準備確認、配信連携フロー、OBS/ランタイムデバッグ、運用者への引き継ぎドキュメント。',
+      description: 'Wayne TienがMorphusAIのSHIKIを土台にしたAIキャラクター・ライブランタイムをデモ可能にした方法 — ペルソナ準備確認、配信連携フロー、OBS/ランタイムデバッグ、運用者への引き継ぎドキュメント。',
     },
     ko: {
       title: 'AI 캐릭터 라이브 런타임 | Yui (Wayne) Tien',
-      description: 'Wayne Tien이 SHIKI의 AI 캐릭터 시스템을 데모 가능하게 만든 방법 — 페르소나 준비 점검, 스트림 연동 플로우, OBS/런타임 디버깅, 운영자 인수인계 문서.',
+      description: 'Wayne Tien이 MorphusAI의 SHIKI 기반 AI 캐릭터 라이브 런타임을 데모 가능하게 만든 방법 — 페르소나 준비 점검, 스트림 연동 플로우, OBS/런타임 디버깅, 운영자 인수인계 문서.',
     },
   },
   'voice-migration': {

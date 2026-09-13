@@ -91,6 +91,7 @@ export const en: HomeCopy = {
     heading: 'Building the bridge from weird AI idea to usable product.',
     subtext: 'Based in Taiwan. Working across AI product, prototype systems, agent workflows, and launch-ready storytelling.',
     badge: 'product / ops / ai',
+    methodologyCta: 'How I work',
     body: 'I help small teams make AI work feel concrete: clarifying the story, designing the interface, wiring the workflow, and documenting the operating system so the next demo is easier than the last one.',
     notes: [
       'I sit between product, design, and agent operations.',
@@ -100,9 +101,52 @@ export const en: HomeCopy = {
   },
   quickFacts: {
     name: { label: 'Name', value: 'Yui Tien, also known as Wayne Tien' },
-    role: { label: 'Role', value: 'Digital Persona Technical Director at MorphusAI — AI workflows, agent operations, demo-to-delivery systems' },
+    role: { label: 'Role', value: 'Forward Deployed Engineer at MorphusAI — AI workflows, agent operations, demo-to-delivery systems' },
     location: { label: 'Location', value: 'Taiwan' },
     contact: { label: 'Contact', value: 'youwei0112@gmail.com' },
+  },
+  career: {
+    eyebrow: 'experience',
+    heading: 'What I have actually been doing, in order.',
+    entries: [
+      {
+        period: '2026 — Present',
+        role: 'Forward Deployed Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'Deploying the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, plus runtime diagnostics and agent operating contracts.',
+      },
+      {
+        period: '2024 — 2026',
+        role: 'Digital Persona Technical Director & Virtual Character Systems Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'Led AI persona and virtual character systems, standardized agent workflows into repeatable SOPs, and owned demo-to-delivery operations from POC through launch.',
+      },
+      {
+        period: '2021 — 2025',
+        role: 'B.S., Information & Finance Management',
+        org: 'National Taipei University of Technology',
+        detail: 'Graduated June 2025.',
+      },
+    ],
+  },
+  now: {
+    eyebrow: 'now',
+    heading: 'What I am on right now.',
+    updatedLabel: 'Updated',
+    doingLabel: 'Working on',
+    doing: [
+      'Putting expert judgment and governed memory into real customer workflows at MorphusAI.',
+      'OpenClaw — a personal agent operating system I run my own work through: Discord-native, memory-persistent, rule-governed.',
+      'This site, rebuilt in the open as a case study in working with agents.',
+    ],
+    openToLabel: 'Open to',
+    openTo: [
+      'AI agent infrastructure and runtime ops',
+      'Persona and character systems',
+      'Agent memory and governance',
+      'Small, high-execution product teams',
+    ],
+    ctaLabel: 'Start a conversation',
   },
   work: {
     eyebrow: 'selected work',
@@ -118,9 +162,12 @@ export const en: HomeCopy = {
   faq: {
     eyebrow: 'faq',
     heading: 'Quick answers.',
+    moreLabel: 'Read how I work',
     items: [
-      { q: 'Who is Yui (Wayne) Tien?', a: 'A Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI. He bridges 0-to-1 product design with the technical orchestration of AI agents.' },
+      { q: 'Who is Yui (Wayne) Tien?', a: 'A Taipei-based AI product builder and Forward Deployed Engineer at MorphusAI. He bridges 0-to-1 product design with the technical orchestration of AI agents.' },
       { q: 'What does he work on?', a: 'AI persona and character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery workflows that take ideas from POC to MVP to launch.' },
+      { q: 'How does he work with AI agents?', a: 'Through five enforced rules: operating contracts before autonomy, evidence-based verification, diagnosis before rebuild, persistent context over clever prompting, and handoff as part of the deliverable. Each one exists because something broke without it.' },
+      { q: 'What does he build at MorphusAI?', a: 'He deploys the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, along with runtime diagnostics and agent operating contracts. Before 2026 he led AI persona and virtual character systems there as Digital Persona Technical Director.' },
       { q: 'Where is he based?', a: 'Taipei, Taiwan. He works in English and Mandarin Chinese.' },
       { q: 'How can you reach him?', a: 'By email at youwei0112@gmail.com, or on LinkedIn (/in/yui-tien) and GitHub (@YUI-TIEN).' },
     ],

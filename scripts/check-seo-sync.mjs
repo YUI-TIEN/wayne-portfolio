@@ -70,6 +70,39 @@ for (const lang of LANGS) {
   })
 }
 
+// ── Contract 2b: seoData howIWorkFaq ⇄ src/i18n/howIWork.*.ts faq.items ────
+// Same rule as contract 1, for the methodology page that now carries its own
+// FAQPage node. Those files hold no other q/a pairs, so the same parser works.
+const howIWorkFaqOf = (lang) =>
+  routeSeo[`/${lang}/how-i-work`].jsonLd.find((s) => s['@type'] === 'FAQPage')
+for (const lang of LANGS) {
+  const src = read(`src/i18n/howIWork.${lang}.ts`)
+  const items = [...src.matchAll(/q:\s*'([^']*)',\s*a:\s*'([^']*)'/g)].map((m) => ({
+    q: m[1],
+    a: m[2],
+  }))
+  const schema = howIWorkFaqOf(lang)
+  if (!schema) {
+    fail(`[how-i-work-faq:${lang}] no FAQPage node on the route — seoData.mjs regression`)
+    continue
+  }
+  const schemaItems = schema.mainEntity.map((e) => ({ q: e.name, a: e.acceptedAnswer.text }))
+  if (items.length === 0) {
+    fail(`[how-i-work-faq:${lang}] could not parse FAQ items out of src/i18n/howIWork.${lang}.ts — regex needs updating`)
+    continue
+  }
+  if (items.length !== schemaItems.length) {
+    fail(`[how-i-work-faq:${lang}] ${items.length} visible items vs ${schemaItems.length} in seoData.mjs howIWorkFaq`)
+    continue
+  }
+  schemaItems.forEach((s, i) => {
+    if (s.q !== items[i].q)
+      fail(`[how-i-work-faq:${lang}#${i + 1}] question drift\n  seoData: ${s.q}\n  visible: ${items[i].q}`)
+    if (s.a !== items[i].a)
+      fail(`[how-i-work-faq:${lang}#${i + 1}] answer drift\n  seoData: ${s.a}\n  visible: ${items[i].a}`)
+  })
+}
+
 // ── Contract 2: seoData homeSeo ⇄ App.tsx SITE_TITLE / SITE_DESCRIPTION ────
 const appSrc = read('src/App.tsx')
 const constBlock = (name) => {
@@ -124,6 +157,18 @@ for (const [constName, field] of [
   }
 }
 
+// ── Contract 8: seoData howIWorkSeo ⇄ src/seo/howIWorkSeo.ts ───────────────
+{
+  const src = read('src/seo/howIWorkSeo.ts')
+  for (const lang of LANGS) {
+    const { title, description } = routeSeo[`/${lang}/how-i-work`]
+    if (!src.includes(title))
+      fail(`[how-i-work:${lang}] title missing from src/seo/howIWorkSeo.ts:\n  ${title}`)
+    if (!src.includes(description))
+      fail(`[how-i-work:${lang}] description missing from src/seo/howIWorkSeo.ts:\n  ${description}`)
+  }
+}
+
 // ── Contract 5: index.html static <title> ⇄ seoData en home title ──────────
 {
   const m = read('index.html').match(/<title>([^<]*)<\/title>/)
@@ -161,6 +206,12 @@ if (!existsSync(path.join(ROOT, 'dist', 'en', 'index.html'))) {
     for (const e of faqOf(lang).mainEntity) {
       if (!html.includes(e.acceptedAnswer.text))
         fail(`[dist:${lang}] FAQ answer in schema but not in rendered body:\n  ${e.acceptedAnswer.text}`)
+    }
+    // Same check for the methodology page, which carries its own FAQPage.
+    const hiw = decodeEntities(read(`dist/${lang}/how-i-work/index.html`))
+    for (const e of howIWorkFaqOf(lang).mainEntity) {
+      if (!hiw.includes(e.acceptedAnswer.text))
+        fail(`[dist:${lang}/how-i-work] FAQ answer in schema but not in rendered body:\n  ${e.acceptedAnswer.text}`)
     }
   }
 }

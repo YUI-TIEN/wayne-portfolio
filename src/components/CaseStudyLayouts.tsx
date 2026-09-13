@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import type { CaseStudyContent, ProjectPageCopy } from '../i18n/projectPage.types'
-import { Magnetic } from './Magnetic'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { Reveal } from './Reveal'
 import { StatValue } from './StatValue'
@@ -16,6 +15,7 @@ import { ScrambleProof } from './ScrambleProof'
 import { LiveSystemStatus } from './LiveSystemStatus'
 import { GovernanceBand as GovernanceCards } from './TurningPoints'
 import type { CaseStudyTheme } from './caseStudyTheme'
+import { BackLink, MoreWork } from './ProjectNav'
 
 // Shared AI-collaboration-governance band. The site's core axis is that Wayne
 // governs AI (names its blind spots, builds process to constrain them) — so
@@ -158,7 +158,7 @@ function ProblemBand({ p, t, children }: { p: CaseStudyContent; t: ProjectPageCo
     <ScrambleStagger delay={0.16}>
       <Reveal as="section" variant="clip" className="bg-brand-ink dark:bg-black py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-8"><ScrambleText text={t.theProblem} /></p>
+          <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-8"><ScrambleText text={t.theProblem} /></h2>
           <p className="font-serif text-2xl sm:text-3xl md:text-5xl leading-tight text-white max-w-4xl">
             <ScrambleText text={p.problem} />
           </p>
@@ -172,20 +172,14 @@ function ProblemBand({ p, t, children }: { p: CaseStudyContent; t: ProjectPageCo
   )
 }
 
-function Footer({ t, onBack }: { t: ProjectPageCopy; onBack: (e: React.MouseEvent) => void }) {
+function Footer({ t, lang, currentId, onBack }: { t: ProjectPageCopy; lang: Lang; currentId: string; onBack: (e: React.MouseEvent) => void }) {
   // Closing moment: a small `scale` pop on the way out (matches OpenClaw).
   return (
     <ScrambleStagger delay={0.4}>
       <Reveal variant="scale" className="border-t border-neutral-100 dark:border-neutral-800">
+        <MoreWork t={t} lang={lang} currentId={currentId} />
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-          <Magnetic scaleOnHover={1.08}>
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2.5 -my-2.5"
-            >
-              <ArrowLeft size={12} /> <ScrambleText text={t.backToAllProjects} />
-            </button>
-          </Magnetic>
+          <BackLink t={t} lang={lang} onBack={onBack} />
         </div>
       </Reveal>
     </ScrambleStagger>
@@ -196,6 +190,7 @@ export interface LayoutProps {
   p: CaseStudyContent
   t: ProjectPageCopy
   lang: Lang
+  projectId: string
   theme: CaseStudyTheme
   nav: ReactNode
   onBack: (e: React.MouseEvent) => void
@@ -207,7 +202,7 @@ const shell = 'min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:
 // Content is a funnel (idea -> prototype -> POC -> demo); show it as a literal
 // horizontal stage tracker instead of a flat before/after bullet list.
 const DEFAULT_STAGES = ['Idea', 'Prototype', 'POC', 'Demo']
-export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+export function MorphusLayout({ p, t, lang, projectId, theme, nav, onBack }: LayoutProps) {
   const stages = p.stages ?? DEFAULT_STAGES
   return (
     <div className={shell}>
@@ -237,7 +232,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       {/* Contributions as a light 2-col skill list, no heavy color band. */}
       <ScrambleStagger delay={0.28}>
         <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pb-16 md:pb-24">
-          <p data-reveal-item className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></p>
+          <h2 data-reveal-item className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-5">
             {p.contributions.map((item, i) => (
               <div key={i} data-reveal-item data-reveal="fade" className="flex gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5">
@@ -259,7 +254,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         accentText={theme.accentText}
         accentBg={theme.accentInteractBg}
       />
-      <Footer t={t} onBack={onBack} />
+      <Footer t={t} lang={lang} currentId={projectId} onBack={onBack} />
     </div>
   )
 }
@@ -269,7 +264,7 @@ export function MorphusLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 // and were buried as plain stat tiles. Surface a live, on-air roster in the
 // Problem band (see LiveRoster) and give the watch-hours number a full-width
 // banner moment with an audio-waveform backdrop.
-export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+export function PersonaLayout({ p, t, lang, projectId, theme, nav, onBack }: LayoutProps) {
   const watchStat = p.stats.find((s) => /watch/i.test(s.label)) ?? p.stats[1]
   return (
     <div className={shell}>
@@ -308,7 +303,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             <div data-reveal-item data-reveal="left">
-              <p className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></p>
+              <h3 className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></h3>
               <ul className="space-y-6">
                 {p.before.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -319,7 +314,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
               </ul>
             </div>
             <div data-reveal-item data-reveal="right">
-              <p className={`font-serif text-2xl ${theme.accentText} mb-8 leading-none`}><ScrambleText text={t.after} /></p>
+              <h3 className={`font-serif text-2xl ${theme.accentText} mb-8 leading-none`}><ScrambleText text={t.after} /></h3>
               <ul className="space-y-6">
                 {p.after.map((item, i) => (
                   <li key={i} className="flex gap-5">
@@ -355,7 +350,7 @@ export function PersonaLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         accentText={theme.accentText}
         accentBg={theme.accentInteractBg}
       />
-      <Footer t={t} onBack={onBack} />
+      <Footer t={t} lang={lang} currentId={projectId} onBack={onBack} />
     </div>
   )
 }
@@ -397,7 +392,7 @@ const DEFAULT_SPEC_ROWS = [
   { k: 'Latency', cloud: 'Network round-trip', local: 'Near-runtime' },
   { k: 'Languages', cloud: 'Chinese only', local: 'Multilingual identity' },
 ]
-export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+export function VoiceLayout({ p, t, lang, projectId, theme, nav, onBack }: LayoutProps) {
   const specRows = p.specRows ?? DEFAULT_SPEC_ROWS
   return (
     <div className={shell}>
@@ -435,7 +430,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         accentText={theme.accentText}
         accentBg={theme.accentInteractBg}
       />
-      <Footer t={t} onBack={onBack} />
+      <Footer t={t} lang={lang} currentId={projectId} onBack={onBack} />
     </div>
   )
 }
@@ -444,7 +439,7 @@ export function VoiceLayout({ p, t, theme, nav, onBack }: LayoutProps) {
 // This page describes itself. Make it prove the claim instead of describing
 // it: inline a live interactive component, and treat the self-referential
 // outcomes as pull-quotes rather than the same icon grid.
-export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
+export function PortfolioLayout({ p, t, lang, projectId, theme, nav, onBack }: LayoutProps) {
   return (
     <div className={shell}>
       {nav}
@@ -526,7 +521,7 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
       <ScrambleStagger delay={0.34}>
         <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></p>
+            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></h2>
             <div className="space-y-12 md:space-y-16 max-w-4xl">
               {p.outcomes.map((o, i) => (
                 <div key={i} data-reveal-item className="flex flex-col md:flex-row gap-4 md:gap-8">
@@ -545,7 +540,7 @@ export function PortfolioLayout({ p, t, theme, nav, onBack }: LayoutProps) {
         </Reveal>
       </ScrambleStagger>
 
-      <Footer t={t} onBack={onBack} />
+      <Footer t={t} lang={lang} currentId={projectId} onBack={onBack} />
     </div>
   )
 }

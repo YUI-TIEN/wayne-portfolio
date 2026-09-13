@@ -6,7 +6,7 @@ const openClawZhTw: OpenClawContent = {
   tags: ['Runtime', 'Discord', 'Multi-Agent', 'Memory', 'Tooling'],
   headline: '讓不穩定的單次對話助手，變成真的能掌控的工作層。',
   subheadline: '換工具不會斷。乖乖照工作流走。壞了自己會救回來。日常聊天就能操作。',
-  role: '創始人 · 系統設計 · Agent 維運 · 產品負責人 · 自己刻底層架構',
+  role: '專案發起人 · 系統設計 · Agent 維運 · 產品負責人 · 自己刻底層架構',
   stats: [
     { value: '3–5', label: '個專案同時開' },
     { value: '∞', label: 'session 接得起來' },
@@ -108,7 +108,7 @@ const placeholdersZhTw: Record<string, PlaceholderContent> = {
   },
   'persona-workflows': {
     label: 'AI 角色直播運行系統',
-    eyebrow: '一起做的 · SHIKI',
+    eyebrow: '一起做的 · MorphusAI',
     tags: ['Live Ops', 'Persona', 'Workflow'],
     headline: '靠人格維運跟系統除錯，把 AI 角色弄到能上線。',
   },
@@ -194,7 +194,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
   },
   'persona-workflows': {
     label: 'AI 角色直播 Runtime',
-    eyebrow: '主導 · SHIKI',
+    eyebrow: '主導 · MorphusAI',
     tags: ['AI Vtuber', '人格設計', '直播維運', 'Runtime'],
     headline: '打造不會累、可以一直直播的 AI 角色。',
     subheadline: '一套給 AI Vtuber 風格角色用的直播 runtime，可以開台、發影片跟短影音、記得觀眾、照腳本走、全自動開show。',
@@ -214,7 +214,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     ],
     after: [
       '現在有四個活躍的 AI Vtuber 角色：小鹿獸 Dearu、奶糖狐 NaisKuri、惡貓社長 AkuCat、琥珀喵 Amber，都隸屬公司、由我主導設計和其他同事共同協作建立。',
-      '系統累積了超過 3000 小時的真實觀看時數。',
+      '系統累積了超過 3000 小時的真實觀看時數，是直播、影片與短影音的累計值。',
       'AI 角色可以穩定跑全自動直播演出，議程會照角色口吻生成、能看留言互動、還會即興跳脫腳本。',
       '跟遊戲橘子旗下虛擬藝人「宮祈緣」合作，在正式上線全 AI 版之前做過 AB Test：比對真人扮演跟 AI 實操，雙方看完結果一致認為 AI 執行的表現更好。',
     ],
@@ -430,6 +430,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
 
 export const zhTw: ProjectPageCopy = {
   backToAllProjects: '回所有專案',
+  moreWork: '其他專案',
   theProblem: '問題在哪',
   before: '以前',
   after: '現在',

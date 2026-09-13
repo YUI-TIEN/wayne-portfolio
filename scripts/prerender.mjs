@@ -1,9 +1,10 @@
 import { createServer } from 'node:http'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import handler from 'serve-handler'
 import puppeteer from 'puppeteer'
 import { routeSeo, SITE_URL, LANGS, buildSitemap } from './seoData.mjs'
+import { newestCommitISO } from './gitDates.mjs'
 
 const DIST = path.resolve(import.meta.dirname, '..', 'dist')
 const PORT = 4173
@@ -28,7 +29,7 @@ const CJK_FONT_HREF = {
 // hoisting in src/seo/Seo.tsx, which doesn't have the issue — but the
 // rewrite here stays, since deterministic prerendered output is still the
 // goal on its own merits.)
-const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description|image|image:alt)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
+const MANAGED_TAG = /<title[^]*?<\/title>|<meta\s+(?:name="description"|property="(?:og|twitter):(?:url|title|description|image|image:alt)")[^>]*>|<link rel="canonical"[^>]*>|<link rel="alternate" hreflang="[^"]*"[^>]*>|<link id="cjk-fonts"[^>]*>|<script type="application\/ld\+json">[^]*?<\/script>/gi
 
 function rewriteHead(html, route) {
   const seo = routeSeo[route]
@@ -132,6 +133,19 @@ async function main() {
     // over from public/.
     await writeFile(path.join(DIST, 'sitemap.xml'), buildSitemap(), 'utf-8')
     console.log(`sitemap.xml -> ${Object.keys(routeSeo).length} urls`)
+
+    // llms.txt carries a "Last updated" line so answer engines can tell
+    // whether the summary is still current. Rewrite it from the file's own
+    // last commit rather than trusting whoever edited it to bump the date.
+    const llmsPath = path.join(DIST, 'llms.txt')
+    const llmsIso = newestCommitISO(['public/llms.txt'], new Date().toISOString())
+    const llms = await readFile(llmsPath, 'utf-8')
+    await writeFile(
+      llmsPath,
+      llms.replace(/^Last updated: .*$/m, `Last updated: ${llmsIso.slice(0, 10)}`),
+      'utf-8',
+    )
+    console.log(`llms.txt -> Last updated: ${llmsIso.slice(0, 10)}`)
   } finally {
     await browser.close()
     server.close()

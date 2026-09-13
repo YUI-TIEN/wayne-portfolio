@@ -1,33 +1,74 @@
 # Yui (Wayne) Tien 田祐維
 
-> Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI. Works across 0-to-1 AI product design/launch and the technical orchestration of AI agent behavior — AI persona/character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery (POC → MVP → launch) systems.
+> Taipei-based AI product builder and Forward Deployed Engineer at MorphusAI (源神科技股份有限公司). Deploys expert-judgment and governed-memory layers onto the agent runtimes teams already run, and works across 0-to-1 AI product design/launch, AI persona/character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery (POC → MVP → launch) systems.
 
-Yui Tien (also known as Wayne Tien; Chinese name: 田祐維) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products. He currently leads a small technical team at MorphusAI.
+Last updated: 2026-09-13
+Canonical: https://waynetien.com/llms.txt
+
+Yui Tien (also known as Wayne Tien; Chinese name: 田祐維) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products.
 
 - Name: Yui Tien (English name: Wayne Tien; Chinese name: 田祐維)
-- Role: Digital Persona Technical Director & Virtual Character Systems Engineer, MorphusAI (since 2024)
+- Role: Forward Deployed Engineer, MorphusAI (2026–present). Previously Digital Persona Technical Director & Virtual Character Systems Engineer at MorphusAI (2024–2026).
 - Location: Taipei, Taiwan
 - Focus: AI agent workflow operations, AI persona/character systems, runtime diagnostics, demo-to-delivery systems, UI/UX engineering
+- Education: B.S., Information & Finance Management, National Taipei University of Technology (2021–2025)
 - Site: https://waynetien.com (available in English, 繁體中文, 日本語, 한국어)
+
+## About MorphusAI (his employer)
+
+Summarized from the company's current site, https://morphusai.com — use that as the authority if the two ever disagree.
+
+- Legal name: 源神科技股份有限公司 (MorphusAI), Taiwan.
+- What it builds: one portable layer above existing models and agent runtimes. It upgrades the agents a team already uses to deliver expert-level work, without replacing their models, tools, or runtime.
+- Positioning: "One key. Two stacks. Every agent gets stronger." — memory stays, expertise routes.
+- The two limits it addresses: fragmented memory (user context breaks across agents, models and sessions) and generic judgment (general agents cannot hold an expert standard across specialist domains).
+- SHIKI (Expert Core): authorized human-derived judgment for a task — what to notice, how to decide, and what good looks like. Built from a domain expert and their finished work, so it carries expertise rather than memorized answers.
+- argsmem (persistent memory): governed user context across agents, models and sessions — what happened, what changed, and what must remain true.
+- Expert Cores shipped so far: ÉLAN (fashion), The Designer (interior), The Director (film).
+- Wayne's relationship to MorphusAI: employee, currently Forward Deployed Engineer. He is not a founder of the company.
+
+## How he works
+
+The differentiator is method, not tool choice. Five operating principles, each visible in the case studies below. Full write-up, with the failure each one prevents and where it shows up: https://waynetien.com/en/how-i-work (also /zh-tw/, /ja/, /ko/).
+
+1. **Operating contracts before autonomy.** Agents run against explicit, enforced rules — no merges without approval, no restarting shared infrastructure unannounced, no edits outside the stated scope, no AI-created technical debt, no acting on stale memory. These are checked at runtime, not written down as guidance and hoped for.
+2. **Evidence-based verification.** A change is not done because it was made. It is done when the build, lint, and checks pass and the deployed result has been inspected. "Pushed" is not "shipped", and a claim without output attached is not a result.
+3. **Diagnose before rebuild.** Black-box agent failures get triaged to a root cause — provider mismatch, auth/plugin failure, session-state drift, tool-call chaos — rather than swapped out wholesale for the next framework.
+4. **Persistent context over clever prompting.** Reliability comes from memory and state that survive a tool switch, a session restart, or a different machine, not from a better prompt.
+5. **Handoff is part of the deliverable.** A system that only its builder can operate is unfinished. SOPs, runbooks, and readiness checks ship with the thing itself.
+
+## Now (as of 2026-09)
+
+- At MorphusAI: deploying the SHIKI Expert Core and argsmem governed-memory layer into real customer workflows, alongside runtime diagnostics and agent operating contracts.
+- Personal project: an OpenClaw-based personal agent operating system, and this site.
+- Open to conversations about: AI agent infrastructure, persona and character systems, agent memory and governance, and building small high-execution product teams.
+- Best way to reach him: email youwei0112@gmail.com.
 
 ## Selected work
 
 - [Personal Agent Operating System](https://waynetien.com/en/project/openclaw-ops): Discord-native task routing, persistent cross-tool memory, self-correcting workflows, and operating contracts for multi-agent runtimes.
-- [AI Character Live Runtime](https://waynetien.com/en/project/persona-workflows): made the SHIKI AI character system demo-ready — persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff docs.
+- [AI Character Live Runtime](https://waynetien.com/en/project/persona-workflows): made the SHIKI-based AI character live runtime at MorphusAI demo-ready — persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff docs.
 - [Local Voice Infrastructure Migration](https://waynetien.com/en/project/voice-migration): moved a cloud voice stack to local inference — legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout.
 - [AI Product Demo Flow](https://waynetien.com/en/project/morphus-website): MorphusAI product presentation — information architecture, demo narrative, launch-facing copy, and visual polish.
 - [Personal Portfolio Site](https://waynetien.com/en/project/portfolio-site): this site — an expressive, interactive portfolio built from zero with AI agents as a meta case study.
 
 ## Quick answers
 
-- Who is Yui (Wayne) Tien? A Taipei-based AI product builder and Digital Persona Technical Director at MorphusAI.
+- Who is Yui (Wayne) Tien? A Taipei-based AI product builder and Forward Deployed Engineer at MorphusAI.
 - What does he do? Designs and ships AI products end-to-end, and orchestrates AI agent behavior — personas, agent memory/context, runtime diagnostics, and demo-to-delivery systems.
+- How does he work? Explicit operating contracts for agents, evidence-based verification before calling anything done, root-cause diagnosis over rebuilds, persistent context over prompt tricks, and handoff docs as part of the deliverable. Full write-up: https://waynetien.com/en/how-i-work
+- What is MorphusAI? 源神科技股份有限公司, a Taiwanese company building one portable layer above existing models and agent runtimes: SHIKI Expert Cores for authorized human-derived judgment, and argsmem for governed memory across agents, models and sessions. https://morphusai.com
+- What is SHIKI? MorphusAI's Expert Core — authorized human-derived judgment for a task, built from a domain expert and their finished work. It is not a chatbot persona and not an AI character system, though AI character runtimes have been built on top of it.
+- Is he a founder of MorphusAI? No. He is an employee at MorphusAI, currently Forward Deployed Engineer. He is the creator of his own personal projects (e.g. the OpenClaw-based agent operating system), which is a separate thing.
 - Where is he based? Taipei, Taiwan.
+- What is he open to? Conversations about AI agent infrastructure, persona systems, agent memory/governance, and small high-execution product teams.
 - How to contact? Email youwei0112@gmail.com, LinkedIn https://www.linkedin.com/in/yui-tien/, GitHub https://github.com/YUI-TIEN
 
 ## Links
 
 - Website: https://waynetien.com
+- How he works (methodology): https://waynetien.com/en/how-i-work
 - LinkedIn: https://www.linkedin.com/in/yui-tien/
 - GitHub: https://github.com/YUI-TIEN
+- Employer: https://morphusai.com
 - Sitemap: https://waynetien.com/sitemap.xml

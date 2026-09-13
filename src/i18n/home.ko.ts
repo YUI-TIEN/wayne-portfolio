@@ -91,6 +91,7 @@ export const ko: HomeCopy = {
     heading: '엉뚱한 AI 아이디어를 진짜 쓸 수 있는 제품으로 이어줍니다.',
     subtext: '대만에서 AI 제품, 프로토타입, 에이전트 워크플로우, 그리고 출시용 스토리텔링까지 두루 만지고 있습니다.',
     badge: 'product / ops / ai',
+    methodologyCta: '일하는 방식',
     body: '작은 팀이 AI를 "실제로 쓸 수 있는 형태"로 만들도록 돕습니다. 하는 일은 단순해요. 스토리를 정리하고, 화면을 설계하고, 워크플로우를 연결하고, 그 구조를 문서로 잘 남겨두는 것. 그렇게 해서 다음 데모가 지난번보다 수월해지도록 합니다.',
     notes: [
       '제품과 디자인, 에이전트 운영 사이에서 움직입니다.',
@@ -104,6 +105,49 @@ export const ko: HomeCopy = {
     location: { label: '위치', value: '대만' },
     contact: { label: '연락처', value: 'youwei0112@gmail.com' },
   },
+  career: {
+    eyebrow: '경력',
+    heading: '시간 순서대로, 실제로 해온 일.',
+    entries: [
+      {
+        period: '2026 — 현재',
+        role: 'Forward Deployed Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포합니다. 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다.',
+      },
+      {
+        period: '2024 — 2026',
+        role: 'Digital Persona Technical Director 겸 Virtual Character Systems Engineer',
+        org: 'MorphusAI · 源神科技',
+        detail: 'AI 페르소나와 버추얼 캐릭터 시스템을 주도하고, 에이전트 워크플로우를 반복 가능한 SOP로 표준화했습니다. POC부터 출시까지의 데모-투-딜리버리 운영도 담당했습니다.',
+      },
+      {
+        period: '2021 — 2025',
+        role: '정보·재무관리 학사',
+        org: '국립 타이베이 과기대학교',
+        detail: '2025년 6월 졸업.',
+      },
+    ],
+  },
+  now: {
+    eyebrow: '근황',
+    heading: '지금 붙잡고 있는 일.',
+    updatedLabel: '업데이트',
+    doingLabel: '진행 중',
+    doing: [
+      'MorphusAI에서 전문가 판단과 거버넌스 메모리를 실제 고객 워크플로우에 넣고 있습니다.',
+      'OpenClaw — 제 일을 실제로 돌리고 있는 개인 에이전트 운영 시스템. Discord에서 바로 조작하고, 기억이 끊기지 않고, 규칙으로 통제됩니다.',
+      '이 사이트. 에이전트와 협업하는 과정 자체를 사례로 삼아 공개적으로 다시 만들고 있습니다.',
+    ],
+    openToLabel: '이야기하고 싶은 주제',
+    openTo: [
+      'AI 에이전트 인프라와 런타임 운영',
+      '페르소나·캐릭터 시스템',
+      '에이전트 메모리와 거버넌스',
+      '작고 실행력 높은 제품 팀',
+    ],
+    ctaLabel: '이야기 나누기',
+  },
   work: {
     eyebrow: '주요 작업',
     heading: '"전부 내 성과"가 아니라, 참여한 기록입니다.',
@@ -116,11 +160,14 @@ export const ko: HomeCopy = {
     viewProject: '프로젝트 보기',
   },
   faq: {
+    moreLabel: '일하는 방식 읽기',
     eyebrow: '자주 묻는 질문',
     heading: '빠른 답변.',
     items: [
-      { q: 'Yui(Wayne) Tien은 누구인가요?', a: '타이베이를 기반으로 활동하는 AI 프로덕트 빌더이자 MorphusAI의 Digital Persona Technical Director입니다. 0→1 제품 설계와 AI 에이전트 동작의 기술적 오케스트레이션을 함께 다룹니다.' },
+      { q: 'Yui(Wayne) Tien은 누구인가요?', a: '타이베이를 기반으로 활동하는 AI 프로덕트 빌더이자 MorphusAI의 Forward Deployed Engineer입니다. 0→1 제품 설계와 AI 에이전트 동작의 기술적 오케스트레이션을 함께 다룹니다.' },
       { q: '주로 어떤 일을 하나요?', a: 'AI 페르소나·캐릭터 시스템, 에이전트 메모리와 컨텍스트 보존, 런타임 진단, 그리고 아이디어를 POC에서 MVP, 출시까지 잇는 데모-투-딜리버리 워크플로우.' },
+      { q: 'AI 에이전트와는 어떻게 일하나요?', a: '실제로 강제하는 다섯 가지 규칙을 따릅니다. 자율성보다 운영 규약, 증거 기반 검증, 재구축 전 진단, 프롬프트 요령보다 지속되는 맥락, 그리고 결과물에 포함되는 인수인계. 전부 그게 없어서 사고가 난 뒤에 추가된 것들입니다.' },
+      { q: 'MorphusAI에서는 무엇을 만드나요?', a: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포하고, 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다. 2026년 이전에는 같은 회사에서 Digital Persona Technical Director로 AI 페르소나와 버추얼 캐릭터 시스템을 주도했습니다.' },
       { q: '어디에 있나요?', a: '대만 타이베이. 영어와 중국어(만다린)로 소통합니다.' },
       { q: '어떻게 연락하나요?', a: '이메일 youwei0112@gmail.com, 또는 LinkedIn(/in/yui-tien)과 GitHub(@YUI-TIEN).' },
     ],

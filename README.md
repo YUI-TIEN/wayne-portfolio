@@ -1,6 +1,6 @@
 # Yui (Wayne) Tien
 
-Digital Persona Technical Director @ [MorphusAI](https://morphusai.com) — scaling 0-to-1 AI personas and governable agent workflows. Specialized in agent memory, runtime diagnostics, and tech-ops. Based in Taipei, Taiwan.
+Forward Deployed Engineer @ [MorphusAI](https://morphusai.com) (源神科技股份有限公司) — deploying an expert-judgment and governed-memory layer onto the agent runtimes teams already run. Specialized in agent memory, runtime diagnostics, and tech-ops. Based in Taipei, Taiwan.
 
 [waynetien.com](https://waynetien.com) · [LinkedIn](https://www.linkedin.com/in/yui-tien/) · [youwei0112@gmail.com](mailto:youwei0112@gmail.com)
 
@@ -21,13 +21,15 @@ Let's connect if you're interested in AI agent infrastructure, persona systems, 
 
 ## Experience
 
-**MorphusAI** — Digital Persona Technical Director & Virtual Character Systems Engineer
-*Jul 2024 – Present · Taipei, Taiwan*
+**MorphusAI** (源神科技股份有限公司) — Forward Deployed Engineer
+*Jul 2024 – Present · Taipei, Taiwan · previously Digital Persona Technical Director & Virtual Character Systems Engineer, 2024–2026*
 
-- **AI Workflow & SOP Standardization** — Institutionalized 10+ public live demos and pitch POCs, turning volatile one-off setups into repeatable, diagnostic-friendly, transferable operational workflows.
-- **Runtime Diagnosis & Profiling** — Maintained and optimized nearly 10 OpenClaw-based roles/profiles; built diagnostic SOPs to systematically resolve agent no-replies, provider mismatches, plugin/auth failures, session-state drift, and tool-call chaos.
-- **AI Persona Construction** — Orchestrated end-to-end setup, context behavior, demo readiness, and handoff protocols for ~30 AI character/persona builds in live agent workflow operations.
-- **Team Leadership & Agile Management** — Coordinated a technical team of 3 engineers while managing 3–4 onboarding colleagues: task allocation, milestone tracking, KPI setting, cross-role collaboration rhythm.
+MorphusAI ships one portable layer above the models and agent runtimes a team already uses: SHIKI Expert Cores carry authorized human-derived judgment for a task, and argsmem keeps governed context across agents, models, and sessions.
+
+- **AI Workflow & SOP Standardization** — Institutionalized the public live-demo and pitch-POC setup, turning volatile one-off rigs into repeatable, diagnostic-friendly, transferable operational workflows.
+- **Runtime Diagnosis & Profiling** — Maintained and optimized the OpenClaw-based role/profile fleet; built diagnostic SOPs to systematically resolve agent no-replies, provider mismatches, plugin/auth failures, session-state drift, and tool-call chaos.
+- **AI Persona Construction** — Orchestrated end-to-end setup, context behavior, demo readiness, and handoff protocols for ~30 AI character/persona builds, four of which reached continuous live operation.
+- **Team Leadership & Agile Management** — Coordinated engineering and operational teammates: task allocation, milestone tracking, KPI setting, onboarding new colleagues, and keeping a cross-role collaboration rhythm.
 - **0-to-1 Product Discovery** — Independently executed the 0-to-1 launch of MorphusAI's official corporate and product websites: UX flows, visual direction, content architecture, frontend deployment, product storytelling, and 3D visual exploration.
 
 ## Selected work
@@ -36,7 +38,7 @@ Let's connect if you're interested in AI agent infrastructure, persona systems, 
 |---|---|---|
 | Personal Agent Operating System | Collaborated | [Case study](https://waynetien.com/en/project/openclaw-ops) |
 | AI Character Live Runtime | Collaborated | [Case study](https://waynetien.com/en/project/persona-workflows) |
-| Agent Operating Contracts | Owned | [Case study](https://waynetien.com/en/project/demo-os) |
+| Agent Operating Contracts | Owned | _Case study in progress_ |
 | Local Voice Infrastructure Migration | Collaborated | [Case study](https://waynetien.com/en/project/voice-migration) |
 | AI Product Demo Flow (MorphusAI) | Collaborated | [Case study](https://waynetien.com/en/project/morphus-website) |
 | This portfolio site | Owned | [Case study](https://waynetien.com/en/project/portfolio-site) |
@@ -44,7 +46,7 @@ Let's connect if you're interested in AI agent infrastructure, persona systems, 
 ## Education
 
 **National Taipei University of Technology** — B.S., Information & Finance Management
-*Sep 2021 – Jun 2025*
+*Sep 2021 – Jun 2025 · Graduated, B.S. conferred Jun 2025*
 
 ---
 
