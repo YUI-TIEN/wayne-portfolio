@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history: scripts/seoData.mjs derives per-route sitemap
+          # lastmod from git commit times, which a shallow clone lacks.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -38,6 +42,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Cloudflare Web Analytics site token. Absent secret => analytics is
+          # a no-op (see src/analytics.ts); no build failure.
+          VITE_CF_BEACON_TOKEN: ${{ secrets.VITE_CF_BEACON_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
