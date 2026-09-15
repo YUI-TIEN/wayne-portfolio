@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { Sun, Moon } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { useProjectPageCopy } from '../i18n/projectPageLoader'
-import { Magnetic } from './Magnetic'
+import { SiteHeader } from './SiteHeader'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { themeFor } from './caseStudyTheme'
 import { ScrollTrigger } from './scrollReveal'
@@ -40,11 +39,9 @@ interface ProjectPageProps {
   projectId: string
   lang: Lang
   onBack: (e: React.MouseEvent) => void
-  isDark: boolean
-  onToggleTheme: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: ProjectPageProps) {
+export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   const t = useProjectPageCopy(lang)
 
   // Copy loads async per-locale and swaps in place on a language switch,
@@ -65,22 +62,19 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
     return <div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />
   }
 
-  const themeToggle = (
-    <Magnetic scaleOnHover={1.2}>
-      <button
-        onClick={onToggleTheme}
-        className="p-2.5 -m-1.5 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer flex items-center"
-        aria-label="Toggle theme"
-      >
-        {isDark ? <Sun size={14} /> : <Moon size={14} />}
-      </button>
-    </Magnetic>
+  // Fixed glass nav plus a spacer standing in for the in-flow nav bar the
+  // layouts were composed around.
+  const header = (
+    <>
+      <SiteHeader start={<BackLink t={t} lang={lang} onBack={onBack} />} />
+      <div aria-hidden="true" className="h-20 md:h-24" />
+    </>
   )
 
   if (projectId === 'openclaw-ops') {
     return (
       <Suspense fallback={<div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />}>
-        <OpenClawLayout c={t.openClaw} t={t} lang={lang} onBack={onBack} themeToggle={themeToggle} />
+        <OpenClawLayout c={t.openClaw} t={t} lang={lang} onBack={onBack} header={header} />
       </Suspense>
     )
   }
@@ -88,12 +82,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
   const caseStudy = t.caseStudies[projectId]
   if (caseStudy) {
     const theme = themeFor(projectId)
-    const nav = (
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-        <BackLink t={t} lang={lang} onBack={onBack} />
-        {themeToggle}
-      </div>
-    )
+    const nav = header
 
     const layoutProps: LayoutProps = { p: caseStudy, t, lang, projectId, theme, nav, onBack }
     // Each case study renders through its own layout so the four don't read as
@@ -117,10 +106,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
   if (!p) {
     return (
       <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans flex flex-col">
-        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-8 flex items-center justify-between">
-          <BackLink t={t} lang={lang} onBack={onBack} />
-          {themeToggle}
-        </div>
+        {header}
         <section className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24">
           <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-6">404</p>
           <h1 className="font-serif text-4xl md:text-6xl leading-tight max-w-3xl mb-6"><ScrambleText text={t.notFoundTitle} /></h1>
@@ -133,10 +119,7 @@ export function ProjectPage({ projectId, lang, onBack, isDark, onToggleTheme }: 
 
   return (
     <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-        <BackLink t={t} lang={lang} onBack={onBack} />
-        {themeToggle}
-      </div>
+      {header}
 
       <ScrambleStagger delay={0.08}>
       <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">

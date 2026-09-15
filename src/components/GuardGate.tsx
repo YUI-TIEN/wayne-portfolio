@@ -95,7 +95,7 @@ export function GuardGate({ caption, lang }: GuardGateProps) {
   }
 
   return (
-    <div ref={rootRef} className="border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900 p-5 md:p-6 max-w-2xl">
+    <div ref={rootRef} className="border-2 border-neutral-900/10 dark:border-white/10 bg-surface dark:bg-neutral-900 p-5 md:p-6 max-w-2xl">
       <div className="flex items-center gap-2 mb-4">
         <ShieldCheck size={16} className="text-brand-orange shrink-0" />
         <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">

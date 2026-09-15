@@ -519,7 +519,7 @@ export function PortfolioLayout({ p, t, lang, projectId, theme, nav, onBack }: L
 
       {/* Outcomes as pull-quotes — self-referential copy reads better large. */}
       <ScrambleStagger delay={0.34}>
-        <Reveal as="section" stagger className="bg-[#F5F0E8] dark:bg-neutral-900 py-16 md:py-24">
+        <Reveal as="section" stagger className="bg-surface dark:bg-neutral-900 py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></h2>
             <div className="space-y-12 md:space-y-16 max-w-4xl">

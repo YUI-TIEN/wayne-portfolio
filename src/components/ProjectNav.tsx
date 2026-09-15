@@ -45,7 +45,7 @@ export function BackLink({
     'inline-flex items-center gap-2 font-mono uppercase tracking-widest transition-colors'
   const className = emphasis
     ? `${base} text-xs text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange`
-    : `${base} text-[11px] text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white py-2.5 -my-2.5`
+    : 'inline-flex items-center gap-2 text-[13px] font-medium whitespace-nowrap text-graphite dark:text-neutral-100 hover:text-accent-ink dark:hover:text-accent-soft transition-colors'
 
   return (
     <Magnetic scaleOnHover={emphasis ? 1.06 : 1.08}>

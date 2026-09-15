@@ -1,17 +1,14 @@
-import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react'
+import { useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, Link, useNavigate, useLocation, useParams } from 'react-router-dom'
-import { ArrowRight, Sun, Moon } from 'lucide-react'
-import gsap from 'gsap'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { gsap } from './components/scrollReveal'
 import { skipsScrollAnimation } from './components/motionGuards'
-import { ScrollProgress } from './components/ScrollProgress'
 import { MathCurveLoader } from './components/MathCurveLoader'
-import { CustomCursor } from './components/CustomCursor'
-import { Magnetic } from './components/Magnetic'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { Reveal } from './components/Reveal'
 import { HeroDotGrid } from './components/HeroDotGrid'
-import { PixelCritter } from './components/PixelCritter'
-import { PaperTexture } from '@paper-design/shaders-react'
+import { LiquidGlass } from './components/LiquidGlass'
+import { SiteHeader } from './components/SiteHeader'
 // Lazy: ProjectPage pulls in every case-study demo component (OpsDemo,
 // SystemTopology, GuardGate, CaseStudyLayouts, …). Splitting it out keeps
 // that weight off the home page's initial bundle — it only loads when a
@@ -31,7 +28,7 @@ import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/local
 import { useHomeCopy } from './i18n/homeLoader'
 import { preloadProjectPageCopy } from './i18n/projectPageLoader'
 import { useHowIWorkCopy } from './i18n/howIWorkLoader'
-import { ThemeProvider, useTheme } from './theme/ThemeContext'
+import { ThemeProvider } from './theme/ThemeContext'
 
 const SITE_TITLE: Record<Lang, string> = {
   en: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio · MorphusAI',
@@ -39,14 +36,14 @@ const SITE_TITLE: Record<Lang, string> = {
   ja: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ · MorphusAI',
   ko: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오 · MorphusAI',
 }
-// Elegant CJK webfont per language, injected only for that language so EN
-// visitors never download CJK font weights. See src/index.css for the
-// :lang()-scoped font-family rules these back, and scripts/prerender.mjs
-// for the equivalent injected into prerendered (non-JS) snapshots.
+// Sans CJK webfont per language, injected only for that language so EN
+// visitors never download CJK font weights. Apple devices use their system
+// CJK face first (see the :lang() rules in src/index.css);
+// scripts/prerender.mjs injects the same link into prerendered snapshots.
 const CJK_FONT_HREF: Partial<Record<Lang, string>> = {
-  'zh-tw': 'https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap',
-  ja: 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;600;700&display=swap',
-  ko: 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap',
+  'zh-tw': 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap',
+  ja: 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap',
+  ko: 'https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap',
 }
 
 const SITE_DESCRIPTION: Record<Lang, string> = {
@@ -76,6 +73,20 @@ function scrollTo(sectionId: string) {
   if (el) el.scrollIntoView({ behavior: 'smooth' })
 }
 
+// Shared page shell: one light canvas, one dark ink, one accent.
+const PAGE_SHELL = 'min-h-screen bg-canvas dark:bg-brand-ink text-graphite dark:text-neutral-100 font-sans selection:bg-accent selection:text-white overflow-x-clip'
+const EYEBROW = 'font-mono text-[11px] uppercase tracking-[0.14em] text-accent-ink dark:text-accent-soft'
+
+// Positions of the soft accent glow in each work tile, so the grid reads as
+// related surfaces rather than one tile pasted five times.
+const TILE_GLOW = [
+  'radial-gradient(60% 80% at 85% 20%, rgb(249 78 10 / 0.55), transparent 60%), radial-gradient(40% 60% at 10% 100%, rgb(255 138 76 / 0.25), transparent 70%)',
+  'radial-gradient(70% 70% at 100% 100%, rgb(249 78 10 / 0.22), transparent 65%)',
+  'radial-gradient(60% 60% at 0% 0%, rgb(249 78 10 / 0.18), transparent 65%)',
+  'radial-gradient(80% 50% at 50% 110%, rgb(249 78 10 / 0.22), transparent 70%)',
+  'radial-gradient(50% 70% at 100% 0%, rgb(249 78 10 / 0.2), transparent 65%)',
+]
+
 // ── Language switcher ──────────────────────────────────────────────────────
 function LangSwitcher({ lang }: { lang: Lang }) {
   const navigate = useNavigate()
@@ -89,18 +100,16 @@ function LangSwitcher({ lang }: { lang: Lang }) {
   }
 
   return (
-    <span className="flex items-center gap-1">
-      {LANGS.map((l, i) => (
-        <span key={l} className="flex items-center gap-1">
-          {i > 0 && <span className="text-neutral-300 dark:text-neutral-600">/</span>}
-          <button
-            onClick={() => switchTo(l)}
-            className={`py-2.5 -my-2.5 px-1.5 -mx-0.5 inline-flex items-center ${l === lang ? 'text-brand-orange' : 'hover:text-brand-orange transition-colors'}`}
-            aria-current={l === lang ? 'true' : undefined}
-          >
-            {LANG_LABEL[l]}
-          </button>
-        </span>
+    <span className="flex items-center rounded-full bg-black/[0.04] dark:bg-white/[0.08] p-0.5">
+      {LANGS.map((l) => (
+        <button
+          key={l}
+          onClick={() => switchTo(l)}
+          className={`h-7 px-2.5 rounded-full font-mono text-[11px] transition-colors cursor-pointer ${l === lang ? 'bg-white text-graphite shadow-sm dark:bg-white/20 dark:text-white' : 'text-muted hover:text-graphite dark:text-neutral-400 dark:hover:text-white'}`}
+          aria-current={l === lang ? 'true' : undefined}
+        >
+          {LANG_LABEL[l]}
+        </button>
       ))}
     </span>
   )
@@ -116,77 +125,49 @@ function Home() {
   // locale's copy until the new one resolves (no blank flash).
   const t = useHomeCopy(lang)
   const copyReady = t !== null
-  const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('work')
-  const [isFlipped, setIsFlipped] = useState(false)
-  const heroRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const spineRef = useRef<HTMLDivElement>(null)
 
-  // Hero entrance: the hero is the page's lead, but every other section had a
-  // scroll-reveal while the first screen was static. Stagger the badge, main
-  // card, and availability tag up into place on mount (lead with the main
-  // card). Settled default in JSX is the visible end state, so prerender /
-  // no-JS / reduced-motion users get the hero immediately and this only runs
-  // for users who get motion.
+  // Hero depth: the accent glow drifts slower than the page and the dot field
+  // slower still — a scrubbed parallax that also keeps color moving under the
+  // glass nav as the visitor starts scrolling. Settled JSX is the end state.
   useLayoutEffect(() => {
     if (skipsScrollAnimation() || !heroRef.current) return
-    const root = heroRef.current
-    // Order matters: lead with the main card, then the two corner tags settle
-    // in after it (staging — the hero leads its own entry).
-    const card = root.querySelector<HTMLElement>('[data-hero-card]')
-    const tags = root.querySelectorAll<HTMLElement>('[data-hero-tag]')
-    const targets = [card, ...Array.from(tags)].filter(Boolean) as HTMLElement[]
-    // gsap.from animates FROM these values TO each element's current state, so
-    // the Tailwind rotate (rotate-2 / -rotate-6 / -rotate-12) is preserved as
-    // the end value and held throughout — only y/opacity animate. clearProps
-    // hands the inline transform back to the class once settled.
-    const tween = gsap.from(targets, {
-      y: 24,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power3.out',
-      stagger: 0.12,
-      clearProps: 'opacity,transform',
-    })
-    return () => { tween.kill() }
-    // copyReady flips false→true exactly once (async home copy resolving);
-    // the hero doesn't exist in the placeholder render, so the entrance has
-    // to wait for it. Later lang switches don't change copyReady, so the
-    // entrance still plays only once per visit.
-  }, [copyReady])
-
-  // Hero parallax: distinct from the mount-in tween above (that one fires once
-  // via gsap.from + clearProps and is done after ~1s; this one is a persistent
-  // scrub tied to scroll position). Different targets too — this drives the
-  // whole heroRef block plus the dot-grid canvas, not the staggered card/tags
-  // — so the two never fight over the same tween.
-  useLayoutEffect(() => {
-    if (skipsScrollAnimation() || !heroRef.current) return
-    const heroSection = heroRef.current.closest('section')
-    const heroWrap = heroSection?.parentElement // the outer `relative` div holding HeroDotGrid + nav + section
-    if (!heroWrap) return
-    const dotCanvas = heroWrap.querySelector<HTMLCanvasElement>('canvas')
-
+    const hero = heroRef.current
     const mm = gsap.matchMedia()
     mm.add('(prefers-reduced-motion: no-preference)', () => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroWrap,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
       })
-      tl.to(heroRef.current, { y: -80, opacity: 0.4, ease: 'none' }, 0)
-      if (dotCanvas) {
-        // Slower than the card (0.5x travel) for a depth cue, not a hard rule.
-        tl.to(dotCanvas, { y: -40, ease: 'none' }, 0)
-      }
-      return () => { tl.scrollTrigger?.kill(); tl.kill() }
+      tl.to(hero.querySelector('[data-hero-glow]'), { yPercent: 30, scale: 1.15, ease: 'none' }, 0)
+      tl.to(hero.querySelector('[data-hero-copy]'), { y: -60, opacity: 0.25, ease: 'none' }, 0)
+      const canvas = hero.querySelector('canvas')
+      if (canvas) tl.to(canvas, { y: -40, ease: 'none' }, 0)
     })
-
     return () => mm.revert()
-    // Same single-flip dependency as the entrance tween above.
+    // copyReady flips false→true exactly once (async home copy resolving);
+    // the hero doesn't exist in the placeholder render.
+  }, [copyReady])
+
+  // Career spine: the accent line draws down the timeline as it scrolls
+  // through the viewport, so the sequence reads as a sequence.
+  useLayoutEffect(() => {
+    if (skipsScrollAnimation() || !spineRef.current) return
+    const spine = spineRef.current
+    const mm = gsap.matchMedia()
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        spine,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: { trigger: spine.parentElement, start: 'top 75%', end: 'bottom 60%', scrub: 0.6 },
+        },
+      )
+    })
+    return () => mm.revert()
   }, [copyReady])
 
   const triggerProjectLoad = (e: React.MouseEvent, projectId: string) => {
@@ -202,163 +183,129 @@ function Home() {
   // First-ever visit only: no locale's copy resolved yet. Same placeholder
   // ProjectPage uses, so "chunk loading" and "copy loading" look identical.
   if (!t) {
-    return <div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />
+    return <div className="min-h-screen bg-canvas dark:bg-brand-ink" />
   }
 
+  const navLink = 'hidden md:inline-flex h-9 items-center px-1 text-muted hover:text-graphite dark:text-neutral-400 dark:hover:text-white transition-colors cursor-pointer'
+
   return (
-    // `overflow-x-clip`, not `-hidden`: per spec, `overflow-x: hidden` forces
-    // computed `overflow-y: auto`, turning this div into its own scroll
-    // container — reveal items pre-positioned just past the fold (e.g.
-    // y: +32px) then poke past its bottom edge and grow a second scrollbar
-    // until they animate in. `clip` never establishes a scroll container.
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
+    <div className={PAGE_SHELL}>
       <Seo title={SITE_TITLE[lang]} description={SITE_DESCRIPTION[lang]} path={`/${lang}/`} jsonLd={[websiteSchema, profilePageSchema({ lang, name: SITE_TITLE[lang] }), faqPageSchema(t.faq.items)]} />
-      <CustomCursor />
-      <ScrollProgress />
 
-      {/* <main> landmark for screen-reader navigation; unstyled so it doesn't
-          disturb the section layout. The footer stays outside as contentinfo. */}
-      <main>
-      {/* Hero Section */}
-      <ScrambleStagger delay={0.08}>
-      {/* Full-width wrapper hosts the ambient dot grid so it covers the whole
-          top band — nav included — not just the centered max-w-2xl column.
-          The grid sits at z-0 behind everything; nav and the hero card are
-          z-10+ on top with transparent backgrounds, so the dot field shows
-          through under the nav instead of being masked by an opaque strip. */}
-      <div className="relative">
-        <HeroDotGrid colorLight="#3B5BFC" colorDark="#C4FF3D" />
-
-        {/* Navigation */}
-        <nav className="flex justify-center items-center py-8 text-xs font-mono lowercase tracking-wide relative z-50 max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center gap-3 md:gap-4">
-            <span className="text-neutral-400">[</span>
-            <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('work')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.work} /></button>
-            </Magnetic>
-            <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('about')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.about} /></button>
-            </Magnetic>
-            <Magnetic scaleOnHover={1.15}>
-              <button onClick={() => scrollTo('contact')} className="hover:text-brand-orange transition-colors py-2.5 -my-2.5 inline-flex items-center whitespace-nowrap"><ScrambleText text={t.nav.contact} /></button>
-            </Magnetic>
+      <SiteHeader
+        start={
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="font-semibold tracking-tight whitespace-nowrap cursor-pointer">
+            Yui Tien
+          </button>
+        }
+        end={
+          <>
+            <button onClick={() => scrollTo('work')} className={navLink}><ScrambleText text={t.nav.work} /></button>
+            <button onClick={() => scrollTo('about')} className={navLink}><ScrambleText text={t.nav.about} /></button>
+            <Link to={`/${lang}/how-i-work`} className={navLink}><ScrambleText text={t.about.methodologyCta} /></Link>
+            <button onClick={() => scrollTo('contact')} className={navLink}><ScrambleText text={t.nav.contact} /></button>
             <LangSwitcher lang={lang} />
-            <Magnetic scaleOnHover={1.2}>
-              <button
-                onClick={toggleTheme}
-                className="p-2.5 -m-1.5 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center"
-                aria-label="Toggle theme"
-              >
-                {isDark ? <Sun size={14} /> : <Moon size={14} />}
-              </button>
-            </Magnetic>
-            <span className="text-neutral-400">]</span>
-          </div>
-        </nav>
+          </>
+        }
+      />
 
-        <section className="flex flex-col items-center justify-center min-h-[40vh] md:min-h-[calc(100vh-112px)] max-w-2xl mx-auto relative z-10 px-6 py-12">
-        <div ref={heroRef} className="relative w-full max-w-xl -mt-4 md:-mt-16">
-          <div data-hero-tag className="absolute -left-2 md:-left-24 top-[-44px] md:top-[-64px] z-20 active:scale-95 transition-transform">
-            <PixelCritter className="w-20 h-20 md:w-24 md:h-24 block" />
-          </div>
-          <div data-hero-tag className="bg-brand-orange text-neutral-950 text-xs md:text-sm font-mono px-2.5 py-1.5 md:px-3.5 md:py-2 absolute bottom-[-16px] md:bottom-[-32px] right-0 md:right-[-40px] z-20 shadow-sm -rotate-12 whitespace-nowrap active:scale-95 transition-transform">
-            <ScrambleText text={t.hero.tag} />
-          </div>
-          <div data-hero-card className="bg-brand-blue text-white p-6 md:p-14 relative z-10 w-full max-w-xl rotate-2 shadow-sm active:rotate-0 transition-transform duration-300">
-            <h1 className="text-2xl md:text-5xl font-serif leading-snug font-normal">
-              <ScrambleText text={t.hero.leadIn} />{' '}
-              <ScrambleText as="span" className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block" text={t.hero.highlight1} /> <ScrambleText text={t.hero.midText} />{' '}
-              <ScrambleText as="span" className="text-brand-lime px-1 hover:bg-brand-lime hover:text-brand-blue transition-none cursor-none active:bg-brand-lime active:text-brand-blue inline-block" text={t.hero.highlight2} /> <ScrambleText text={t.hero.trailing} />
-            </h1>
-          </div>
+      {/* <main> landmark for screen-reader navigation; the footer stays
+          outside as contentinfo. */}
+      <main>
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <ScrambleStagger delay={0.08}>
+      <section ref={heroRef} className="relative overflow-hidden">
+        <div
+          data-hero-glow
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 right-[-20%] md:right-[-8%] size-[720px] md:size-[900px] rounded-full opacity-70 dark:opacity-50"
+          style={{ background: 'radial-gradient(closest-side, rgb(249 78 10 / 0.55), rgb(255 138 76 / 0.28) 45%, transparent 72%)' }}
+        />
+        <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,black_40%,transparent)]">
+          <HeroDotGrid colorLight="#1d1d1f" colorDark="#FF8A4C" />
         </div>
-        </section>
-      </div>
 
-      {/* Marquee Ribbon — Reveal wraps OUTSIDE .marquee-container so the
-          entrance transform never lands on the same element as the
-          continuous .marquee-scroll translateX loop. */}
-      <Reveal variant="fade" distance={12}>
-      <div className="w-full border-y border-neutral-200 dark:border-neutral-800 bg-brand-blue py-3 marquee-container">
-        <div className="marquee-scroll flex gap-8 whitespace-nowrap text-[11px] font-mono lowercase tracking-wider text-white">
-          {[...t.stack, ...t.stack, ...t.stack, ...t.stack].map((item, i) => (
-            <span key={i} className="flex items-center gap-4">
-              <ScrambleText text={item} /> <span className="text-brand-lime">•</span>
-            </span>
-          ))}
-        </div>
-      </div>
-      </Reveal>
-      </ScrambleStagger>
-
-      {/* About Section */}
-      <ScrambleStagger delay={0.16}>
-      <Reveal as="section" stagger id="about" className="max-w-7xl mx-auto px-6 md:px-12 pt-12 md:pt-20 pb-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-8">
-          <div data-reveal-item data-reveal="left" className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-12 min-h-[320px] flex flex-col justify-between border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-8"><ScrambleText text={t.about.eyebrow} /></p>
-              <h2 className="font-serif text-4xl md:text-6xl leading-tight max-w-lg">
-                <ScrambleText text={t.about.heading} />
-              </h2>
-            </div>
-            <div className="mt-10">
-              <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-sm">
-                <ScrambleText text={t.about.subtext} />
+        <div className="relative max-w-7xl mx-auto px-6 md:px-12 pt-36 md:pt-44 pb-16 md:pb-24 min-h-[92dvh] flex flex-col justify-between gap-16">
+          <div data-hero-copy className="max-w-6xl">
+            <Reveal stagger start="top bottom">
+              <p data-reveal-item className={`${EYEBROW} mb-6`}><ScrambleText text={t.hero.tag} /></p>
+              <h1 data-reveal-item className="text-[40px] leading-[1.05] md:text-6xl lg:text-[72px] lg:leading-[1.03] font-semibold tracking-[-0.035em] text-wrap-balance">
+                <ScrambleText text={t.hero.leadIn} />{' '}
+                <ScrambleText as="span" className="text-accent" text={t.hero.highlight1} />{' '}
+                <ScrambleText text={t.hero.midText} />{' '}
+                <ScrambleText as="span" className="text-accent" text={t.hero.highlight2} />{' '}
+                <ScrambleText text={t.hero.trailing} />
+              </h1>
+              <p data-reveal-item className="mt-8 text-lg md:text-xl leading-relaxed text-muted dark:text-neutral-400 max-w-2xl">
+                {t.about.subtext}
               </p>
-              {/* The methodology route is the only page here nobody else could
-                  have written, so the home page links into it explicitly. */}
-              <Magnetic scaleOnHover={1.06}>
+              <div data-reveal-item className="mt-10 flex flex-wrap items-center gap-3">
                 <Link
                   to={`/${lang}/how-i-work`}
-                  className="inline-flex items-center gap-2 mt-6 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+                  className="inline-flex h-12 items-center gap-2 rounded-full bg-graphite text-white dark:bg-white dark:text-graphite px-6 text-[15px] font-medium hover:bg-black dark:hover:bg-neutral-200 active:scale-[0.98] transition"
                 >
-                  <ScrambleText text={t.about.methodologyCta} /> <ArrowRight size={13} />
+                  <ScrambleText text={t.about.methodologyCta} /> <ArrowRight size={16} />
                 </Link>
-              </Magnetic>
-            </div>
+                <button
+                  onClick={() => scrollTo('work')}
+                  className="inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-medium text-graphite dark:text-white ring-1 ring-inset ring-black/10 dark:ring-white/15 hover:bg-black/[0.04] dark:hover:bg-white/10 active:scale-[0.98] transition cursor-pointer"
+                >
+                  <ScrambleText text={t.work.eyebrow} />
+                </button>
+              </div>
+            </Reveal>
           </div>
 
-          <div data-reveal-item data-reveal="right" className="bg-brand-blue text-white p-8 md:p-12 min-h-[320px] relative overflow-hidden border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]">
-            <div className="inline-flex md:absolute md:top-8 md:right-8 bg-brand-lime text-neutral-900 font-mono text-[10px] uppercase tracking-widest px-3 py-2 -rotate-3 mb-8 md:mb-0">
-              <ScrambleText text={t.about.badge} />
-            </div>
-            <p className="font-serif text-2xl md:text-4xl leading-relaxed max-w-3xl md:pr-36">
-              <ScrambleText text={t.about.body} />
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px mt-10 bg-white/20">
-              {t.about.notes.map((note, i) => (
-                <div key={i} className="bg-brand-blue p-4 sm:min-h-[120px] flex items-end">
-                  <p className="font-mono text-[11px] leading-relaxed text-white/85"><ScrambleText text={note} /></p>
+          {/* Quick facts, on glass over the dot field — plain-language summary
+              for search and AI assistants. */}
+          <Reveal variant="up" start="top bottom" delay={0.35}>
+            <LiquidGlass as="dl" radius={24} bezel={20} strength={26} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+              {([t.quickFacts.name, t.quickFacts.role, t.quickFacts.location, t.quickFacts.contact]).map((f, i) => (
+                <div key={i} className={`p-5 md:p-6 border-black/[0.06] dark:border-white/10 ${i > 0 ? 'border-t sm:border-t-0' : ''} ${i % 2 === 1 ? 'sm:border-l' : ''} ${i >= 2 ? 'sm:border-t lg:border-t-0' : ''} ${i === 2 ? 'lg:border-l' : ''}`}>
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400 mb-2"><ScrambleText text={f.label} /></dt>
+                  <dd className="text-[15px] leading-snug">{f.value}</dd>
                 </div>
               ))}
-            </div>
+            </LiquidGlass>
+          </Reveal>
+        </div>
+      </section>
+      </ScrambleStagger>
+
+      {/* ── About ────────────────────────────────────────────────────── */}
+      <ScrambleStagger delay={0.16}>
+      <Reveal as="section" stagger id="about" className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+          <div data-reveal-item className="lg:col-span-4">
+            <p className={`${EYEBROW} mb-5`}><ScrambleText text={t.about.eyebrow} /></p>
+            <h2 className="text-3xl md:text-[44px] leading-[1.08] font-semibold tracking-[-0.03em]">
+              <ScrambleText text={t.about.heading} />
+            </h2>
+          </div>
+          <div className="lg:col-span-8">
+            <p data-reveal-item className="text-2xl md:text-[34px] leading-[1.3] tracking-[-0.02em] text-graphite dark:text-white">
+              {t.about.body}
+            </p>
+            <ul data-reveal-item className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              {t.about.notes.map((note, i) => (
+                <li key={i} className="border-t border-black/10 dark:border-white/15 pt-5 text-[15px] leading-relaxed text-muted dark:text-neutral-400">
+                  {note}
+                </li>
+              ))}
+            </ul>
+            <ul data-reveal-item className="mt-12 flex flex-wrap gap-2">
+              {t.stack.map((item, i) => (
+                <li key={i} className="rounded-full bg-surface dark:bg-white/[0.07] px-3.5 py-1.5 font-mono text-[12px] text-graphite/80 dark:text-neutral-300">
+                  <ScrambleText text={item} />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-
-        {/* Quick facts — plain-language summary for search and AI assistants */}
-        <dl className="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800 text-[11px] font-mono">
-          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.name.label} /></dt>
-            <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.name.value} /></dd>
-          </div>
-          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.role.label} /></dt>
-            <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.role.value} /></dd>
-          </div>
-          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.location.label} /></dt>
-            <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.location.value} /></dd>
-          </div>
-          <div data-reveal-item className="bg-brand-bg dark:bg-brand-ink p-5">
-            <dt className="uppercase tracking-widest text-neutral-500 dark:text-neutral-500 mb-2"><ScrambleText text={t.quickFacts.contact.label} /></dt>
-            <dd className="text-neutral-900 dark:text-white"><ScrambleText text={t.quickFacts.contact.value} /></dd>
-          </div>
-        </dl>
       </Reveal>
       </ScrambleStagger>
 
-      {/* Experience + Now — a career spine and a dated "currently" block.
+      {/* ── Experience + Now ─────────────────────────────────────────────
           Both exist for answer engines as much as for readers: the Person
           schema's hasOccupation says the same thing, but LLMs weight visible
           page text above JSON-LD, and a profile with no timeline reads as a
@@ -366,289 +313,202 @@ function Home() {
           job title lives here on purpose — it left every other surface when
           the title changed, and this is where its search weight is kept. */}
       <ScrambleStagger delay={0.2}>
-      <Reveal as="section" stagger id="experience" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 md:gap-8">
-
-          <div data-reveal-item data-reveal="left">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-6"><ScrambleText text={t.career.eyebrow} /></p>
-            <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-10 max-w-xl">
+      <section id="experience" className="bg-surface dark:bg-white/[0.03]">
+        <Reveal stagger className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-12">
+          <div data-reveal-item className="lg:col-span-7">
+            <p className={`${EYEBROW} mb-5`}><ScrambleText text={t.career.eyebrow} /></p>
+            <h2 className="text-3xl md:text-[44px] leading-[1.08] font-semibold tracking-[-0.03em] mb-14 max-w-xl">
               <ScrambleText text={t.career.heading} />
             </h2>
-            <ol className="border-t border-neutral-200 dark:border-neutral-800">
-              {t.career.entries.map((e, i) => (
-                <li key={i} className="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-2 sm:gap-6 border-b border-neutral-200 dark:border-neutral-800 py-6">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 sm:pt-1.5"><ScrambleText text={e.period} /></p>
-                  <div>
-                    <h3 className="font-serif text-xl md:text-2xl leading-snug"><ScrambleText text={e.role} /></h3>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mt-2"><ScrambleText text={e.org} /></p>
-                    <p className="font-mono text-[11px] md:text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 mt-3 max-w-xl"><ScrambleText text={e.detail} /></p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div data-reveal-item data-reveal="right" className="bg-[#FCE3D6] dark:bg-neutral-900 p-8 md:p-10 border-2 border-transparent transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20">
-            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-6">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange"><ScrambleText text={t.now.eyebrow} /></p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
-                <ScrambleText text={t.now.updatedLabel} />{' '}
-                <time dateTime={__CONTENT_UPDATED__}>{__CONTENT_UPDATED__}</time>
-              </p>
-            </div>
-            <h2 className="font-serif text-2xl md:text-3xl leading-tight mb-8"><ScrambleText text={t.now.heading} /></h2>
-
-            <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-3"><ScrambleText text={t.now.doingLabel} /></h3>
-            <ul className="space-y-3 mb-8">
-              {t.now.doing.map((d, i) => (
-                <li key={i} className="font-mono text-[11px] leading-relaxed text-neutral-700 dark:text-neutral-300"><ScrambleText text={d} /></li>
-              ))}
-            </ul>
-
-            <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-3"><ScrambleText text={t.now.openToLabel} /></h3>
-            <ul className="flex flex-wrap gap-2 mb-8">
-              {t.now.openTo.map((o, i) => (
-                <li key={i} className="font-mono text-[10px] leading-relaxed bg-white/70 dark:bg-white/10 px-2.5 py-1.5"><ScrambleText text={o} /></li>
-              ))}
-            </ul>
-
-            <a href="mailto:youwei0112@gmail.com" className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors">
-              <ScrambleText text={t.now.ctaLabel} /> <ArrowRight size={13} />
-            </a>
-          </div>
-        </div>
-      </Reveal>
-      </ScrambleStagger>
-      {/* Projects Grid */}
-      <ScrambleStagger delay={0.24}>
-      <Reveal as="section" stagger id="work" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-0 pb-12">
-        <div data-reveal-item className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
-              <ScrambleText text={t.work.eyebrow} />
-            </span>
-            <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
-              <ScrambleText text={t.work.heading} />
-            </h2>
-          </div>
-          <div className="max-w-sm text-xs md:text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-            <span className="font-mono text-neutral-900 dark:text-white"><ScrambleText text={t.work.legend.owned} /></span> <ScrambleText text={t.work.legend.ownedDesc} />{' '}
-            <span className="font-mono text-neutral-900 dark:text-white"><ScrambleText text={t.work.legend.collaborated} /></span> <ScrambleText text={t.work.legend.collaboratedDesc} />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8 auto-rows-auto">
-          {t.projects.map((p, i) => (
-            <div key={i} data-reveal-item data-reveal="flip" className={`${p.layout} p-8 md:p-12 lg:p-14 flex flex-col justify-start min-h-[360px] rounded-none ${p.bg} transition-[transform,box-shadow,border-color] duration-300 ease-out border-2 border-transparent hover:-translate-y-2 hover:shadow-[12px_12px_0px_#1A1A1A] dark:hover:shadow-[12px_12px_0px_rgba(255,255,255,0.2)] hover:border-black dark:hover:border-white/20 active:scale-[0.98]`}>
-              <div className="flex items-start justify-between gap-4 mb-6 md:mb-8">
-                <div className="flex flex-wrap gap-2">
-                  {p.tags.map((tag, ti) => (
-                    <span key={ti} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-1 backdrop-blur-sm ${p.tagBg}`}>
-                      <ScrambleText text={tag} />
-                    </span>
-                  ))}
-                </div>
-                <span className={`shrink-0 text-[10px] font-mono uppercase tracking-wider px-2 py-1 ${p.tagBg}`}>
-                  <ScrambleText text={p.role} />
-                </span>
-              </div>
-              <h3 className={`text-2xl ${p.titleClass} font-serif leading-tight mb-4 md:mb-6 text-wrap-balance`}><ScrambleText text={p.title} /></h3>
-              <p className={`text-base ${p.copyClass} opacity-90 leading-relaxed font-sans`}><ScrambleText text={p.copy} /></p>
-              <div className="mt-8 flex flex-wrap gap-2">
-                {p.artifacts.map((a, ai) => (
-                  <span key={ai} className="text-[10px] font-mono lowercase tracking-wide opacity-80 border border-current/30 px-2 py-1">
-                    <ScrambleText text={a} />
-                  </span>
+            <div className="relative">
+              <div aria-hidden="true" className="absolute left-[7px] top-2 bottom-2 w-px bg-black/10 dark:bg-white/15" />
+              <div ref={spineRef} aria-hidden="true" className="absolute left-[7px] top-2 bottom-2 w-px bg-accent origin-top" />
+              <ol className="pl-10">
+                {t.career.entries.map((e, i) => (
+                  <li key={i} className="relative pb-12 last:pb-0">
+                    <span aria-hidden="true" className={`absolute -left-10 top-1.5 size-[15px] rounded-full border-2 border-accent ${i === 0 ? 'bg-accent' : 'bg-surface dark:bg-brand-ink'}`} />
+                    <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-muted dark:text-neutral-400"><ScrambleText text={e.period} /></p>
+                    <h3 className="mt-2 text-2xl md:text-[28px] leading-tight font-semibold tracking-[-0.02em]"><ScrambleText text={e.role} /></h3>
+                    <p className="mt-1.5 text-[15px] text-accent-ink dark:text-accent-soft"><ScrambleText text={e.org} /></p>
+                    <p className="mt-3 text-[15px] leading-relaxed text-muted dark:text-neutral-400 max-w-xl">{e.detail}</p>
+                  </li>
                 ))}
-              </div>
-              <div className="mt-auto pt-10 flex items-end">
-                <Magnetic scaleOnHover={1.1}>
-                  <a
-                    href={`/${lang}/project/${p.id}`}
-                    onClick={(e) => triggerProjectLoad(e, p.id)}
-                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest hover:opacity-70 transition-opacity py-2.5 -my-2.5"
-                  >
-                    <ScrambleText text={t.work.viewProject} /> <ArrowRight size={14} />
-                  </a>
-                </Magnetic>
-              </div>
+              </ol>
             </div>
-          ))}
+          </div>
+
+          <div data-reveal-item className="lg:col-span-5">
+            <div className="lg:sticky lg:top-28 rounded-[24px] bg-canvas dark:bg-white/[0.05] ring-1 ring-black/[0.06] dark:ring-white/10 p-8 md:p-10">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <p className={EYEBROW}><ScrambleText text={t.now.eyebrow} /></p>
+                <p className="inline-flex items-center gap-2 rounded-full bg-surface dark:bg-white/10 px-3 py-1 font-mono text-[11px] text-muted dark:text-neutral-400">
+                  <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+                  <ScrambleText text={t.now.updatedLabel} />{' '}
+                  <time dateTime={__CONTENT_UPDATED__}>{__CONTENT_UPDATED__}</time>
+                </p>
+              </div>
+              <h2 className="text-2xl md:text-[28px] leading-tight font-semibold tracking-[-0.02em] mb-8"><ScrambleText text={t.now.heading} /></h2>
+
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400 mb-3"><ScrambleText text={t.now.doingLabel} /></h3>
+              <ul className="divide-y divide-black/[0.06] dark:divide-white/10 mb-8">
+                {t.now.doing.map((d, i) => (
+                  <li key={i} className="py-3 text-[15px] leading-relaxed">{d}</li>
+                ))}
+              </ul>
+
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400 mb-3"><ScrambleText text={t.now.openToLabel} /></h3>
+              <ul className="flex flex-wrap gap-2 mb-10">
+                {t.now.openTo.map((o, i) => (
+                  <li key={i} className="rounded-full ring-1 ring-inset ring-black/10 dark:ring-white/15 px-3 py-1.5 text-[13px]">{o}</li>
+                ))}
+              </ul>
+
+              <a href="mailto:youwei0112@gmail.com" className="inline-flex h-11 items-center gap-2 rounded-full bg-graphite text-white dark:bg-white dark:text-graphite px-5 text-[15px] font-medium hover:bg-black dark:hover:bg-neutral-200 active:scale-[0.98] transition">
+                <ScrambleText text={t.now.ctaLabel} /> <ArrowRight size={15} />
+              </a>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+      </ScrambleStagger>
+
+      {/* ── Work ─────────────────────────────────────────────────────── */}
+      <ScrambleStagger delay={0.24}>
+      <Reveal as="section" stagger id="work" className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
+        <div data-reveal-item className="mb-12 md:mb-16 max-w-3xl">
+          <p className={`${EYEBROW} mb-5`}><ScrambleText text={t.work.eyebrow} /></p>
+          <h2 className="text-3xl md:text-[56px] leading-[1.04] font-semibold tracking-[-0.035em]">
+            <ScrambleText text={t.work.heading} />
+          </h2>
+          <p className="mt-6 text-[15px] leading-relaxed text-muted dark:text-neutral-400">
+            <span className="font-mono text-graphite dark:text-white">{t.work.legend.owned}</span> {t.work.legend.ownedDesc}{' '}
+            <span className="font-mono text-graphite dark:text-white">{t.work.legend.collaborated}</span> {t.work.legend.collaboratedDesc}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+          {t.projects.map((p, i) => {
+            const feature = i === 0
+            return (
+              <a
+                key={p.id}
+                href={`/${lang}/project/${p.id}`}
+                onClick={(e) => triggerProjectLoad(e, p.id)}
+                data-reveal-item
+                className={`group relative isolate overflow-hidden rounded-[28px] p-8 md:p-10 flex flex-col min-h-[380px] transition duration-500 ease-out hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgb(29_29_31/0.35)] active:scale-[0.99] ${feature ? 'md:col-span-2 md:min-h-[520px] bg-graphite text-white' : 'bg-surface dark:bg-white/[0.05]'}`}
+              >
+                <div aria-hidden="true" className="absolute inset-0 -z-10 transition-transform duration-700 ease-out group-hover:scale-110" style={{ background: TILE_GLOW[i % TILE_GLOW.length] }} />
+                <div className="flex items-start justify-between gap-4">
+                  <ul className="flex flex-wrap gap-1.5">
+                    {p.tags.map((tag, ti) => (
+                      <li key={ti} className={`rounded-full px-2.5 py-1 font-mono text-[11px] ${feature ? 'bg-white/10 text-white/85' : 'bg-black/[0.05] text-graphite/75 dark:bg-white/10 dark:text-neutral-300'}`}>
+                        <ScrambleText text={tag} />
+                      </li>
+                    ))}
+                  </ul>
+                  <span className={`shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] ${feature ? 'text-accent-soft' : 'text-accent-ink dark:text-accent-soft'}`}>
+                    <ScrambleText text={p.role} />
+                  </span>
+                </div>
+                <div className="mt-auto pt-16">
+                  <h3 className={`font-semibold tracking-[-0.03em] leading-[1.05] text-wrap-balance ${feature ? 'text-4xl md:text-6xl lg:text-7xl max-w-4xl' : 'text-3xl md:text-4xl'}`}>
+                    <ScrambleText text={p.title} />
+                  </h3>
+                  <p className={`mt-4 leading-relaxed ${feature ? 'text-lg md:text-xl text-white/70 max-w-2xl' : 'text-[15px] text-muted dark:text-neutral-400 max-w-md'}`}>{p.copy}</p>
+                  <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                    <p className={`font-mono text-[12px] ${feature ? 'text-white/50' : 'text-muted dark:text-neutral-500'}`}>{p.artifacts.join(' / ')}</p>
+                    <span className={`inline-flex size-11 items-center justify-center rounded-full transition duration-300 group-hover:rotate-45 ${feature ? 'bg-white text-graphite' : 'bg-graphite text-white dark:bg-white dark:text-graphite'}`} aria-hidden="true">
+                      <ArrowUpRight size={18} />
+                    </span>
+                    <span className="sr-only"><ScrambleText text={t.work.viewProject} /></span>
+                  </div>
+                </div>
+              </a>
+            )
+          })}
         </div>
       </Reveal>
       </ScrambleStagger>
 
-      {/* FAQ — visible Q&A, also emitted as FAQPage structured data (see the
+      {/* ── FAQ ──────────────────────────────────────────────────────────
+          Visible Q&A, also emitted as FAQPage structured data (see the
           faqPageSchema in jsonLd above). Plain-language answers double as
           grounding for search and AI assistants. */}
       <ScrambleStagger delay={0.28}>
-      <Reveal as="section" stagger id="faq" className="max-w-7xl mx-auto px-6 md:px-12 w-full pt-4 pb-12">
-        <div data-reveal-item className="mb-8 md:mb-10">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-500">
-            <ScrambleText text={t.faq.eyebrow} />
-          </span>
-          <h2 className="mt-2 text-3xl md:text-5xl font-serif leading-tight text-neutral-950 dark:text-white">
-            <ScrambleText text={t.faq.heading} />
-          </h2>
-        </div>
-        <dl className="border-t border-neutral-200 dark:border-neutral-800">
-          {t.faq.items.map((item, i) => (
-            <div key={i} data-reveal-item className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-2 md:gap-8 py-6 md:py-8 border-b border-neutral-200 dark:border-neutral-800">
-              <dt className="font-serif text-xl md:text-2xl leading-snug text-neutral-900 dark:text-white">
-                <ScrambleText text={item.q} />
-              </dt>
-              <dd className="text-sm md:text-base leading-relaxed text-neutral-600 dark:text-neutral-400 font-sans">
-                {item.a}
-              </dd>
+      <Reveal as="section" stagger id="faq" className="max-w-7xl mx-auto px-6 md:px-12 pb-24 md:pb-36">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 border-t border-black/10 dark:border-white/15 pt-16 md:pt-20">
+          <div data-reveal-item className="lg:col-span-4">
+            <div className="lg:sticky lg:top-28">
+              <p className={`${EYEBROW} mb-5`}><ScrambleText text={t.faq.eyebrow} /></p>
+              <h2 className="text-3xl md:text-[44px] leading-[1.08] font-semibold tracking-[-0.03em]">
+                <ScrambleText text={t.faq.heading} />
+              </h2>
+              <Link
+                to={`/${lang}/how-i-work`}
+                className="mt-8 inline-flex items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
+              >
+                <ScrambleText text={t.faq.moreLabel} /> <ArrowRight size={15} />
+              </Link>
             </div>
-          ))}
-        </dl>
-        <div data-reveal-item className="mt-8 md:mt-10">
-          <Magnetic scaleOnHover={1.06}>
-            <Link
-              to={`/${lang}/how-i-work`}
-              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-neutral-900 dark:text-white border-b border-current pb-1 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
-            >
-              <ScrambleText text={t.faq.moreLabel} /> <ArrowRight size={13} />
-            </Link>
-          </Magnetic>
+          </div>
+          <dl className="lg:col-span-8 divide-y divide-black/10 dark:divide-white/15">
+            {t.faq.items.map((item, i) => (
+              <div key={i} data-reveal-item className="py-7 first:pt-0">
+                <dt className="text-xl md:text-2xl leading-snug font-semibold tracking-[-0.02em]">{item.q}</dt>
+                <dd className="mt-3 text-[15px] md:text-base leading-relaxed text-muted dark:text-neutral-400">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </Reveal>
       </ScrambleStagger>
       </main>
 
-      {/* Footer Container */}
+      {/* ── Contact / footer ─────────────────────────────────────────── */}
       <ScrambleStagger delay={0.32}>
-      <Reveal variant="up" className="relative z-10 mt-16 w-full">
-        {/* Folder Tabs */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex items-end gap-[8px] md:gap-[12px] -mb-[1px] relative z-20 overflow-x-auto no-scrollbar">
-          {(['work', 'about', 'contact'] as const).map((tab) => {
-            const isActive = activeTab === tab
-            return (
-              <Magnetic key={tab} scaleOnHover={1.08}>
-                <button
-                  onClick={() => { setActiveTab(tab); scrollTo(tab === 'contact' ? 'contact' : tab) }}
-                  className={`${
-                    isActive
-                      ? 'bg-brand-orange text-brand-bg'
-                      : 'bg-[#FCE3D6] text-brand-orange hover:bg-[#FAD9C8]'
-                  } px-4 py-2 md:px-5 md:py-2.5 text-[10px] md:text-xs font-mono transition-[background-color,color,transform] duration-150 lowercase whitespace-nowrap active:scale-95 origin-bottom`}
-                >
-                  <ScrambleText text={t.nav[tab]} />
-                </button>
-              </Magnetic>
-            )
-          })}
-        </div>
-
-        <footer id="contact" className="bg-brand-orange relative py-16 md:py-24 w-full overflow-hidden">
-          {/* Bookend to the hero's dot field: same interactive grid on the
-              orange footer, but white dots instead of blue/lime so head and
-              tail rhyme without being identical. Footer is always orange (no
-              dark variant), so both color props are the same fixed white. */}
-          <HeroDotGrid colorLight="#FFFFFF" colorDark="#FFFFFF" />
-          <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
-            <div className="w-full md:w-1/3 flex flex-col items-center md:items-start gap-6 md:gap-8 relative z-20">
-              <Magnetic scaleOnHover={1.04}>
-                <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 -rotate-6 hover:rotate-0 transition-transform duration-300 active:scale-95 cursor-pointer">
-                  <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500"><ScrambleText text={t.footer.sayHello} /></span>
-                  <a href="mailto:youwei0112@gmail.com" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                    youwei0112@gmail.com
-                  </a>
-                </div>
-              </Magnetic>
-              <Magnetic scaleOnHover={1.04} className="md:ml-8">
-                <div className="bg-white p-4 text-neutral-950 shadow-lg flex flex-col justify-center items-center w-44 h-24 md:w-48 md:h-28 rotate-3 hover:-rotate-1 transition-transform duration-300 active:scale-95 cursor-pointer">
-                  <span className="font-mono text-[10px] md:text-xs mb-1 md:mb-2 text-neutral-500"><ScrambleText text={t.footer.connectWithMe} /></span>
-                  <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline font-mono text-[10px] md:text-xs truncate max-w-full px-1">
-                    /in/yui-tien
-                  </a>
-                </div>
-              </Magnetic>
-            </div>
-
-            <div className="w-full md:w-1/3 flex justify-center items-center relative z-10 min-h-[80px] md:min-h-0">
-              <p className="text-white font-mono text-xs text-center max-w-xs md:max-w-sm opacity-85 mix-blend-overlay leading-relaxed">
-                <ScrambleText text={t.footer.tagline} />
-              </p>
-            </div>
-
-            <div className="w-full md:w-1/3 flex justify-center md:justify-end relative z-20 select-none">
-              <div
-                onClick={() => setIsFlipped(!isFlipped)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    setIsFlipped(!isFlipped)
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-pressed={isFlipped}
-                aria-label={t.footer.flipIt}
-                className="relative w-32 h-40 md:w-48 md:h-56 perspective-1000 group cursor-pointer active:scale-95 transition-transform duration-300 rotate-6 hover:rotate-2 origin-bottom-right"
-              >
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[9px] font-mono py-1 px-2.5 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-40">
-                  <ScrambleText text={t.footer.flipIt} />
-                </div>
-                <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                  <div className="absolute inset-0 bg-white p-2.5 pb-8 md:p-3 md:pb-12 shadow-xl backface-hidden flex flex-col border border-neutral-200">
-                    <div className="w-full h-full bg-neutral-200 border border-neutral-300 flex items-center justify-center overflow-hidden">
-                      {/* PaperTexture renders the avatar through a WebGL paper-grain
-                          shader (crumples/folds/fiber). role/aria-label keep the
-                          canvas accessible since it replaces the <img> alt. */}
-                      <PaperTexture
-                        className="w-full h-full transition-transform duration-500 group-hover:scale-110"
-                        image={`${import.meta.env.BASE_URL}avatar.png`}
-                        colorBack="#ffffff"
-                        colorFront="#9fadbc"
-                        contrast={0.3}
-                        roughness={0.4}
-                        fiber={0.3}
-                        fiberSize={0.2}
-                        crumples={0.3}
-                        crumpleSize={0.35}
-                        folds={0.65}
-                        foldCount={5}
-                        drops={0.2}
-                        fade={0}
-                        seed={5.8}
-                        scale={1}
-                        fit="cover"
-                        role="img"
-                        aria-label={t.footer.photoAlt}
-                      />
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 bg-white p-2.5 pb-2 md:p-3 md:pb-3 shadow-xl rotate-y-180 backface-hidden flex flex-col items-center justify-between border border-neutral-200">
-                    <div className="w-full h-[82%] bg-[#FCFBF9] flex items-center justify-center overflow-hidden border border-neutral-200">
-                      <MathCurveLoader type="rose" size="md" colorClass="fill-brand-orange" />
-                    </div>
-                    <span className="text-[9px] font-mono text-neutral-400 mt-1 lowercase italic">
-                      <ScrambleText text={t.footer.roseCurveLabel} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <footer id="contact" className="relative overflow-hidden bg-graphite text-white">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-72 left-1/2 -translate-x-1/2 size-[900px] rounded-full opacity-60"
+          style={{ background: 'radial-gradient(closest-side, rgb(249 78 10 / 0.5), transparent 70%)' }}
+        />
+        <Reveal stagger className="relative max-w-7xl mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-12">
+          <p data-reveal-item className="font-mono text-[11px] uppercase tracking-[0.14em] text-accent-soft mb-6"><ScrambleText text={t.footer.sayHello} /></p>
+          <a
+            data-reveal-item
+            href="mailto:youwei0112@gmail.com"
+            className="block w-fit max-w-full text-[28px] sm:text-5xl md:text-7xl font-semibold tracking-[-0.04em] leading-none break-all hover:text-accent-soft transition-colors"
+          >
+            youwei0112@gmail.com
+          </a>
+          <div data-reveal-item className="mt-12 flex flex-wrap items-center gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/50 mr-2"><ScrambleText text={t.footer.connectWithMe} /></span>
+            <a href="https://www.linkedin.com/in/yui-tien/" target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
+              LinkedIn <ArrowUpRight size={14} />
+            </a>
+            <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
+              GitHub <ArrowUpRight size={14} />
+            </a>
           </div>
-        </footer>
-
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 w-full">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+          <p data-reveal-item className="mt-20 max-w-md text-[15px] leading-relaxed text-white/60">{t.footer.tagline}</p>
+          <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-white/45">
             <div><ScrambleText text={t.footer.copyright} /></div>
             <div><ScrambleText text={t.footer.meta} /></div>
           </div>
-          {/* Required attribution for the hero's pixel-animal set (CC Attribution). */}
-          <div className="mt-4 text-center sm:text-right text-[10px] font-mono text-neutral-500 dark:text-neutral-500">
-            Pixel animals by{' '}
-            <a href="https://www.behance.net/thiagopontes00?ref=svgrepo.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">Thiago</a>
-            {' '}(CC Attribution) via{' '}
-            <a href="https://www.svgrepo.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-orange transition-colors">SVG Repo</a>
-          </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      </footer>
       </ScrambleStagger>
+    </div>
+  )
+}
+
+// Shared route-level loading state for the lazy pages.
+function PageLoader() {
+  return (
+    <div className="fixed inset-0 bg-canvas dark:bg-brand-ink flex items-center justify-center select-none">
+      <div className="w-20 h-20 md:w-24 md:h-24">
+        <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange" />
+      </div>
     </div>
   )
 }
@@ -656,7 +516,6 @@ function Home() {
 // ── Project detail wrapper ──────────────────────────────────────────────────
 function ProjectDetail() {
   const lang = useLang()
-  const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const { projectId = '' } = useParams<{ projectId: string }>()
 
@@ -685,7 +544,7 @@ function ProjectDetail() {
   const project = homeT?.projects.find(p => p.id === projectId)
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans selection:bg-brand-lime selection:text-neutral-900 transition-colors duration-300 lg:cursor-none overflow-x-clip">
+    <div className={PAGE_SHELL}>
       {seo ? (
         <Seo
           title={seo.title}
@@ -718,18 +577,9 @@ function ProjectDetail() {
           noindex
         />
       )}
-      <CustomCursor />
       <main>
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
-              <div className="w-24 h-24 md:w-32 md:h-32">
-                <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
-              </div>
-            </div>
-          }
-        >
-          <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} isDark={isDark} onToggleTheme={toggleTheme} />
+        <Suspense fallback={<PageLoader />}>
+          <ProjectPage projectId={projectId} lang={lang} onBack={handleBack} />
         </Suspense>
       </main>
     </div>
@@ -744,7 +594,7 @@ function HowIWork() {
   const seo = howIWorkSeo[lang]
   const t = useHowIWorkCopy(lang)
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink">
+    <div className="min-h-screen bg-canvas dark:bg-brand-ink">
       <Seo
         title={seo.title}
         description={seo.description}
@@ -760,16 +610,7 @@ function HowIWork() {
           ...(t ? [faqPageSchema(t.faq.items)] : []),
         ]}
       />
-      <CustomCursor />
-      <Suspense
-        fallback={
-          <div className="fixed inset-0 bg-brand-bg dark:bg-brand-ink flex items-center justify-center select-none">
-            <div className="w-24 h-24 md:w-32 md:h-32">
-              <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange dark:fill-brand-lime" />
-            </div>
-          </div>
-        }
-      >
+      <Suspense fallback={<PageLoader />}>
         <HowIWorkPage lang={lang} />
       </Suspense>
     </div>

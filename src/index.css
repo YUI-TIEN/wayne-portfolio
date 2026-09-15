@@ -2,42 +2,61 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Design language: "field manual" structure on an Apple-style light ground.
+ * One accent (orange), graphite neutrals, hairline rules, 20px cards and
+ * pill controls. The legacy brand-* names are kept as aliases so the case
+ * study demos inherit the restrained palette without a rewrite: every former
+ * identity color collapses onto graphite, and lime (the old on-dark accent)
+ * becomes a light orange that stays legible on graphite bands.
+ */
 @theme {
-  --font-serif: "Cormorant Garamond", serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  
-  --color-brand-blue: #3B5BFC;
+  /* SF Pro on Apple devices for free (system font), Inter elsewhere. The
+     serif token is retired onto the same stack so existing font-serif call
+     sites render as sans display without touching every file. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --font-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-canvas: #fbfbfd;
+  --color-surface: #f5f5f7;
+  --color-surface-strong: #e8e8ed;
+  --color-graphite: #1d1d1f;
+  --color-muted: #6e6e73;
+  --color-accent: #F94E0A;
+  /* Accent for small text on light grounds: #F94E0A is ~3.3:1 on white,
+     below AA; orange-700 clears 4.5:1. */
+  --color-accent-ink: #C2410C;
+  --color-accent-soft: #FF8A4C;
+
   --color-brand-orange: #F94E0A;
-  --color-brand-lime: #C4FF3D;
-  --color-brand-peach: #F9D4C4;
-  --color-brand-violet: #5B1FF0;
-  --color-brand-teal: #206A6E;
-  --color-brand-limeBg: #9BBE3D;
-  --color-brand-red: #BC5450;
-  --color-brand-pink: #F50A8C;
-  --color-brand-ink: #1A1A1A;
-  --color-brand-bg: #f5f4f2;
+  --color-brand-bg: #fbfbfd;
+  --color-brand-ink: #0f0f10;
+  --color-brand-blue: #1d1d1f;
+  --color-brand-violet: #1d1d1f;
+  --color-brand-teal: #2c2c2e;
+  --color-brand-pink: #F94E0A;
+  --color-brand-red: #C2410C;
+  --color-brand-lime: #FF8A4C;
+  --color-brand-limeBg: #e8e8ed;
+  --color-brand-peach: #f5f5f7;
 }
 
 /*
- * Cormorant Garamond / Plus Jakarta Sans / JetBrains Mono have no CJK glyphs,
- * so CJK text already falls through to *some* fallback — without this it's
- * whatever the OS happens to ship (MS Mincho, SimSun, etc.), which looks
- * dated and differs per platform. Add a matching elegant webfont per
- * language, scoped with :lang() so it only kicks in for that locale's CJK
- * glyphs. Western fonts stay first in the stack, so Latin text/numbers
- * embedded in zh-tw/ja/ko copy (brand names, "AI", etc.) keeps rendering in
- * the original Western font rather than the CJK font's own Latin glyphs.
+ * The Latin stack has no CJK glyphs; name a sans CJK face per language so the
+ * fallback is consistent instead of whatever the OS ships. PingFang /
+ * Hiragino / Apple SD Gothic come first so Apple devices keep their native
+ * CJK system font (matching the SF Pro choice above); the Noto webfont that
+ * App.tsx / prerender.mjs inject covers everyone else.
  */
-:lang(zh-tw) .font-serif { font-family: "Cormorant Garamond", "Noto Serif TC", serif; }
-:lang(zh-tw) .font-sans, :lang(zh-tw) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans TC", system-ui, sans-serif; }
+:lang(zh-tw) .font-sans, :lang(zh-tw) .font-serif { font-family: -apple-system, BlinkMacSystemFont, "Inter", "PingFang TC", "Noto Sans TC", system-ui, sans-serif; }
+:lang(zh-tw) .font-mono { font-family: "JetBrains Mono", "PingFang TC", "Noto Sans TC", monospace; }
 
-:lang(ja) .font-serif { font-family: "Cormorant Garamond", "Noto Serif JP", serif; }
-:lang(ja) .font-sans, :lang(ja) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans JP", system-ui, sans-serif; }
+:lang(ja) .font-sans, :lang(ja) .font-serif { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; }
+:lang(ja) .font-mono { font-family: "JetBrains Mono", "Hiragino Sans", "Noto Sans JP", monospace; }
 
-:lang(ko) .font-serif { font-family: "Cormorant Garamond", "Noto Serif KR", serif; }
-:lang(ko) .font-sans, :lang(ko) .font-mono { font-family: "Plus Jakarta Sans", "Noto Sans KR", system-ui, sans-serif; }
+:lang(ko) .font-sans, :lang(ko) .font-serif { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; }
+:lang(ko) .font-mono { font-family: "JetBrains Mono", "Apple SD Gothic Neo", "Noto Sans KR", monospace; }
 
 @layer base {
   html {
@@ -47,11 +66,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
-
-@keyframes loop {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
 }
 
 /* Live status panel: an equalizer that runs when motion is allowed and freezes
@@ -69,29 +83,62 @@
   .live-eq-bar { animation: none; transform: scaleY(0.25); }
 }
 
-.marquee-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+/* ── Liquid glass ─────────────────────────────────────────────────────────
+   Tier 1 (every browser) is the material apple.com actually ships on its
+   global nav: translucent fill + saturate(180%) blur(20px). The rim light
+   and inner sheen approximate the specular edge of iOS 26 glass.
+   Tier 2 (Chromium only) is added by <LiquidGlass>: it swaps the
+   backdrop-filter for an SVG displacement filter that genuinely refracts
+   what is underneath, so the fill is thinned to let the bending show.
+   This is a web approximation of Apple's material, not an Apple asset. */
+.glass {
+  position: relative;
+  isolation: isolate;
+  background: rgb(250 250 252 / 0.66);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    inset 0 -1px 0 rgb(255 255 255 / 0.3),
+    inset 0 0 0 1px rgb(255 255 255 / 0.45),
+    0 1px 2px rgb(29 29 31 / 0.04),
+    0 12px 36px -8px rgb(29 29 31 / 0.14);
 }
-.marquee-container::-webkit-scrollbar {
-  display: none;
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(120% 90% at 18% 0%, rgb(255 255 255 / 0.55), transparent 55%),
+    linear-gradient(to top, rgb(255 255 255 / 0.18), transparent 40%);
 }
-
-.marquee-scroll {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  animation: loop 60s linear infinite;
+.glass[data-refract="on"] {
+  background: rgb(250 250 252 / 0.52);
 }
-
-.marquee-scroll:hover {
-  animation-play-state: paused;
+.dark .glass {
+  background: rgb(28 28 30 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 12px 36px -8px rgb(0 0 0 / 0.5);
 }
-
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
+.dark .glass::before {
+  background: radial-gradient(120% 90% at 18% 0%, rgb(255 255 255 / 0.1), transparent 55%);
+}
+.dark .glass[data-refract="on"] {
+  background: rgb(28 28 30 / 0.5);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .glass[data-refract="on"] {
+    background: rgb(250 250 252 / 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .dark .glass, .dark .glass[data-refract="on"] {
+    background: rgb(28 28 30 / 0.97);
   }
 }
 
@@ -115,14 +162,10 @@ html, body {
 
 /* CSS-driven motion isn't covered by the JS skipsScrollAnimation() guard the
    components use, so honor prefers-reduced-motion here for the purely-CSS
-   pieces: the infinite stack marquee, smooth anchor scrolling, and the
-   language-switch overlay fade. */
+   pieces: smooth anchor scrolling and the language-switch overlay fade. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .marquee-scroll {
-    animation: none;
   }
   .animate-fade-in {
     animation: none;
@@ -137,32 +180,21 @@ html, body {
   z-index: 9999;
 }
 
-/* 3D Card Flip Styles */
-.perspective-1000 {
-  perspective: 1000px;
-}
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
 /* Accessibility Focus Indicators */
 *:focus {
   outline: none;
 }
 
 *:focus-visible {
-  outline: 2px solid var(--color-brand-orange, #F94E0A) !important;
+  outline: 2px solid var(--color-accent, #F94E0A) !important;
   outline-offset: 4px !important;
 }
 
-.dark *:focus-visible {
-  outline: 2px solid var(--color-brand-lime, #C4FF3D) !important;
-  outline-offset: 4px !important;
+/* The retired serif token now renders the sans display face. Former serif
+   call sites mostly set no weight, which reads thin next to the semibold
+   display type elsewhere; :where() keeps this at zero specificity so any
+   explicit font-weight / tracking utility on an element still wins. */
+:where(.font-serif) {
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }

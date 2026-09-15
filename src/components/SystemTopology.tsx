@@ -318,7 +318,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     <div className="w-full max-w-2xl">
       <div
         ref={rootRef}
-        className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-[#FCFBF9] dark:bg-neutral-900"
+        className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-surface dark:bg-neutral-900"
       >
         {/* role="group" (not "img"): the tool tiles inside are clickable —
             role="img" would flatten the tree into one static picture and

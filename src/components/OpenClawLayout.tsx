@@ -14,25 +14,22 @@ import { BackLink, MoreWork } from './ProjectNav'
 
 // OpenClaw's bespoke layout, split into its own module so the case-study pages
 // (which use a different demo set) don't ship OpsDemo / SystemTopology /
-// ContextLoss / GuardGate, and vice versa. themeToggle is passed in as a node
+// ContextLoss / GuardGate, and vice versa. The header is passed in as a node
 // so this stays presentational.
 interface OpenClawLayoutProps {
   c: OpenClawContent
   t: ProjectPageCopy
   lang: Lang
   onBack: (e: React.MouseEvent) => void
-  themeToggle: ReactNode
+  header: ReactNode
 }
 
-export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayoutProps) {
+export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutProps) {
   return (
       <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-clip">
 
         {/* Top Nav */}
-        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 flex items-center justify-between">
-          <BackLink t={t} lang={lang} onBack={onBack} />
-          {themeToggle}
-        </div>
+        {header}
 
         {/* ── HERO ─────────────────────────────────────────────── */}
         <ScrambleStagger delay={0.08}>
@@ -208,14 +205,14 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
         {/* Result cards get `flip` — tips up from its base edge, reads as the
             proof points landing into place. */}
         <ScrambleStagger delay={0.38}>
-        <Reveal as="section" stagger variant="flip" className="bg-[#F5F0E8] dark:bg-neutral-900 py-20 md:py-28">
+        <Reveal as="section" stagger variant="flip" className="bg-surface dark:bg-neutral-900 py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></h2>
 
             {/* Asymmetric strip: large first item spanning full width, then 3 below */}
             <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
               {/* Hero outcome */}
-              <div data-reveal-item className="bg-[#F5F0E8] dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
+              <div data-reveal-item className="bg-surface dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
                 <div className="md:max-w-lg">
                   <span className="block mb-6"><OutcomeIcon index={0} size={36} /></span>
                   <p className="font-serif text-4xl md:text-6xl text-neutral-900 dark:text-white leading-tight mb-4">
@@ -231,7 +228,7 @@ export function OpenClawLayout({ c, t, lang, onBack, themeToggle }: OpenClawLayo
               {/* Three remaining outcomes in a row */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
                 {c.outcomes.slice(1).map((o, i) => (
-                  <div key={i} data-reveal-item className="bg-[#F5F0E8] dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
+                  <div key={i} data-reveal-item className="bg-surface dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
                     <div className="flex items-center justify-between mb-6">
                       <OutcomeIcon index={i + 1} size={26} />
                       <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600">{String(i + 2).padStart(2, '0')}</span>
