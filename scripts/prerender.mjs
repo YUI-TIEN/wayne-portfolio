@@ -77,8 +77,31 @@ function rewriteHead(html, route) {
 
 const ROUTES = Object.keys(routeSeo)
 
+// Serve every route we are about to snapshot straight from index.html.
+//
+// Without this, a route whose snapshot has not been written yet does not
+// exist as a file, so serve-handler falls through to dist/404.html — the
+// GitHub Pages SPA shim, which stashes the path in sessionStorage and
+// redirects to "/" for index.html to restore. That dance works, but it makes
+// the snapshot a race: page.goto's networkidle0 can settle around the
+// redirect while the real route is still mounting, and the run then captures
+// an empty shell. It only bites on a cold dist/ — locally the previous
+// build's snapshots are still on disk and get served directly, which is why
+// this reproduced on CI and not here. Serving index.html directly removes
+// the redirect, and with it the race.
+const spaRewrites = ROUTES.flatMap((route) => {
+  const noSlash = route.endsWith('/') ? route.slice(0, -1) : route
+  const withSlash = route.endsWith('/') ? route : `${route}/`
+  return [
+    { source: withSlash, destination: '/index.html' },
+    ...(noSlash ? [{ source: noSlash, destination: '/index.html' }] : []),
+  ]
+})
+
 async function main() {
-  const server = createServer((req, res) => handler(req, res, { public: DIST }))
+  const server = createServer((req, res) =>
+    handler(req, res, { public: DIST, rewrites: spaRewrites }),
+  )
   await new Promise(resolve => server.listen(PORT, resolve))
 
   // --no-sandbox is required on CI runners (e.g. GitHub Actions' Ubuntu
