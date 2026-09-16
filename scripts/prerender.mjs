@@ -102,6 +102,19 @@ async function main() {
       await page.evaluateOnNewDocument(() => {
         window.__PRERENDER__ = true
       })
+      // Collected so a prerender failure reports what actually went wrong in
+      // the page instead of just "no <h1>" — a rejected lazy import or a
+      // render-time throw both leave the same empty shell behind.
+      const pageErrors = []
+      const failedRequests = []
+      page.on('pageerror', (err) => pageErrors.push(String(err)))
+      page.on('console', (msg) => {
+        if (msg.type() === 'error') pageErrors.push(`console.error: ${msg.text()}`)
+      })
+      page.on('requestfailed', (req) => {
+        failedRequests.push(`${req.url()} (${req.failure()?.errorText ?? 'unknown'})`)
+      })
+
       const url = `http://localhost:${PORT}${route}`
       await page.goto(url, { waitUntil: 'networkidle0' })
       // networkidle0 is not enough on its own: every page lazy-loads its
@@ -121,10 +134,15 @@ async function main() {
           { timeout: 20000 },
         )
       } catch {
+        const rootHtml = await page
+          .evaluate(() => document.getElementById('root')?.innerHTML.slice(0, 600) ?? '(no #root)')
+          .catch(() => '(could not read #root)')
         throw new Error(
           `prerender: ${route} never rendered a non-empty <h1> — the snapshot ` +
-            `would have been an empty shell. Check that its lazy chunk and ` +
-            `locale copy resolve.`,
+            `would have been an empty shell.\n` +
+            `  page errors: ${pageErrors.length ? '\n    ' + pageErrors.join('\n    ') : '(none)'}\n` +
+            `  failed requests: ${failedRequests.length ? '\n    ' + failedRequests.join('\n    ') : '(none)'}\n` +
+            `  #root: ${rootHtml}`,
         )
       }
       // Let the settled layout finish painting after the copy swaps in.
