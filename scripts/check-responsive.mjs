@@ -65,6 +65,10 @@ function measure(viewportWidth) {
 
 async function main() {
   const server = createServer((req, res) => handler(req, res, { public: DIST }))
+  // Same keep-alive reaping hazard as scripts/prerender.mjs — see the comment
+  // there. 0 disables both timeouts for this one-run server.
+  server.keepAliveTimeout = 0
+  server.headersTimeout = 0
   await new Promise((resolve) => server.listen(PORT, resolve))
 
   // --no-sandbox is required on CI runners where Chromium's user-namespace
@@ -78,9 +82,6 @@ async function main() {
   try {
     for (const width of WIDTHS) {
       const page = await browser.newPage()
-      // Same reason as scripts/prerender.mjs: a cached chunk read can stall
-      // on CI and leave a route stuck on its Suspense fallback forever.
-      await page.setCacheEnabled(false)
       // Reveal animations start elements translated and faded; measuring
       // mid-flight would report positions no reader ever sees. Reduced motion
       // renders every reveal in its settled end state.

@@ -102,6 +102,16 @@ async function main() {
   const server = createServer((req, res) =>
     handler(req, res, { public: DIST, rewrites: spaRewrites }),
   )
+  // Node reaps an idle keep-alive socket after 5s by default. Chromium pools
+  // connections across the many chunk requests these snapshots make, and when
+  // it reuses a socket at that exact boundary the request is written into a
+  // closing connection and simply never answered — no error, no failed
+  // request, just a dynamic import that never settles and a page stuck on its
+  // Suspense fallback. That is the stall that intermittently killed a route on
+  // CI. 0 disables both timeouts, which is safe for a build-time file server
+  // that lives for one run.
+  server.keepAliveTimeout = 0
+  server.headersTimeout = 0
   await new Promise(resolve => server.listen(PORT, resolve))
 
   // --no-sandbox is required on CI runners (e.g. GitHub Actions' Ubuntu
@@ -117,16 +127,6 @@ async function main() {
   try {
     for (const route of ROUTES) {
       const page = await browser.newPage()
-      // Every route gets a fresh page but they share one browser, so they
-      // share Chromium's HTTP cache. The first route to pull a given chunk
-      // fetches it; every later route reads it back from cache, and on CI
-      // that read intermittently never completes — the dynamic import never
-      // settles, Suspense never resolves, and the page sits on its fallback
-      // with no error and no failed request to show for it. It always struck
-      // a route AFTER the first one needing that chunk, which is the shape
-      // of a cache race rather than a bad response. There is nothing to gain
-      // from caching a localhost file server, so turn it off.
-      await page.setCacheEnabled(false)
       // Tells ScrambleText (see src/components/ScrambleText.tsx) to skip the
       // scroll-gated reveal animation and write final text immediately.
       // Without this, the snapshot can capture a route mid-scramble — the
