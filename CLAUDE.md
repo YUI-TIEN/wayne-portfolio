@@ -14,6 +14,12 @@ Four locales: `en` (default), `zh-tw`, `ja`, `ko`.
   build on any contract drift; see SYNC CONTRACTS)
 - `npm run check:seo` — SEO sync check alone (needs a prior build for the dist
   half)
+- `npm run check:responsive` — loads all 28 built routes at 390px in puppeteer
+  and fails if the document scrolls sideways, or if any element overflows the
+  viewport without its own scroll container. Needs a prior build; ~90s, so it
+  is a CI step of its own rather than part of `npm run build`. It catches the
+  narrow-viewport break you would otherwise only find by eyeballing one locale
+  out of four.
 - `npm run lint` — ESLint (CI runs this before build; run it before pushing)
 - `node scripts/generate-og.mjs` — regenerate OG cards in `public/og/` (manual;
   run when a project title changes)

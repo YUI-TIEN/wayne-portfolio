@@ -47,6 +47,11 @@ jobs:
           # a no-op (see src/analytics.ts); no build failure.
           VITE_CF_BEACON_TOKEN: ${{ secrets.VITE_CF_BEACON_TOKEN }}
 
+      # Needs dist/, so it runs after the build. Kept out of `npm run build`
+      # itself: ~90s is worth paying once per push, not on every local build.
+      - name: Responsive check
+        run: npm run check:responsive
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
