@@ -78,6 +78,9 @@ async function main() {
   try {
     for (const width of WIDTHS) {
       const page = await browser.newPage()
+      // Same reason as scripts/prerender.mjs: a cached chunk read can stall
+      // on CI and leave a route stuck on its Suspense fallback forever.
+      await page.setCacheEnabled(false)
       // Reveal animations start elements translated and faded; measuring
       // mid-flight would report positions no reader ever sees. Reduced motion
       // renders every reveal in its settled end state.
