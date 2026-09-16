@@ -104,6 +104,30 @@ async function main() {
       })
       const url = `http://localhost:${PORT}${route}`
       await page.goto(url, { waitUntil: 'networkidle0' })
+      // networkidle0 is not enough on its own: every page lazy-loads its
+      // route chunk AND its per-locale copy chunk, and if neither request has
+      // started yet when the connection count first hits zero, idle fires
+      // against a page still showing the blank Suspense shell. That shipped a
+      // real empty snapshot for one route once — the markup crawlers read had
+      // no copy in it at all. Wait for rendered content instead of a timer,
+      // and fail the build rather than write a shell: every route renders an
+      // <h1> (home, how-i-work, each case study, and the 404/placeholder).
+      try {
+        await page.waitForFunction(
+          () => {
+            const h1 = document.querySelector('#root h1')
+            return !!h1 && h1.textContent.trim().length > 0
+          },
+          { timeout: 20000 },
+        )
+      } catch {
+        throw new Error(
+          `prerender: ${route} never rendered a non-empty <h1> — the snapshot ` +
+            `would have been an empty shell. Check that its lazy chunk and ` +
+            `locale copy resolve.`,
+        )
+      }
+      // Let the settled layout finish painting after the copy swaps in.
       await new Promise(resolve => setTimeout(resolve, 300))
 
       const html = rewriteHead(await page.content(), route)
