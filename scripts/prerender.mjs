@@ -139,34 +139,48 @@ async function main() {
       })
 
       const url = `http://localhost:${PORT}${route}`
-      await page.goto(url, { waitUntil: 'networkidle0' })
-      // networkidle0 is not enough on its own: every page lazy-loads its
-      // route chunk AND its per-locale copy chunk, and if neither request has
-      // started yet when the connection count first hits zero, idle fires
-      // against a page still showing the blank Suspense shell. That shipped a
-      // real empty snapshot for one route once — the markup crawlers read had
-      // no copy in it at all. Wait for rendered content instead of a timer,
-      // and fail the build rather than write a shell: every route renders an
-      // <h1> (home, how-i-work, each case study, and the 404/placeholder).
-      try {
-        await page.waitForFunction(
-          () => {
-            const h1 = document.querySelector('#root h1')
-            return !!h1 && h1.textContent.trim().length > 0
-          },
-          { timeout: 20000 },
-        )
-      } catch {
-        const rootHtml = await page
-          .evaluate(() => document.getElementById('root')?.innerHTML.slice(0, 600) ?? '(no #root)')
-          .catch(() => '(could not read #root)')
-        throw new Error(
-          `prerender: ${route} never rendered a non-empty <h1> — the snapshot ` +
-            `would have been an empty shell.\n` +
-            `  page errors: ${pageErrors.length ? '\n    ' + pageErrors.join('\n    ') : '(none)'}\n` +
-            `  failed requests: ${failedRequests.length ? '\n    ' + failedRequests.join('\n    ') : '(none)'}\n` +
-            `  #root: ${rootHtml}`,
-        )
+      // networkidle0 is not enough on its own: a project page resolves three
+      // nested dynamic imports (ProjectPage -> CaseStudyLayouts -> the
+      // per-locale copy), and if none of them has been requested yet when the
+      // connection count first hits zero, idle settles against the blank
+      // Suspense shell. That shipped a real empty snapshot once — the markup
+      // crawlers read had no copy in it at all.
+      //
+      // So wait for rendered content rather than a timer. Every route renders
+      // an <h1>: home, how-i-work, the five case studies, and the
+      // 404/placeholder. On CI a project route still stalls here occasionally
+      // with no page error and no failed request — a reload clears it — so
+      // retry before giving up, and log when that happens so the flake stays
+      // visible instead of silently costing a rebuild. If it never renders,
+      // throw: shipping a shell is worse than failing the build.
+      const ATTEMPTS = 3
+      let rendered = false
+      for (let attempt = 1; attempt <= ATTEMPTS && !rendered; attempt++) {
+        if (attempt === 1) await page.goto(url, { waitUntil: 'networkidle0' })
+        else await page.reload({ waitUntil: 'networkidle0' })
+        try {
+          await page.waitForFunction(
+            () => {
+              const h1 = document.querySelector('#root h1')
+              return !!h1 && h1.textContent.trim().length > 0
+            },
+            { timeout: 15000 },
+          )
+          rendered = true
+          if (attempt > 1) console.warn(`  (${route} needed ${attempt} attempts to render)`)
+        } catch {
+          if (attempt < ATTEMPTS) continue
+          const rootHtml = await page
+            .evaluate(() => document.getElementById('root')?.innerHTML.slice(0, 600) ?? '(no #root)')
+            .catch(() => '(could not read #root)')
+          throw new Error(
+            `prerender: ${route} never rendered a non-empty <h1> in ${ATTEMPTS} ` +
+              `attempts — the snapshot would have been an empty shell.\n` +
+              `  page errors: ${pageErrors.length ? '\n    ' + pageErrors.join('\n    ') : '(none)'}\n` +
+              `  failed requests: ${failedRequests.length ? '\n    ' + failedRequests.join('\n    ') : '(none)'}\n` +
+              `  #root: ${rootHtml}`,
+          )
+        }
       }
       // Let the settled layout finish painting after the copy swaps in.
       await new Promise(resolve => setTimeout(resolve, 300))
