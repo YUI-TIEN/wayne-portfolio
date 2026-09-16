@@ -7,6 +7,7 @@ import { themeFor } from './caseStudyTheme'
 import { ScrollTrigger } from './scrollReveal'
 import type { LayoutProps } from './CaseStudyLayouts'
 import { BackLink } from './ProjectNav'
+import { CONTAINER, EYEBROW_MUTED, BODY } from './caseStudyTokens'
 
 interface CaseStudyLayoutsProps {
   projectId: string
@@ -59,7 +60,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   // placeholder as the Suspense fallbacks below, so there's no visible seam
   // between "chunk loading" and "copy loading".
   if (!t) {
-    return <div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />
+    return <div className="min-h-screen bg-canvas dark:bg-ink" />
   }
 
   // Fixed glass nav plus a spacer standing in for the in-flow nav bar the
@@ -73,7 +74,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
 
   if (projectId === 'openclaw-ops') {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />}>
+      <Suspense fallback={<div className="min-h-screen bg-canvas dark:bg-ink" />}>
         <OpenClawLayout c={t.openClaw} t={t} lang={lang} onBack={onBack} header={header} />
       </Suspense>
     )
@@ -92,7 +93,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
     // doesn't ship these demos; a minimal loader covers the brief chunk fetch.
     return (
       <Suspense
-        fallback={<div className="min-h-screen bg-brand-bg dark:bg-brand-ink" />}
+        fallback={<div className="min-h-screen bg-canvas dark:bg-ink" />}
       >
         <CaseStudyLayouts projectId={projectId} layoutProps={layoutProps} />
       </Suspense>
@@ -105,12 +106,12 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   const p = t.placeholders[projectId]
   if (!p) {
     return (
-      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans flex flex-col">
+      <div className="min-h-screen bg-canvas dark:bg-ink text-graphite dark:text-neutral-100 font-sans flex flex-col">
         {header}
-        <section className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-12 flex flex-col justify-center py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-brand-orange mb-6">404</p>
-          <h1 className="font-serif text-4xl md:text-6xl leading-tight max-w-3xl mb-6"><ScrambleText text={t.notFoundTitle} /></h1>
-          <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-xl leading-relaxed mb-12"><ScrambleText text={t.notFoundBody} /></p>
+        <section className={`flex-1 ${CONTAINER} w-full flex flex-col justify-center py-24`}>
+          <p className={`${EYEBROW_MUTED} mb-6`}>404</p>
+          <h1 className="text-4xl md:text-6xl leading-tight font-semibold tracking-[-0.03em] max-w-3xl mb-6"><ScrambleText text={t.notFoundTitle} /></h1>
+          <p className={`${BODY} max-w-xl mb-12`}><ScrambleText text={t.notFoundBody} /></p>
           <BackLink t={t} lang={lang} onBack={onBack} emphasis />
         </section>
       </div>
@@ -118,25 +119,25 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans">
+    <div className="min-h-screen bg-canvas dark:bg-ink text-graphite dark:text-neutral-100 font-sans">
       {header}
 
       <ScrambleStagger delay={0.08}>
-      <section className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-32">
+      <section className={`${CONTAINER} pt-12 pb-32`}>
         <div className="flex flex-wrap items-center gap-3 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
-          <span className="text-neutral-300 dark:text-neutral-600">·</span>
+          <span className={EYEBROW_MUTED}><ScrambleText text={p.eyebrow} /></span>
+          <span className="text-black/15 dark:text-white/20" aria-hidden="true">·</span>
           {p.tags.map((tag, ti) => (
-            <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
+            <span key={ti} className="rounded-full bg-surface dark:bg-white/[0.07] px-3.5 py-1.5 font-mono text-[12px] text-graphite/80 dark:text-neutral-300">
               <ScrambleText text={tag} />
             </span>
           ))}
         </div>
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-10"><ScrambleText text={p.label} /></h1>
-        <p className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-20"><ScrambleText text={p.headline} /></p>
+        <h1 className="text-5xl md:text-7xl lg:text-[96px] leading-[0.95] font-semibold tracking-[-0.04em] max-w-5xl mb-10"><ScrambleText text={p.label} /></h1>
+        <p className={`${BODY} max-w-2xl mb-20`}><ScrambleText text={p.headline} /></p>
 
-        <div className="border border-dashed border-neutral-200 dark:border-neutral-700 p-16 flex items-center justify-center min-h-[300px]">
-          <p className="font-mono text-[11px] text-neutral-300 dark:text-neutral-600 uppercase tracking-widest"><ScrambleText text={t.caseStudyInProgress} /></p>
+        <div className="rounded-[28px] bg-surface dark:bg-white/[0.05] p-16 flex items-center justify-center min-h-[300px]">
+          <p className={EYEBROW_MUTED}><ScrambleText text={t.caseStudyInProgress} /></p>
         </div>
       </section>
       </ScrambleStagger>

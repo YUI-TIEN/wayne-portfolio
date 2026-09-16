@@ -74,7 +74,7 @@ function scrollTo(sectionId: string) {
 }
 
 // Shared page shell: one light canvas, one dark ink, one accent.
-const PAGE_SHELL = 'min-h-screen bg-canvas dark:bg-brand-ink text-graphite dark:text-neutral-100 font-sans selection:bg-accent selection:text-white overflow-x-clip'
+const PAGE_SHELL = 'min-h-screen bg-canvas dark:bg-ink text-graphite dark:text-neutral-100 font-sans selection:bg-accent selection:text-white overflow-x-clip'
 const EYEBROW = 'font-mono text-[11px] uppercase tracking-[0.14em] text-accent-ink dark:text-accent-soft'
 
 // Positions of the soft accent glow in each work tile, so the grid reads as
@@ -183,7 +183,7 @@ function Home() {
   // First-ever visit only: no locale's copy resolved yet. Same placeholder
   // ProjectPage uses, so "chunk loading" and "copy loading" look identical.
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-brand-ink" />
+    return <div className="min-h-screen bg-canvas dark:bg-ink" />
   }
 
   const navLink = 'hidden md:inline-flex h-9 items-center px-1 text-muted hover:text-graphite dark:text-neutral-400 dark:hover:text-white transition-colors cursor-pointer'
@@ -326,7 +326,7 @@ function Home() {
               <ol className="pl-10">
                 {t.career.entries.map((e, i) => (
                   <li key={i} className="relative pb-12 last:pb-0">
-                    <span aria-hidden="true" className={`absolute -left-10 top-1.5 size-[15px] rounded-full border-2 border-accent ${i === 0 ? 'bg-accent' : 'bg-surface dark:bg-brand-ink'}`} />
+                    <span aria-hidden="true" className={`absolute -left-10 top-1.5 size-[15px] rounded-full border-2 border-accent ${i === 0 ? 'bg-accent' : 'bg-surface dark:bg-ink'}`} />
                     <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-muted dark:text-neutral-400"><ScrambleText text={e.period} /></p>
                     <h3 className="mt-2 text-2xl md:text-[28px] leading-tight font-semibold tracking-[-0.02em]"><ScrambleText text={e.role} /></h3>
                     <p className="mt-1.5 text-[15px] text-accent-ink dark:text-accent-soft"><ScrambleText text={e.org} /></p>
@@ -505,9 +505,9 @@ function Home() {
 // Shared route-level loading state for the lazy pages.
 function PageLoader() {
   return (
-    <div className="fixed inset-0 bg-canvas dark:bg-brand-ink flex items-center justify-center select-none">
+    <div className="fixed inset-0 bg-canvas dark:bg-ink flex items-center justify-center select-none">
       <div className="w-20 h-20 md:w-24 md:h-24">
-        <MathCurveLoader type="rose" size="lg" colorClass="fill-brand-orange" />
+        <MathCurveLoader type="rose" size="lg" colorClass="fill-accent" />
       </div>
     </div>
   )
@@ -594,7 +594,7 @@ function HowIWork() {
   const seo = howIWorkSeo[lang]
   const t = useHowIWorkCopy(lang)
   return (
-    <div className="min-h-screen bg-canvas dark:bg-brand-ink">
+    <div className="min-h-screen bg-canvas dark:bg-ink">
       <Seo
         title={seo.title}
         description={seo.description}

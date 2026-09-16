@@ -42,11 +42,11 @@ export function HowIWorkPage({ lang }: { lang: Lang }) {
   }, [ready])
 
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-brand-ink" />
+    return <div className="min-h-screen bg-canvas dark:bg-ink" />
   }
 
   return (
-    <div className="min-h-screen bg-canvas dark:bg-brand-ink text-graphite dark:text-neutral-100 font-sans selection:bg-accent selection:text-white overflow-x-clip">
+    <div className="min-h-screen bg-canvas dark:bg-ink text-graphite dark:text-neutral-100 font-sans selection:bg-accent selection:text-white overflow-x-clip">
       <SiteHeader
         start={
           <Link

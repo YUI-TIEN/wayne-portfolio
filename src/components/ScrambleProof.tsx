@@ -79,7 +79,7 @@ export function ScrambleProof({
             onClick={() => scrambleTo(c.lang)}
             className={`font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full border transition-colors ${
               active === c.lang
-                ? 'bg-white text-neutral-900 border-white'
+                ? 'bg-white text-graphite border-white'
                 : 'border-white/30 text-white/70 hover:border-white/70 hover:text-white'
             }`}
           >
@@ -94,7 +94,7 @@ export function ScrambleProof({
         </button>
       </div>
 
-      <p className="font-serif text-3xl md:text-5xl text-white leading-tight min-h-[1.2em]">
+      <p className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] text-white leading-tight min-h-[1.2em]">
         <span ref={wordRef}>{WORDS.en}</span>
       </p>
 

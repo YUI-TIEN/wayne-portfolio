@@ -102,9 +102,9 @@ export function ContextLoss({ coldStart, lang }: ContextLossProps) {
 
   return (
     <div ref={rootRef} className="max-w-md">
-      <div className="flex items-center justify-between mb-3">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500">context</span>
-        <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: '#f23f43' }}>
+      <div className="flex items-center justify-between mb-4">
+        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">context</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-accent-soft">
           ✗ lost ×{lost}
         </span>
       </div>
@@ -117,23 +117,21 @@ export function ContextLoss({ coldStart, lang }: ContextLossProps) {
           return (
             <div key={tool.name} className="flex items-center gap-3">
               <span
-                className="font-mono text-[11px] w-24 shrink-0 truncate transition-colors"
-                style={{ color: isCut ? '#6b6b6b' : isActive ? '#fff' : '#6b6b6b', textDecoration: isCut ? 'line-through' : 'none' }}
+                className={`font-mono text-[11px] w-24 shrink-0 truncate transition-colors ${
+                  isCut ? 'text-white/35 line-through' : isActive ? 'text-white' : 'text-white/35'
+                }`}
               >
                 {tool.name}
               </span>
-              <div className="relative flex-1 h-2.5 bg-white/10 overflow-hidden">
+              <div className="relative flex-1 h-2.5 rounded-full bg-white/10 overflow-hidden">
                 <div
-                  className="h-full transition-[width] duration-100"
-                  style={{
-                    width: `${fill[i]}%`,
-                    background: isCut ? 'rgba(242,63,67,0.35)' : '#C4FF3D',
-                  }}
+                  className={`h-full rounded-full transition-[width] duration-100 ${isCut ? 'bg-accent/35' : 'bg-accent'}`}
+                  style={{ width: `${fill[i]}%` }}
                 />
               </div>
               <span
-                className="font-mono text-xs shrink-0 transition-opacity"
-                style={{ color: '#f23f43', opacity: isCut ? 1 : 0, width: '14px' }}
+                className={`font-mono text-[11px] shrink-0 transition-opacity text-accent-soft ${isCut ? 'opacity-100' : 'opacity-0'}`}
+                style={{ width: '14px' }}
                 aria-hidden={!isCut}
               >
                 {isCut ? '✗' : ''}
@@ -143,8 +141,8 @@ export function ContextLoss({ coldStart, lang }: ContextLossProps) {
         })}
       </div>
 
-      <p className="font-mono text-[11px] text-neutral-500 mt-4 flex items-center gap-2">
-        <span aria-hidden style={{ color: '#f23f43' }}>↺</span> {coldStart}
+      <p className="mt-4 flex items-center gap-2 text-[13px] leading-relaxed text-white/50">
+        <span aria-hidden className="text-accent-soft">↺</span> {coldStart}
       </p>
     </div>
   )

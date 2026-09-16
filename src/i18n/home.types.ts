@@ -5,11 +5,6 @@ export interface ProjectCard {
   tags: string[]
   copy: string
   artifacts: string[]
-  bg: string
-  tagBg: string
-  layout: string
-  titleClass: string
-  copyClass: string
 }
 
 export interface HomeCopy {

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { Hash, Bot, Plus, Smile, Gift } from 'lucide-react'
-import { Magnetic } from './Magnetic'
 import { skipsScrollAnimation } from './motionGuards'
 import type { OpsDemoContent } from '../i18n/projectPage.types'
 import type { Lang } from '../i18n/locales'
@@ -168,7 +167,7 @@ export function OpsDemo({ demo, steps, lang }: OpsDemoProps) {
     <div className="max-w-3xl">
       <div
         ref={rootRef}
-        className="rounded-lg overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,0.25)] flex font-sans text-left"
+        className="rounded-[20px] overflow-hidden shadow-[0_24px_60px_-24px_rgb(29_29_31/0.45)] flex font-sans text-left"
         style={{ background: DC.chat }}
       >
         {/* Server rail — desktop only */}
@@ -325,15 +324,13 @@ export function OpsDemo({ demo, steps, lang }: OpsDemoProps) {
 
       {/* Honesty caption + replay control */}
       <div className="flex items-center justify-between gap-3 mt-3">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">{demo.illustrative}</span>
-        <Magnetic scaleOnHover={1.08}>
-          <button
-            onClick={play}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/60 hover:text-brand-lime transition-colors"
-          >
-            <span aria-hidden>▶</span> {everPlayed ? demo.replay : demo.run}
-          </button>
-        </Magnetic>
+        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">{demo.illustrative}</span>
+        <button
+          onClick={play}
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/60 hover:text-accent-soft transition-colors"
+        >
+          <span aria-hidden>▶</span> {everPlayed ? demo.replay : demo.run}
+        </button>
       </div>
     </div>
   )

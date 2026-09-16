@@ -38,7 +38,7 @@ export function OutcomeIcon({
   index,
   size = 28,
   set = 'default',
-  className = 'text-brand-orange',
+  className = 'text-accent-ink dark:text-accent-soft',
 }: {
   index: number
   size?: number

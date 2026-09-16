@@ -11,6 +11,24 @@ import { GuardGate } from './GuardGate'
 import { OutcomeIcon } from './OutcomeIcon'
 import { GovernanceBand } from './TurningPoints'
 import { BackLink, MoreWork } from './ProjectNav'
+import {
+  SHELL,
+  CONTAINER,
+  EYEBROW_MUTED,
+  EYEBROW_ON_DARK,
+  H2,
+  H3,
+  BODY,
+  BODY_STRONG,
+  CARD,
+  TILE_RING,
+  BAND_INVERTED,
+  RULE,
+  CHIP,
+  ACCENT_TEXT,
+  ACCENT_GLOW,
+  ACCENT_GLOW_SOFT,
+} from './caseStudyTokens'
 
 // OpenClaw's bespoke layout, split into its own module so the case-study pages
 // (which use a different demo set) don't ship OpsDemo / SystemTopology /
@@ -26,55 +44,67 @@ interface OpenClawLayoutProps {
 
 export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutProps) {
   return (
-      <div className="min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-clip">
+      <div className={SHELL}>
 
         {/* Top Nav */}
         {header}
 
         {/* ── HERO ─────────────────────────────────────────────── */}
-        <ScrambleStagger delay={0.08}>
-        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-32">
-          <div data-reveal-item className="flex flex-wrap items-center gap-3 mb-10">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={c.eyebrow} /></span>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            {c.tags.map((tag, ti) => (
-              <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-                <ScrambleText text={tag} />
-              </span>
-            ))}
-          </div>
+        <section className="relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-56 -left-40 size-[820px] rounded-full opacity-60 dark:opacity-40"
+            style={{ background: ACCENT_GLOW_SOFT }}
+          />
+          <ScrambleStagger delay={0.08}>
+          <Reveal stagger className={`relative ${CONTAINER} pt-12 pb-20 md:pb-32`}>
+            <div data-reveal-item className="flex flex-wrap items-center gap-3 mb-10">
+              <span className={EYEBROW_MUTED}><ScrambleText text={c.eyebrow} /></span>
+              <span className="text-black/15 dark:text-white/20" aria-hidden="true">·</span>
+              {c.tags.map((tag, ti) => (
+                <span key={ti} className={CHIP}>
+                  <ScrambleText text={tag} />
+                </span>
+              ))}
+            </div>
 
-          {/* Big serif display headline — one of the site's rare `blur`
-              moments (focus-pull entrance), reserved for hero-scale text. */}
-          <h1 data-reveal-item data-reveal="blur" className="font-serif text-5xl md:text-7xl lg:text-[96px] leading-[0.92] tracking-tight max-w-5xl mb-8">
-            <ScrambleText text={c.headline} />
-          </h1>
+            {/* Big semibold display headline — one of the site's rare `blur`
+                moments (focus-pull entrance), reserved for hero-scale text. */}
+            <h1 data-reveal-item data-reveal="blur" className="text-[40px] leading-[1.05] md:text-6xl lg:text-[80px] lg:leading-[1.02] font-semibold tracking-[-0.04em] max-w-5xl mb-8 text-wrap-balance">
+              <ScrambleText text={c.headline} />
+            </h1>
 
-          <p data-reveal-item className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-16">
-            <ScrambleText text={c.subheadline} />
-          </p>
+            <p data-reveal-item className="text-lg md:text-xl leading-relaxed text-muted dark:text-neutral-400 max-w-2xl mb-16">
+              <ScrambleText text={c.subheadline} />
+            </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-neutral-200 dark:bg-neutral-800">
-            {c.stats.map((s, i) => (
-              <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-                <p className="font-serif text-5xl md:text-6xl text-brand-orange mb-2"><StatValue value={s.value} /></p>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-        </ScrambleStagger>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {c.stats.map((s, i) => (
+                <div key={i} data-reveal-item data-reveal="flip" className={TILE_RING}>
+                  <p className={`font-semibold tracking-[-0.03em] text-4xl md:text-5xl mb-2 ${ACCENT_TEXT}`}><StatValue value={s.value} /></p>
+                  <p className={EYEBROW_MUTED}><ScrambleText text={s.label} /></p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+          </ScrambleStagger>
+        </section>
 
         {/* ── PROBLEM ──────────────────────────────────────────── */}
-        {/* Dark band gets the wipe: a `clip` reveal reads as a curtain
-            pulling back on the problem statement. Non-stagger, whole
+        {/* Inverted graphite card gets the wipe: a `clip` reveal reads as a
+            curtain pulling back on the problem statement. Non-stagger, whole
             section — ContextLoss has no fixed/sticky descendants, so a
             clip-path transform on its ancestor is safe. */}
         <ScrambleStagger delay={0.16}>
-        <Reveal as="section" variant="clip" className="bg-brand-ink dark:bg-black py-20 md:py-32">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-10"><ScrambleText text={t.theProblem} /></h2>
-            <p className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-white max-w-4xl">
+        <Reveal as="section" variant="clip" className={`${CONTAINER} py-20 md:py-28`}>
+          <div className={BAND_INVERTED}>
+            <div
+              aria-hidden="true"
+              className="absolute -z-10 -right-32 -top-32 size-[520px] rounded-full opacity-70"
+              style={{ background: ACCENT_GLOW }}
+            />
+            <h2 className={`${EYEBROW_ON_DARK} mb-10`}><ScrambleText text={t.theProblem} /></h2>
+            <p className="text-3xl md:text-5xl lg:text-6xl leading-tight font-semibold tracking-[-0.03em] max-w-4xl">
               <ScrambleText text={c.problem} />
             </p>
             <div className="mt-12 md:mt-16 pt-10 border-t border-white/10">
@@ -89,7 +119,7 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
             columns slide in from their own side (mirrors the home page's
             About-section left/right card idiom). */}
         <ScrambleStagger delay={0.2}>
-        <Reveal as="section" stagger variant="scale" className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
+        <Reveal as="section" stagger variant="scale" className={`${CONTAINER} py-20 md:py-28`}>
           {/* Scattered tools -> unified hub visual */}
           <div data-reveal-item className="mb-14 md:mb-20 flex justify-center">
             <SystemTopology copy={c.topology} lang={lang} replayLabel={c.topology.replay} />
@@ -98,14 +128,14 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Before */}
             <div data-reveal-item data-reveal="left">
-              <h3 className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></h3>
+              <h3 className={`${H3} text-muted dark:text-neutral-500 mb-8`}><ScrambleText text={t.before} /></h3>
               <ul className="space-y-6">
                 {c.before.map((item, i) => (
                   <li key={i} className="flex gap-5">
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">
+                    <span className="font-mono text-[11px] text-muted/60 dark:text-neutral-600 mt-1 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800 pb-6">
+                    <p className={`${BODY} border-b ${RULE} pb-6`}>
                       <ScrambleText text={item} />
                     </p>
                   </li>
@@ -115,14 +145,14 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
 
             {/* After */}
             <div data-reveal-item data-reveal="right">
-              <h3 className="font-serif text-2xl text-brand-orange mb-8 leading-none"><ScrambleText text={t.after} /></h3>
+              <h3 className={`${H3} ${ACCENT_TEXT} mb-8`}><ScrambleText text={t.after} /></h3>
               <ul className="space-y-6">
                 {c.after.map((item, i) => (
                   <li key={i} className="flex gap-5">
-                    <span className="font-mono text-[10px] text-brand-orange/40 mt-1 shrink-0">
+                    <span className="font-mono text-[11px] text-accent-ink/40 dark:text-accent-soft/40 mt-1 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-6 font-medium">
+                    <p className={`${BODY_STRONG} border-b ${RULE} pb-6`}>
                       <ScrambleText text={item} />
                     </p>
                   </li>
@@ -138,28 +168,33 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
             columns with a single `right` direction for the intro + demo,
             then the three step cards fan in with a flip stagger. */}
         <ScrambleStagger delay={0.26}>
-        <Reveal as="section" stagger variant="right" className="bg-brand-blue py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div data-reveal-item className="mb-10 md:mb-12">
-              <h2 className="font-serif text-3xl md:text-5xl text-white max-w-2xl leading-tight mb-6">
+        <Reveal as="section" stagger variant="right" className={`${CONTAINER} py-20 md:py-28`}>
+          <div className={BAND_INVERTED}>
+            <div
+              aria-hidden="true"
+              className="absolute -z-10 -left-32 -bottom-32 size-[520px] rounded-full opacity-70"
+              style={{ background: ACCENT_GLOW }}
+            />
+            <div data-reveal-item className="relative mb-10 md:mb-12">
+              <h2 className={`${H2} max-w-2xl mb-6`}>
                 <ScrambleText text={t.oneMessage} />
               </h2>
-              <p className="font-mono text-xs text-white/50 max-w-md leading-relaxed">
+              <p className="text-[15px] md:text-base leading-relaxed text-white/60 max-w-md">
                 <ScrambleText text={c.workflow.description} />
               </p>
             </div>
 
             {/* Interactive, illustrative view of the loop running end-to-end */}
-            <div data-reveal-item data-reveal="fade" className="mb-12 md:mb-16">
+            <div data-reveal-item data-reveal="fade" className="relative mb-12 md:mb-16">
               <OpsDemo demo={c.demo} steps={c.workflow.steps} lang={lang} />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {c.workflow.steps.map((step, i) => (
-                <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-blue p-8 hover:bg-white/5 transition-colors">
-                  <p className="font-mono text-[10px] text-brand-lime/60 mb-4"><ScrambleText text={step.num} /></p>
-                  <p className="font-serif text-2xl text-white mb-3"><ScrambleText text={step.label} /></p>
-                  <p className="font-mono text-xs text-white/50 leading-relaxed"><ScrambleText text={step.detail} /></p>
+                <div key={i} data-reveal-item data-reveal="flip" className="rounded-[20px] bg-white/5 hover:bg-white/10 transition-colors p-8">
+                  <p className="font-mono text-[11px] text-accent-soft/70 mb-4"><ScrambleText text={step.num} /></p>
+                  <p className="text-xl md:text-2xl font-semibold tracking-[-0.02em] mb-3"><ScrambleText text={step.label} /></p>
+                  <p className="text-[15px] leading-relaxed text-white/60"><ScrambleText text={step.detail} /></p>
                 </div>
               ))}
             </div>
@@ -172,7 +207,7 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
             `left`; the rule rows use `fade` (a dense list, so no big travel
             distance per row) via per-item override. */}
         <ScrambleStagger delay={0.32}>
-        <Reveal as="section" stagger variant="left" className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
+        <Reveal as="section" stagger variant="left" className={`${CONTAINER} py-20 md:py-28`}>
           {/* Guardrails evaluating actions */}
           <div data-reveal-item className="mb-14 md:mb-16">
             <GuardGate caption={c.gateCaption} lang={lang} />
@@ -184,15 +219,15 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
                 key={i}
                 data-reveal-item
                 data-reveal="fade"
-                className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12 py-6 border-b border-neutral-100 dark:border-neutral-800 group hover:bg-brand-orange/5 px-4 -mx-4 transition-colors"
+                className={`flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12 py-6 border-b ${RULE} group hover:bg-accent/5 px-4 -mx-4 transition-colors`}
               >
-                <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 w-6 shrink-0 hidden md:block">
+                <span className="font-mono text-[11px] text-muted/60 dark:text-neutral-600 w-6 shrink-0 hidden md:block">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <p className="font-mono text-xs md:text-sm uppercase tracking-wider text-brand-orange font-medium md:w-64 shrink-0">
+                <p className={`font-mono text-[11px] md:text-[12px] uppercase tracking-[0.12em] font-medium md:w-64 shrink-0 ${ACCENT_TEXT}`}>
                   <ScrambleText text={r.rule} />
                 </p>
-                <p className="font-sans text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                <p className={BODY}>
                   <ScrambleText text={r.detail} />
                 </p>
               </div>
@@ -203,41 +238,40 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
 
         {/* ── OUTCOMES ─────────────────────────────────────────── */}
         {/* Result cards get `flip` — tips up from its base edge, reads as the
-            proof points landing into place. */}
+            proof points landing into place. The hero outcome gets a full
+            surface CARD; the remaining three sit as ringed tiles directly on
+            canvas, echoing the home page's asymmetric work-card layout. */}
         <ScrambleStagger delay={0.38}>
-        <Reveal as="section" stagger variant="flip" className="bg-surface dark:bg-neutral-900 py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-16"><ScrambleText text={t.outcomes} /></h2>
+        <Reveal as="section" stagger variant="flip" className={`${CONTAINER} py-20 md:py-28`}>
+          <h2 className={`${EYEBROW_MUTED} mb-10`}><ScrambleText text={t.outcomes} /></h2>
 
-            {/* Asymmetric strip: large first item spanning full width, then 3 below */}
-            <div className="space-y-px bg-neutral-200 dark:bg-neutral-700">
-              {/* Hero outcome */}
-              <div data-reveal-item className="bg-surface dark:bg-neutral-900 p-10 md:p-14 flex flex-col md:flex-row md:items-end md:justify-between gap-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors group">
-                <div className="md:max-w-lg">
-                  <span className="block mb-6"><OutcomeIcon index={0} size={36} /></span>
-                  <p className="font-serif text-4xl md:text-6xl text-neutral-900 dark:text-white leading-tight mb-4">
-                    <ScrambleText text={c.outcomes[0].title} />
-                  </p>
-                  <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-sm">
-                    <ScrambleText text={c.outcomes[0].detail} />
-                  </p>
-                </div>
-                <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 shrink-0 self-start md:self-end">01</span>
+          <div className="grid grid-cols-1 gap-4 md:gap-6">
+            {/* Hero outcome */}
+            <div data-reveal-item className={`${CARD} flex flex-col md:flex-row md:items-end md:justify-between gap-8`}>
+              <div className="md:max-w-lg">
+                <span className="block mb-6"><OutcomeIcon index={0} size={36} /></span>
+                <p className="text-4xl md:text-6xl font-semibold tracking-[-0.03em] leading-tight mb-4">
+                  <ScrambleText text={c.outcomes[0].title} />
+                </p>
+                <p className={`${BODY} max-w-sm`}>
+                  <ScrambleText text={c.outcomes[0].detail} />
+                </p>
               </div>
+              <span className="font-mono text-[11px] text-muted/60 dark:text-neutral-600 shrink-0 self-start md:self-end">01</span>
+            </div>
 
-              {/* Three remaining outcomes in a row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-neutral-200 dark:bg-neutral-700">
-                {c.outcomes.slice(1).map((o, i) => (
-                  <div key={i} data-reveal-item className="bg-surface dark:bg-neutral-900 p-8 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
-                    <div className="flex items-center justify-between mb-6">
-                      <OutcomeIcon index={i + 1} size={26} />
-                      <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600">{String(i + 2).padStart(2, '0')}</span>
-                    </div>
-                    <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-4 leading-tight"><ScrambleText text={o.title} /></p>
-                    <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed"><ScrambleText text={o.detail} /></p>
+            {/* Three remaining outcomes in a row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+              {c.outcomes.slice(1).map((o, i) => (
+                <div key={i} data-reveal-item className={TILE_RING}>
+                  <div className="flex items-center justify-between mb-6">
+                    <OutcomeIcon index={i + 1} size={26} />
+                    <span className="font-mono text-[11px] text-muted/60 dark:text-neutral-600">{String(i + 2).padStart(2, '0')}</span>
                   </div>
-                ))}
-              </div>
+                  <p className="text-xl md:text-2xl font-semibold tracking-[-0.02em] mb-4 leading-tight"><ScrambleText text={o.title} /></p>
+                  <p className={BODY}><ScrambleText text={o.detail} /></p>
+                </div>
+              ))}
             </div>
           </div>
         </Reveal>
@@ -246,7 +280,7 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
         {/* ── AI COLLABORATION GOVERNANCE ──────────────────────── */}
         {c.governanceCases && c.governanceCases.length > 0 && (
           <ScrambleStagger delay={0.42}>
-          <Reveal as="section" variant="up" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <Reveal as="section" variant="up" className={`${CONTAINER} py-16 md:py-24`}>
             <GovernanceBand
               cases={c.governanceCases}
               bannerLabel={c.governanceBannerLabel ?? 'AI collaboration governance'}
@@ -256,7 +290,7 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
               beatPatternLabel={c.governanceBeatPattern ?? "The AI's ingrained pattern"}
               beatMechanismLabel={c.governanceBeatMechanism ?? 'The governance mechanism I built'}
               beatValueLabel={c.governanceBeatValue ?? 'The collaboration value it unlocked'}
-              accentText="text-brand-orange"
+              accentText={ACCENT_TEXT}
             />
           </Reveal>
           </ScrambleStagger>
@@ -264,15 +298,15 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
 
         {/* ── QUOTE ────────────────────────────────────────────── */}
         <ScrambleStagger delay={0.44}>
-        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
+        <Reveal as="section" stagger className={`${CONTAINER} py-24 md:py-36`}>
           <div className="max-w-5xl">
-            <span className="font-serif text-7xl md:text-9xl text-neutral-100 dark:text-neutral-800 leading-none select-none block -mb-8">"</span>
+            <span className="text-[110px] md:text-[160px] font-semibold leading-none select-none block -mb-8 text-black/[0.06] dark:text-white/10" aria-hidden="true">"</span>
             {/* Second, sparing `blur` moment — the pull-quote is the other
                 hero-scale display text on this page. */}
-            <blockquote data-reveal-item data-reveal="blur" className="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight text-neutral-900 dark:text-white">
+            <blockquote data-reveal-item data-reveal="blur" className="text-3xl md:text-5xl lg:text-6xl leading-tight font-semibold tracking-[-0.03em] text-graphite dark:text-white">
               <ScrambleText as="span" text={c.quote} />
             </blockquote>
-            <p data-reveal-item className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400 mt-10 uppercase tracking-widest">
+            <p data-reveal-item className={`${EYEBROW_MUTED} mt-10`}>
               <ScrambleText text={c.quoteAttribution} />
             </p>
           </div>
@@ -282,9 +316,9 @@ export function OpenClawLayout({ c, t, lang, onBack, header }: OpenClawLayoutPro
         {/* ── FOOTER NAV ───────────────────────────────────────── */}
         {/* Closing moment: a small `scale` pop on the way out. */}
         <ScrambleStagger delay={0.5}>
-        <Reveal variant="scale" className="border-t border-neutral-100 dark:border-neutral-800">
+        <Reveal variant="scale" className={`border-t ${RULE}`}>
           <MoreWork t={t} lang={lang} currentId="openclaw-ops" />
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+          <div className={`${CONTAINER} py-10`}>
             <BackLink t={t} lang={lang} onBack={onBack} />
           </div>
         </Reveal>

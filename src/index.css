@@ -4,11 +4,11 @@
 
 /*
  * Design language: "field manual" structure on an Apple-style light ground.
- * One accent (orange), graphite neutrals, hairline rules, 20px cards and
- * pill controls. The legacy brand-* names are kept as aliases so the case
- * study demos inherit the restrained palette without a rewrite: every former
- * identity color collapses onto graphite, and lime (the old on-dark accent)
- * becomes a light orange that stays legible on graphite bands.
+ * One accent (orange), graphite neutrals, hairline rules, 20-28px cards and
+ * pill controls. The old per-project identity palette (lime / pink / violet /
+ * teal / electric blue) was retired with the case-study rebuild: pages now
+ * differ by structure and by their demos, not by hue, so there is exactly one
+ * accent ramp here and every surface is a step on the canvas-to-ink greyscale.
  */
 @theme {
   /* SF Pro on Apple devices for free (system font), Inter elsewhere. The
@@ -18,28 +18,22 @@
   --font-serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* Greyscale, light to dark. `ink` is the dark-theme page ground; `canvas`
+     the light one. */
   --color-canvas: #fbfbfd;
   --color-surface: #f5f5f7;
   --color-surface-strong: #e8e8ed;
-  --color-graphite: #1d1d1f;
   --color-muted: #6e6e73;
+  --color-graphite: #1d1d1f;
+  --color-ink: #0f0f10;
+
   --color-accent: #F94E0A;
   /* Accent for small text on light grounds: #F94E0A is ~3.3:1 on white,
      below AA; orange-700 clears 4.5:1. */
   --color-accent-ink: #C2410C;
+  /* Accent for small text on graphite/ink grounds, where accent-ink is too
+     dark to read. */
   --color-accent-soft: #FF8A4C;
-
-  --color-brand-orange: #F94E0A;
-  --color-brand-bg: #fbfbfd;
-  --color-brand-ink: #0f0f10;
-  --color-brand-blue: #1d1d1f;
-  --color-brand-violet: #1d1d1f;
-  --color-brand-teal: #2c2c2e;
-  --color-brand-pink: #F94E0A;
-  --color-brand-red: #C2410C;
-  --color-brand-lime: #FF8A4C;
-  --color-brand-limeBg: #e8e8ed;
-  --color-brand-peach: #f5f5f7;
 }
 
 /*

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Magnetic } from './Magnetic'
 import gsap from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin'
@@ -318,7 +317,7 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
     <div className="w-full max-w-2xl">
       <div
         ref={rootRef}
-        className="relative w-full border-2 border-neutral-900/10 dark:border-white/10 bg-surface dark:bg-neutral-900"
+        className="relative w-full overflow-hidden rounded-[24px] ring-1 ring-black/[0.06] dark:ring-white/10 bg-surface dark:bg-white/[0.05]"
       >
         {/* role="group" (not "img"): the tool tiles inside are clickable —
             role="img" would flatten the tree into one static picture and
@@ -425,18 +424,16 @@ export function SystemTopology({ copy, lang, replayLabel }: SystemTopologyProps)
 
       {/* State caption — lives below the diagram, not overlaid on it. */}
       <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
-        <span className={`font-mono text-[10px] uppercase tracking-widest px-2 py-1 ${unified ? 'bg-brand-lime text-neutral-900' : 'bg-brand-red text-white'}`}>
+        <span className={`font-mono text-[11px] uppercase tracking-[0.14em] px-3 py-1.5 rounded-full ${unified ? 'bg-accent-soft text-graphite' : 'bg-accent-ink text-white'}`}>
           {unified ? copy.unified : copy.fragmented}
         </span>
 
-        <Magnetic scaleOnHover={1.08}>
-          <button
-            onClick={play}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-brand-orange transition-colors"
-          >
-            <span aria-hidden>▶</span> {replayLabel}
-          </button>
-        </Magnetic>
+        <button
+          onClick={play}
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400 hover:text-accent-ink dark:hover:text-accent-soft transition-colors"
+        >
+          <span aria-hidden>▶</span> {replayLabel}
+        </button>
       </div>
     </div>
   )

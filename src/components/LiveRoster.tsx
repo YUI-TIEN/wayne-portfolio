@@ -41,46 +41,78 @@ export function LiveRoster({ label, illustrative, realNote }: { label: string; i
   const [minutes, setMinutes] = useState(CHANNELS.map((c) => c.seedMinutes))
 
   useEffect(() => {
-    if (skipsScrollAnimation()) return
-    dotRefs.current.forEach((dot) => {
-      if (!dot) return
-      tweensRef.current.push(
-        gsap.to(dot, { opacity: 0.25, scale: 1.5, duration: 0.8, ease: 'sine.inOut', repeat: -1, yoyo: true }),
-      )
-    })
-    // Thumbnail waveform bars ripple to suggest a live audio/video signal.
-    barRefs.current.forEach((bar, i) => {
-      if (!bar) return
-      tweensRef.current.push(
-        gsap.to(bar, {
-          scaleY: 0.3 + Math.random() * 0.7,
-          duration: 0.5 + Math.random() * 0.4,
-          ease: 'sine.inOut',
-          repeat: -1,
-          yoyo: true,
-          delay: (i % BARS) * 0.04,
-        }),
-      )
-    })
+    if (skipsScrollAnimation() || !rootRef.current) return
+    const el = rootRef.current
+    let created = false
 
-    tickRef.current = gsap.to({}, {
-      duration: 2.4,
-      repeat: -1,
-      onRepeat: () => {
-        setViewers((prev) => prev.map((v) => Math.max(0, v + Math.round((Math.random() - 0.45) * 14))))
+    // Every looping tween (dot pulses, waveform bars, and the two setState
+    // tickers) is built once, the first time the roster scrolls into view,
+    // and tracked in tweensRef so the IntersectionObserver below can pause
+    // (and resume) the whole set as one group.
+    const createLoops = () => {
+      if (created) return
+      created = true
+      dotRefs.current.forEach((dot) => {
+        if (!dot) return
+        tweensRef.current.push(
+          gsap.to(dot, { opacity: 0.25, scale: 1.5, duration: 0.8, ease: 'sine.inOut', repeat: -1, yoyo: true }),
+        )
+      })
+      // Thumbnail waveform bars ripple to suggest a live audio/video signal.
+      barRefs.current.forEach((bar, i) => {
+        if (!bar) return
+        tweensRef.current.push(
+          gsap.to(bar, {
+            scaleY: 0.3 + Math.random() * 0.7,
+            duration: 0.5 + Math.random() * 0.4,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true,
+            delay: (i % BARS) * 0.04,
+          }),
+        )
+      })
+
+      tickRef.current = gsap.to({}, {
+        duration: 2.4,
+        repeat: -1,
+        onRepeat: () => {
+          setViewers((prev) => prev.map((v) => Math.max(0, v + Math.round((Math.random() - 0.45) * 14))))
+        },
+      })
+      tweensRef.current.push(tickRef.current)
+      const minuteTick = gsap.to({}, {
+        duration: 8,
+        repeat: -1,
+        onRepeat: () => setMinutes((prev) => prev.map((m) => m + 1)),
+      })
+      tweensRef.current.push(minuteTick)
+    }
+
+    // Gate the whole loop set on visibility: without this, the dot/waveform
+    // `repeat: -1` tweens — and the setViewers/setMinutes calls inside the
+    // tickers — kept running forever even after the roster scrolled off
+    // screen. Create on first entry, then pause/resume as a group on every
+    // subsequent visibility change; only the final unmount kills them.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            createLoops()
+            tweensRef.current.forEach((t) => t.resume())
+          } else {
+            tweensRef.current.forEach((t) => t.pause())
+          }
+        }
       },
-    })
-    const minuteTick = gsap.to({}, {
-      duration: 8,
-      repeat: -1,
-      onRepeat: () => setMinutes((prev) => prev.map((m) => m + 1)),
-    })
+      { threshold: 0 },
+    )
+    io.observe(el)
 
     return () => {
+      io.disconnect()
       tweensRef.current.forEach((t) => t.kill())
       tweensRef.current = []
-      tickRef.current?.kill()
-      minuteTick.kill()
     }
   }, [])
 
@@ -94,14 +126,15 @@ export function LiveRoster({ label, illustrative, realNote }: { label: string; i
         duration: 0.25,
         ease: 'power2.out',
         transformOrigin: 'center',
+        overwrite: 'auto',
       })
     })
   }
 
   return (
     <div className="mt-12">
-      <p className="font-sans text-sm text-white/85 mb-2">{realNote}</p>
-      <p className="font-mono text-[9px] uppercase tracking-widest text-white/30 mb-3">{illustrative}</p>
+      <p className="text-[15px] text-white/85 mb-2">{realNote}</p>
+      <p className="font-mono text-[11px] uppercase tracking-widest text-white/35 mb-4">{illustrative}</p>
       <div ref={rootRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {CHANNELS.map((c, i) => (
           <div
@@ -114,14 +147,14 @@ export function LiveRoster({ label, illustrative, realNote }: { label: string; i
             {/* 16:9 thumbnail — abstract gradient + waveform standing in for
                 the character's live frame, not a real likeness. */}
             <div
-              className="relative aspect-video rounded-md overflow-hidden flex items-end justify-center gap-[3px] px-3 pb-3"
+              className="relative aspect-video rounded-xl overflow-hidden flex items-end justify-center gap-[3px] px-3 pb-3"
               style={{ background: `linear-gradient(160deg, hsl(${c.hue} 70% 22%), hsl(${c.hue} 60% 10%))` }}
             >
-              <span className="absolute top-1.5 left-1.5 inline-flex items-center gap-1 bg-red-600 text-white px-1.5 py-[2px] rounded-sm">
+              <span className="absolute top-1.5 left-1.5 inline-flex items-center gap-1 bg-red-600 text-white px-2 py-[3px] rounded-full">
                 <span ref={(el) => { dotRefs.current[i] = el }} className="w-1.5 h-1.5 rounded-full bg-white" />
-                <span className="font-mono text-[8px] font-bold uppercase tracking-wider">live</span>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-wider">live</span>
               </span>
-              <span className="absolute bottom-1.5 right-1.5 font-mono text-[8px] text-white/80 bg-black/50 px-1 py-[1px] rounded-sm">
+              <span className="absolute bottom-1.5 right-1.5 font-mono text-[11px] text-white/80 bg-black/50 px-1.5 py-[2px] rounded-md">
                 {minutes[i]}:00
               </span>
               {Array.from({ length: BARS }).map((_, bi) => (
@@ -135,16 +168,16 @@ export function LiveRoster({ label, illustrative, realNote }: { label: string; i
             </div>
 
             {/* Channel row */}
-            <div className="flex items-start gap-2 mt-2">
+            <div className="flex items-start gap-2 mt-2.5">
               <span
-                className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center font-mono text-[10px] font-bold text-white/90"
+                className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center font-mono text-[11px] font-bold text-white/90"
                 style={{ background: `hsl(${c.hue} 50% 30%)` }}
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="min-w-0">
-                <p className="font-sans text-xs text-white/85 leading-snug truncate">{label} {String(i + 1).padStart(2, '0')} · live now</p>
-                <p className="font-mono text-[10px] text-white/40 mt-0.5">{viewers[i].toLocaleString()} watching · started {minutes[i]}m ago</p>
+                <p className="text-[13px] text-white/85 leading-snug truncate">{label} {String(i + 1).padStart(2, '0')} · live now</p>
+                <p className="font-mono text-[11px] text-white/40 mt-0.5">{viewers[i].toLocaleString()} watching · started {minutes[i]}m ago</p>
               </div>
             </div>
           </div>

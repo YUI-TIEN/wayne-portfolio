@@ -106,15 +106,15 @@ function Readout({
 }) {
   const flashRef = useRef<HTMLDivElement>(null)
   return (
-    <div ref={flashRef} className="bg-black/10 p-4 md:p-5 border-l-2 border-white/15 flex flex-col gap-3">
+    <div ref={flashRef} className="rounded-[16px] bg-white/[0.06] p-4 md:p-5 border-l-2 border-white/15 flex flex-col gap-3">
       <div className="flex items-baseline justify-between gap-3">
-        <dt className="font-mono text-[10px] md:text-[11px] uppercase tracking-wider text-white/50 shrink-0">{label}</dt>
+        <dt className="font-mono text-[11px] uppercase tracking-wider text-white/50 shrink-0">{label}</dt>
         <dd className="font-mono text-xs md:text-sm text-white text-right truncate">
           <Value value={value} lang={lang} flashRef={flashRef} />
         </dd>
       </div>
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[10px] text-white/35 leading-relaxed max-w-[18ch]">{meaning}</p>
+        <p className="text-[13px] text-white/45 leading-relaxed max-w-[18ch]">{meaning}</p>
         <div className="shrink-0">{children}</div>
       </div>
     </div>
@@ -183,7 +183,7 @@ export function LiveSystemStatus({
         <p className="font-mono text-[11px] uppercase tracking-wider text-white/60">{title}</p>
       </div>
 
-      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/15 border border-white/15">
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Reduced motion — the equalizer literally freezes when this is on */}
         <Readout label={rowLabels.reducedMotion} meaning={meanings.reducedMotion} value={reduced ? reducedMotionOn : reducedMotionOff} lang={lang}>
           <div className="flex items-end gap-1 h-5" aria-hidden>
@@ -218,7 +218,7 @@ export function LiveSystemStatus({
 
         {/* Language — four codes, the active locale lit */}
         <Readout label={rowLabels.lang} meaning={meanings.lang} value={lang} lang={lang}>
-          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase" aria-hidden>
+          <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase" aria-hidden>
             {LANGS.map((l) => (
               <span key={l} className={`transition-colors duration-300 ${l === lang ? 'text-white' : 'text-white/30'}`}>
                 {l}
@@ -228,7 +228,7 @@ export function LiveSystemStatus({
         </Readout>
       </dl>
 
-      <p className="mt-4 font-mono text-[10px] uppercase tracking-widest text-white/40 flex flex-wrap gap-x-5 gap-y-1">
+      <p className="mt-4 font-mono text-[11px] uppercase tracking-widest text-white/40 flex flex-wrap gap-x-5 gap-y-1">
         <span><span aria-hidden>↔</span> {resizeHint ?? 'resize the window'}</span>
         <span><span aria-hidden>◐</span> {themeHint ?? 'toggle the theme — top right'}</span>
       </p>

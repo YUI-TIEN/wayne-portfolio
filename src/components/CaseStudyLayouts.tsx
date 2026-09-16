@@ -16,6 +16,24 @@ import { LiveSystemStatus } from './LiveSystemStatus'
 import { GovernanceBand as GovernanceCards } from './TurningPoints'
 import type { CaseStudyTheme } from './caseStudyTheme'
 import { BackLink, MoreWork } from './ProjectNav'
+import {
+  SHELL,
+  CONTAINER,
+  EYEBROW,
+  EYEBROW_MUTED,
+  EYEBROW_ON_DARK,
+  H3,
+  BODY,
+  CARD,
+  TILE_SURFACE,
+  BAND_INVERTED,
+  RULE,
+  DIVIDE,
+  CHIP,
+  ACCENT_ON_DARK,
+  ACCENT_GLOW,
+  ACCENT_GLOW_SOFT,
+} from './caseStudyTokens'
 
 // Shared AI-collaboration-governance band. The site's core axis is that Wayne
 // governs AI (names its blind spots, builds process to constrain them) — so
@@ -27,7 +45,7 @@ function GovernanceBand({ p, theme }: { p: CaseStudyContent; theme: CaseStudyThe
   if (!p.governanceCases || p.governanceCases.length === 0) return null
   return (
     <ScrambleStagger delay={0.3}>
-      <Reveal as="section" variant="up" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+      <Reveal as="section" variant="up" className={`${CONTAINER} py-16 md:py-24`}>
         <GovernanceCards
           cases={p.governanceCases}
           bannerLabel={p.governanceBannerLabel ?? 'AI collaboration governance'}
@@ -57,41 +75,50 @@ type StatsVariant = 'sequence' | 'emphasis' | 'specList' | 'pills'
 function Hero({ p, theme, statsVariant = 'emphasis' }: { p: CaseStudyContent; theme: CaseStudyTheme; statsVariant?: StatsVariant }) {
   return (
     <ScrambleStagger delay={0.08}>
-      <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-20 md:pb-28">
-        <div data-reveal-item className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={p.eyebrow} /></span>
-          <span className="text-neutral-300 dark:text-neutral-600">·</span>
-          {p.tags.map((tag, ti) => (
-            <span key={ti} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400">
-              <ScrambleText text={tag} />
-            </span>
-          ))}
-        </div>
-        {/* Big serif display headline — one of this page's sparing `blur`
-            (focus-pull) moments, reserved for hero-scale text. */}
-        <h1 data-reveal-item data-reveal="blur" className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-[96px] leading-[0.96] md:leading-[0.92] tracking-tight max-w-5xl mb-8"><ScrambleText text={p.label} /></h1>
-        <p data-reveal-item className="font-serif text-2xl md:text-4xl leading-tight max-w-4xl mb-8"><ScrambleText text={p.headline} /></p>
-        <p data-reveal-item className="font-mono text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl leading-relaxed mb-14"><ScrambleText text={p.subheadline} /></p>
+      <section className="relative overflow-hidden">
+        {/* Soft accent glow behind the hero, matching HowIWorkPage / App.tsx. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-56 -left-40 size-[820px] rounded-full opacity-60 dark:opacity-40"
+          style={{ background: ACCENT_GLOW_SOFT }}
+        />
+        <Reveal stagger className={`relative ${CONTAINER} pt-12 pb-20 md:pb-28`}>
+          <div data-reveal-item className="flex flex-wrap items-center gap-2 md:gap-3 mb-10">
+            <span className={EYEBROW_MUTED}><ScrambleText text={p.eyebrow} /></span>
+            <span className="text-black/20 dark:text-white/20">·</span>
+            {p.tags.map((tag, ti) => (
+              <span key={ti} className={CHIP}>
+                <ScrambleText text={tag} />
+              </span>
+            ))}
+          </div>
+          {/* Display headline — one of this page's sparing `blur` (focus-pull)
+              moments, reserved for hero-scale text. Semibold sans, mirroring
+              HowIWorkPage's h1 — no more thin serif display face. */}
+          <h1 data-reveal-item data-reveal="blur" className="text-[40px] leading-[1.05] md:text-6xl lg:text-[80px] lg:leading-[1.02] font-semibold tracking-[-0.04em] max-w-5xl mb-8"><ScrambleText text={p.label} /></h1>
+          <p data-reveal-item className="text-2xl md:text-[32px] font-semibold tracking-[-0.025em] max-w-4xl mb-6"><ScrambleText text={p.headline} /></p>
+          <p data-reveal-item className="text-lg md:text-xl leading-relaxed text-muted dark:text-neutral-400 max-w-2xl mb-14"><ScrambleText text={p.subheadline} /></p>
 
-        <HeroStats p={p} theme={theme} variant={statsVariant} />
-      </Reveal>
+          <HeroStats p={p} theme={theme} variant={statsVariant} />
+        </Reveal>
+      </section>
     </ScrambleStagger>
   )
 }
 
 function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStudyTheme; variant: StatsVariant }) {
-  // sequence (morphus): stats read left-to-right as one flowing line with
-  // arrow separators, echoing the stage-tracker funnel below instead of
+  // sequence (morphus): stats read left-to-right as one flowing baseline row
+  // with arrow separators, echoing the stage-tracker funnel below instead of
   // looking like four unrelated dashboard tiles.
   if (variant === 'sequence') {
     return (
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-4 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+      <div className={`flex flex-wrap items-baseline gap-x-3 gap-y-4 border-t ${RULE} pt-8`}>
         {p.stats.map((s, i) => (
           <span key={i} data-reveal-item data-reveal="flip" className="flex items-baseline gap-3">
-            {i > 0 && <ArrowRight size={14} className="text-neutral-300 dark:text-neutral-600 self-center" />}
+            {i > 0 && <ArrowRight size={14} className="text-muted/40 dark:text-neutral-600 self-center" />}
             <span className="flex items-baseline gap-2">
-              <span className={`font-serif text-2xl md:text-3xl ${theme.accentText}`}><StatValue value={s.value} /></span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></span>
+              <span className={`text-2xl md:text-3xl font-semibold tracking-[-0.03em] ${theme.accentText}`}><StatValue value={s.value} /></span>
+              <span className={EYEBROW_MUTED}><ScrambleText text={s.label} /></span>
             </span>
           </span>
         ))}
@@ -99,50 +126,52 @@ function HeroStats({ p, theme, variant }: { p: CaseStudyContent; theme: CaseStud
     )
   }
 
-  // emphasis (persona): uneven grid where the standout number (the one this
-  // page's body gives its own banner moment to) reads larger than the rest,
-  // instead of four equal-weight tiles flattening every number to the same
-  // importance.
+  // emphasis (persona): uneven grid of rounded tiles where the standout
+  // number (the one this page's body gives its own banner moment to) reads
+  // larger than the rest, instead of four equal-weight tiles flattening
+  // every number to the same importance. Real gaps between tiles, not a
+  // gap-px grid-line seam.
   if (variant === 'emphasis') {
     const leadIndex = p.stats.findIndex((s) => /watch/i.test(s.label))
     const lead = leadIndex >= 0 ? leadIndex : 1
     return (
-      <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-px bg-neutral-200 dark:bg-neutral-800">
+      <div className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-3">
         {p.stats.map((s, i) => (
-          <div key={i} data-reveal-item data-reveal="flip" className="bg-brand-bg dark:bg-brand-ink px-6 py-8">
-            <p className={`font-serif ${i === lead ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl'} ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></p>
+          <div key={i} data-reveal-item data-reveal="flip" className="rounded-[20px] bg-surface dark:bg-white/[0.05] px-6 py-8">
+            <p className={`font-semibold tracking-[-0.03em] ${i === lead ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl'} ${theme.accentText} mb-2 break-words`}><StatValue value={s.value} /></p>
+            <p className={EYEBROW_MUTED}><ScrambleText text={s.label} /></p>
           </div>
         ))}
       </div>
     )
   }
 
-  // specList (voice-migration): label-left, value-right rows instead of big
-  // display numbers — matches the cloud-vs-local spec table this page uses
-  // in its body, so the hero previews the page's own visual language.
+  // specList (voice-migration): label-left, value-right rows divided by
+  // hairline rules instead of big display numbers — matches the cloud-vs-
+  // local spec table this page uses in its body, so the hero previews the
+  // page's own visual language.
   if (variant === 'specList') {
     return (
-      <div className="max-w-md border-t border-neutral-200 dark:border-neutral-800">
+      <div className={`max-w-md border-t ${RULE}`}>
         {p.stats.map((s, i) => (
-          <div key={i} data-reveal-item data-reveal="flip" className="flex items-baseline justify-between gap-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><ScrambleText text={s.label} /></span>
-            <span className={`font-serif text-xl md:text-2xl ${theme.accentText}`}><StatValue value={s.value} /></span>
+          <div key={i} data-reveal-item data-reveal="flip" className={`flex items-baseline justify-between gap-4 py-3 border-b ${RULE}`}>
+            <span className={EYEBROW_MUTED}><ScrambleText text={s.label} /></span>
+            <span className={`text-xl md:text-2xl font-semibold tracking-[-0.03em] ${theme.accentText}`}><StatValue value={s.value} /></span>
           </div>
         ))}
       </div>
     )
   }
 
-  // pills (portfolio-site): loose inline badges with no grid lines — the
+  // pills (portfolio-site): loose rounded pills with no grid lines — the
   // meta page's whole point is "not a templated layout," so even its stats
   // skip the boxed-grid convention every other section on the site uses.
   return (
     <div className="flex flex-wrap gap-3">
       {p.stats.map((s, i) => (
-        <div key={i} data-reveal-item data-reveal="flip" className={`flex items-baseline gap-2 px-4 py-2 rounded-full border ${theme.accentText} border-current/30`}>
-          <span className="font-serif text-lg md:text-xl"><StatValue value={s.value} /></span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">{s.label}</span>
+        <div key={i} data-reveal-item data-reveal="flip" className="flex items-baseline gap-2 rounded-full bg-surface dark:bg-white/[0.07] px-4 py-2">
+          <span className={`text-lg md:text-xl font-semibold tracking-[-0.03em] ${theme.accentText}`}><StatValue value={s.value} /></span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400">{s.label}</span>
         </div>
       ))}
     </div>
@@ -153,16 +182,23 @@ function ProblemBand({ p, t, children }: { p: CaseStudyContent; t: ProjectPageCo
   // Every project page's dark problem band gets the same wipe-reveal
   // identity (matches OpenClaw's bespoke layout) — a consistent motif
   // rather than template fatigue, since it's the same recurring section
-  // shape across all five project pages.
+  // shape across all four project pages. Now a rounded graphite card inside
+  // the container (like HowIWorkPage's closing CTA) instead of a full-bleed
+  // color band.
   return (
     <ScrambleStagger delay={0.16}>
-      <Reveal as="section" variant="clip" className="bg-brand-ink dark:bg-black py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-8"><ScrambleText text={t.theProblem} /></h2>
-          <p className="font-serif text-2xl sm:text-3xl md:text-5xl leading-tight text-white max-w-4xl">
+      <Reveal as="section" variant="clip" className={`${CONTAINER} py-16 md:py-24`}>
+        <div className={BAND_INVERTED}>
+          <div
+            aria-hidden="true"
+            className="absolute -z-10 -right-40 -bottom-56 size-[680px] rounded-full opacity-70"
+            style={{ background: ACCENT_GLOW }}
+          />
+          <h2 className={`${EYEBROW_ON_DARK} mb-8`}><ScrambleText text={t.theProblem} /></h2>
+          <p className="text-2xl sm:text-3xl md:text-[40px] leading-[1.1] font-semibold tracking-[-0.03em] text-white max-w-4xl">
             <ScrambleText text={p.problem} />
           </p>
-          <p className="font-mono text-xs text-white/45 mt-8 max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-white/60 mt-8 max-w-2xl leading-relaxed">
             <ScrambleText text={`Role: ${p.role}`} />
           </p>
           {children}
@@ -176,9 +212,9 @@ function Footer({ t, lang, currentId, onBack }: { t: ProjectPageCopy; lang: Lang
   // Closing moment: a small `scale` pop on the way out (matches OpenClaw).
   return (
     <ScrambleStagger delay={0.4}>
-      <Reveal variant="scale" className="border-t border-neutral-100 dark:border-neutral-800">
+      <Reveal variant="scale" className={`border-t ${RULE}`}>
         <MoreWork t={t} lang={lang} currentId={currentId} />
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+        <div className={`${CONTAINER} py-10`}>
           <BackLink t={t} lang={lang} onBack={onBack} />
         </div>
       </Reveal>
@@ -196,7 +232,12 @@ export interface LayoutProps {
   onBack: (e: React.MouseEvent) => void
 }
 
-const shell = 'min-h-screen bg-brand-bg dark:bg-brand-ink text-neutral-900 dark:text-white font-sans overflow-x-clip'
+const shell = SHELL
+
+// Large inverted card, matching CARD's 28px radius/padding but graphite —
+// the "after" half of a before/after comparison, so the contrast between
+// columns still reads once every project shares one accent.
+const CARD_INVERTED = 'rounded-[28px] bg-graphite text-white dark:bg-white dark:text-graphite p-8 md:p-12'
 
 // ── morphus-website: pipeline / stage tracker ──────────────────────────────
 // Content is a funnel (idea -> prototype -> POC -> demo); show it as a literal
@@ -216,8 +257,8 @@ export function MorphusLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
           distinctive moment — the whole tracker wipes into view like the
           funnel is being revealed stage by stage. */}
       <ScrambleStagger delay={0.22}>
-        <Reveal as="section" variant="clip" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-10"><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
+        <Reveal as="section" variant="clip" className={`${CONTAINER} py-16 md:py-24`}>
+          <p className={`${EYEBROW_MUTED} mb-10`}><ScrambleText text={p.stageTrackerLabel ?? 'Idea → Demo'} /></p>
           <IdeaPipeline
             stages={stages}
             before={p.before}
@@ -229,15 +270,15 @@ export function MorphusLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
         </Reveal>
       </ScrambleStagger>
 
-      {/* Contributions as a light 2-col skill list, no heavy color band. */}
+      {/* Contributions as a light 2-col tile grid, no heavy color band. */}
       <ScrambleStagger delay={0.28}>
-        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 pb-16 md:pb-24">
-          <h2 data-reveal-item className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentText} mb-8`}><ScrambleText text={t.whatIDid} /></h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-5">
+        <Reveal as="section" stagger className={`${CONTAINER} pb-16 md:pb-24`}>
+          <h2 data-reveal-item className={`${EYEBROW} mb-8`}><ScrambleText text={t.whatIDid} /></h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {p.contributions.map((item, i) => (
-              <div key={i} data-reveal-item data-reveal="fade" className="flex gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-5">
-                <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                <p className="font-mono text-xs md:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed"><ScrambleText text={item} /></p>
+              <div key={i} data-reveal-item data-reveal="fade" className={`${TILE_SURFACE} flex gap-4`}>
+                <span className="font-mono text-[11px] text-accent-ink dark:text-accent-soft shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                <p className="text-[15px] leading-relaxed text-graphite dark:text-neutral-200"><ScrambleText text={item} /></p>
               </div>
             ))}
           </div>
@@ -284,43 +325,39 @@ export function PersonaLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
       </ProblemBand>
 
       {/* Watch-hours banner — Persona's distinctive moment. The standout
-          number gets its own full-width row with a live audio-waveform
-          backdrop so it reads as "on air"; the giant serif stat gets a
-          sparing `blur` focus-pull, the caption trails in beside it. */}
+          number gets a rounded graphite card with a live audio-waveform
+          backdrop so it reads as "on air"; the giant stat gets a sparing
+          `blur` focus-pull, the caption trails in beside it. */}
       <ScrambleStagger delay={0.2}>
-        <Reveal as="section" stagger className={`${theme.accentBandBg} relative overflow-hidden min-h-[240px] md:min-h-[420px] py-12 md:py-20 flex items-center`}>
-          <WatchWaveform />
-          <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <p data-reveal-item data-reveal="blur" className="font-serif text-6xl md:text-8xl text-white leading-none"><StatValue value={watchStat.value} /></p>
-            <p data-reveal-item className="font-mono text-xs md:text-sm text-white/70 max-w-sm leading-relaxed">
-              <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
-            </p>
+        <Reveal as="section" stagger className={`${CONTAINER} py-8 md:py-12`}>
+          <div className="relative isolate overflow-hidden rounded-[32px] bg-graphite text-white min-h-[240px] md:min-h-[420px] py-12 md:py-20 px-6 md:px-12 flex items-center">
+            <WatchWaveform />
+            <div className="relative w-full flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <p data-reveal-item data-reveal="blur" className="text-6xl md:text-8xl font-semibold tracking-[-0.04em] text-white leading-none"><StatValue value={watchStat.value} /></p>
+              <p data-reveal-item className="text-[15px] text-white/60 max-w-sm leading-relaxed">
+                <ScrambleText text={p.watchHoursCaption ?? `${watchStat.label} — accumulated from real viewers, not a lab demo.`} />
+              </p>
+            </div>
           </div>
         </Reveal>
       </ScrambleStagger>
 
       <ScrambleStagger delay={0.26}>
-        <Reveal as="section" stagger className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <div data-reveal-item data-reveal="left">
-              <h3 className="font-serif text-2xl text-neutral-300 dark:text-neutral-600 mb-8 leading-none"><ScrambleText text={t.before} /></h3>
-              <ul className="space-y-6">
+        <Reveal as="section" stagger className={`${CONTAINER} py-16 md:py-24`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div data-reveal-item data-reveal="left" className={CARD}>
+              <h3 className={`${H3} text-muted dark:text-neutral-400 mb-6`}><ScrambleText text={t.before} /></h3>
+              <ul className={`divide-y ${DIVIDE}`}>
                 {p.before.map((item, i) => (
-                  <li key={i} className="flex gap-5">
-                    <span className="font-mono text-[10px] text-neutral-300 dark:text-neutral-600 mt-1 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800 pb-6"><ScrambleText text={item} /></p>
-                  </li>
+                  <li key={i} className="py-4 text-[15px] leading-relaxed text-muted dark:text-neutral-400"><ScrambleText text={item} /></li>
                 ))}
               </ul>
             </div>
-            <div data-reveal-item data-reveal="right">
-              <h3 className={`font-serif text-2xl ${theme.accentText} mb-8 leading-none`}><ScrambleText text={t.after} /></h3>
-              <ul className="space-y-6">
+            <div data-reveal-item data-reveal="right" className={CARD_INVERTED}>
+              <h3 className={`${H3} text-accent-soft dark:text-accent-ink mb-6`}><ScrambleText text={t.after} /></h3>
+              <ul className="divide-y divide-white/15 dark:divide-black/10">
                 {p.after.map((item, i) => (
-                  <li key={i} className="flex gap-5">
-                    <span className={`font-mono text-[10px] ${theme.accentText} opacity-40 mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
-                    <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-6 font-medium"><ScrambleText text={item} /></p>
-                  </li>
+                  <li key={i} className="py-4 text-[15px] leading-relaxed font-medium"><ScrambleText text={item} /></li>
                 ))}
               </ul>
             </div>
@@ -329,7 +366,7 @@ export function PersonaLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
           {/* Consolidation visual — the four formerly-manual pieces snapping
               onto one runtime spine, making the Before→After story something
               you watch resolve rather than just read. */}
-          <div data-reveal-item data-reveal="fade">
+          <div data-reveal-item data-reveal="fade" className="mt-12">
             <PersonaTransition
               accentText={theme.accentText}
               accentBg={theme.accentBandBg}
@@ -355,23 +392,30 @@ export function PersonaLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
   )
 }
 
-// Shared contributions band (kept for persona, which still benefits from the
-// color block to break up its long content), now accent-themed.
+// Shared contributions band (kept for persona and voice, which still benefit
+// from a color block to break up long content) — now a rounded graphite card
+// inside the container, matching the Problem band's treatment, with real
+// gaps between tiles instead of a gap-px seam.
 function ContributionsBand({ p, t, theme }: { p: CaseStudyContent; t: ProjectPageCopy; theme: CaseStudyTheme }) {
   return (
     <ScrambleStagger delay={0.28}>
-      <Reveal as="section" stagger className={`${theme.accentBandBg} py-16 md:py-24`}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <Reveal as="section" stagger className={`${CONTAINER} py-8 md:py-12`}>
+        <div className={`relative isolate overflow-hidden rounded-[32px] ${theme.accentBandBg} text-white p-10 md:p-16`}>
+          <div
+            aria-hidden="true"
+            className="absolute -z-10 -right-40 -bottom-56 size-[680px] rounded-full opacity-70"
+            style={{ background: ACCENT_GLOW }}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12">
             <div data-reveal-item data-reveal="left">
-              <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={t.contributions} /></p>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight"><ScrambleText text={t.whatIDid} /></h2>
+              <p className={`font-mono text-[11px] uppercase tracking-[0.14em] ${theme.accentBandText} mb-6`}><ScrambleText text={t.contributions} /></p>
+              <h2 className="text-2xl sm:text-3xl md:text-[44px] font-semibold tracking-[-0.03em] leading-tight"><ScrambleText text={t.whatIDid} /></h2>
             </div>
-            <div className={`space-y-px ${theme.accentTileBg}`}>
+            <div className="grid gap-3">
               {p.contributions.map((item, i) => (
-                <div key={i} data-reveal-item data-reveal="fade" className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5 hover:bg-white/5 transition-colors`}>
-                  <span className={`font-mono text-[10px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
-                  <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} leading-relaxed`}><ScrambleText text={item} /></p>
+                <div key={i} data-reveal-item data-reveal="fade" className="rounded-[20px] bg-white/[0.06] hover:bg-white/[0.1] transition-colors p-6 md:p-7 flex gap-5">
+                  <span className={`font-mono text-[11px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
+                  <p className="text-[15px] leading-relaxed text-white/80"><ScrambleText text={item} /></p>
                 </div>
               ))}
             </div>
@@ -405,7 +449,7 @@ export function VoiceLayout({ p, t, lang, projectId, theme, nav, onBack }: Layou
           Voice's distinctive moment — the demo scales in, echoing the
           cloud-to-local "settling into place" story. */}
       <ScrambleStagger delay={0.22}>
-        <Reveal as="section" variant="scale" className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <Reveal as="section" variant="scale" className={`${CONTAINER} py-16 md:py-24`}>
           <MigrationDemo
             accentText={theme.accentText}
             pathLabel={p.migrationPathLabel ?? 'Cloud → Local'}
@@ -447,18 +491,23 @@ export function PortfolioLayout({ p, t, lang, projectId, theme, nav, onBack }: L
       <ProblemBand p={p} t={t} />
 
       {/* Live proof: the page demonstrates an interaction it's describing.
-          Portfolio's distinctive moment — a richly choreographed accent
-          band where the heading, the two live-proof demos, and the
+          Portfolio's distinctive moment — a richly choreographed rounded
+          graphite card where the heading, the two live-proof demos, and the
           contributions grid each stagger in with their own beat. */}
       <ScrambleStagger delay={0.22}>
-        <Reveal as="section" stagger className={`${theme.accentBandBg} py-16 md:py-24`}>
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <Reveal as="section" stagger className={`${CONTAINER} py-8 md:py-12`}>
+          <div className={BAND_INVERTED}>
+            <div
+              aria-hidden="true"
+              className="absolute -z-10 -right-40 -bottom-56 size-[680px] rounded-full opacity-70"
+              style={{ background: ACCENT_GLOW }}
+            />
             <div data-reveal-item>
-              <p className={`font-mono text-[10px] uppercase tracking-widest ${theme.accentBandText} mb-6`}><ScrambleText text={p.liveProofLabel ?? 'Live proof'} /></p>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-white leading-tight max-w-3xl mb-4">
+              <p className={`font-mono text-[11px] uppercase tracking-[0.14em] ${theme.accentBandText} mb-6`}><ScrambleText text={p.liveProofLabel ?? 'Live proof'} /></p>
+              <h2 className="text-2xl sm:text-3xl md:text-[44px] font-semibold tracking-[-0.03em] leading-tight max-w-3xl mb-4">
                 <ScrambleText text={p.liveProofTitle ?? 'This page is the artifact.'} />
               </h2>
-              <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} max-w-xl leading-relaxed mb-6`}>
+              <p className={`text-[15px] md:text-base leading-relaxed ${theme.accentBandBody} max-w-xl mb-6`}>
                 <ScrambleText text={p.liveProofBody ?? 'Every heading you scrolled past decoded character by character. Switch the site language and the whole page re-scrambles into the new script — built, not templated.'} />
               </p>
             </div>
@@ -500,11 +549,11 @@ export function PortfolioLayout({ p, t, lang, projectId, theme, nav, onBack }: L
               />
             </div>
 
-            <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-px bg-white/10">
+            <div className="mt-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-3">
               {p.contributions.map((item, i) => (
-                <div key={i} data-reveal-item data-reveal="flip" className={`${theme.accentBandBg} p-6 md:p-7 flex gap-5`}>
-                  <span className={`font-mono text-[10px] ${theme.accentBandText} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
-                  <p className={`font-mono text-xs md:text-sm ${theme.accentBandBody} leading-relaxed`}><ScrambleText text={item} /></p>
+                <div key={i} data-reveal-item data-reveal="flip" className="rounded-[20px] bg-white/[0.06] p-6 md:p-7 flex gap-5">
+                  <span className={`font-mono text-[11px] ${ACCENT_ON_DARK} mt-1 shrink-0`}>{String(i + 1).padStart(2, '0')}</span>
+                  <p className="text-[15px] leading-relaxed text-white/80"><ScrambleText text={item} /></p>
                 </div>
               ))}
             </div>
@@ -519,22 +568,22 @@ export function PortfolioLayout({ p, t, lang, projectId, theme, nav, onBack }: L
 
       {/* Outcomes as pull-quotes — self-referential copy reads better large. */}
       <ScrambleStagger delay={0.34}>
-        <Reveal as="section" stagger className="bg-surface dark:bg-neutral-900 py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <h2 className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-12"><ScrambleText text={t.outcomes} /></h2>
+        <Reveal as="section" stagger className="bg-surface dark:bg-white/[0.03] py-16 md:py-24">
+          <div className={CONTAINER}>
+            <h2 className={`${EYEBROW_MUTED} mb-12`}><ScrambleText text={t.outcomes} /></h2>
             <div className="space-y-12 md:space-y-16 max-w-4xl">
               {p.outcomes.map((o, i) => (
                 <div key={i} data-reveal-item className="flex flex-col md:flex-row gap-4 md:gap-8">
-                  <span className={`font-serif text-4xl md:text-6xl ${theme.accentText} leading-none shrink-0 md:w-20`}>{String(i + 1).padStart(2, '0')}</span>
+                  <span className={`text-4xl md:text-6xl font-semibold tracking-[-0.03em] ${theme.accentText} leading-none shrink-0 md:w-20`}>{String(i + 1).padStart(2, '0')}</span>
                   <div>
-                    <p className="font-serif text-2xl md:text-4xl text-neutral-900 dark:text-white mb-3 leading-tight"><ScrambleText text={o.title} /></p>
-                    <p className="font-mono text-xs md:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-2xl"><ScrambleText text={o.detail} /></p>
+                    <p className="text-2xl md:text-4xl font-semibold tracking-[-0.03em] text-graphite dark:text-white mb-3 leading-tight"><ScrambleText text={o.title} /></p>
+                    <p className={`${BODY} max-w-2xl`}><ScrambleText text={o.detail} /></p>
                   </div>
                 </div>
               ))}
             </div>
             {p.note && (
-              <p data-reveal-item className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
+              <p data-reveal-item className="font-mono text-[11px] text-muted dark:text-neutral-400 mt-12 max-w-2xl leading-relaxed"><ScrambleText text={p.note} /></p>
             )}
           </div>
         </Reveal>

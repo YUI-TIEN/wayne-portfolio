@@ -6,8 +6,8 @@ import { useEffect, useRef } from 'react'
 // needed; it fills the hero's empty space and reads as a quiet, technical
 // "field" that matches the site's mono / scramble tone.
 //
-// Raw canvas + requestAnimationFrame (same approach as CustomCursor) so it
-// never goes through React's render cycle. Sits behind the hero card (z-0),
+// Raw canvas + requestAnimationFrame, driven entirely outside React so the
+// per-frame work never goes through the render cycle. Sits behind the hero card (z-0),
 // pointer-events-none, skipped on touch and under prefers-reduced-motion.
 
 interface Dot {
@@ -108,8 +108,10 @@ export function HeroDotGrid({
     // disturbed before the first move / after the cursor leaves.
     const pointer = { x: -1000, y: -1000 }
 
-    // Theme-aware: brand-blue on the light cream bg, lime on the dark ink bg.
-    // The toggle flips the `dark` class on <html>, so observe that rather than
+    // Theme-aware: the caller supplies one dot color per theme, since the
+    // lattice has to stay legible on both the light canvas and the dark ink
+    // ground. The toggle flips the `dark` class on <html>, so observe that
+    // rather than
     // re-running the whole effect.
     let dotColor = isDarkMode() ? colorDark : colorLight
     const themeObserver = new MutationObserver(() => {

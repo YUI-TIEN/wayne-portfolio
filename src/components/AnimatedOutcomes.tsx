@@ -10,6 +10,7 @@ import {
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { Reveal } from './Reveal'
 import { skipsScrollAnimation } from './motionGuards'
+import { EYEBROW_MUTED } from './caseStudyTokens'
 
 // Shared upgraded outcomes grid used across all case studies. The original
 // OutcomesGrid rendered a small static glyph in the corner of each cream tile,
@@ -45,8 +46,8 @@ export function AnimatedOutcomes({
   outcomesLabel: string
   note?: string
   iconSet: keyof typeof ICON_SETS
-  accentText: string // e.g. text-brand-violet
-  accentBg: string // e.g. bg-brand-pink (hover flood)
+  accentText: string // e.g. text-accent-ink dark:text-accent-soft
+  accentBg: string // e.g. bg-accent (hover flood)
 }) {
   const icons = ICON_SETS[iconSet] ?? ICON_SETS.product
   const rootRef = useRef<HTMLDivElement>(null)
@@ -62,26 +63,39 @@ export function AnimatedOutcomes({
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting || playedRef.current) continue
-          playedRef.current = true
-          iconRefs.current.forEach((icon, i) => {
-            if (!icon) return
-            gsap.fromTo(
-              icon,
-              { scale: 0.4, opacity: 0, rotate: -12 },
-              { scale: 1, opacity: 1, rotate: 0, duration: 0.6, ease: 'back.out(2.2)', delay: i * 0.1 },
-            )
-          })
-          const first = iconRefs.current[0]
-          if (first) {
-            pulseRef.current = gsap.to(first, {
-              scale: 1.12,
-              duration: 1.2,
-              ease: 'sine.inOut',
-              repeat: -1,
-              yoyo: true,
-              delay: 0.7,
-            })
+          if (entry.isIntersecting) {
+            if (!playedRef.current) {
+              // First entry: run the one-time entrance, then start the first
+              // icon's "live" pulse loop.
+              playedRef.current = true
+              iconRefs.current.forEach((icon, i) => {
+                if (!icon) return
+                gsap.fromTo(
+                  icon,
+                  { scale: 0.4, opacity: 0, rotate: -12 },
+                  { scale: 1, opacity: 1, rotate: 0, duration: 0.6, ease: 'back.out(2.2)', delay: i * 0.1 },
+                )
+              })
+              const first = iconRefs.current[0]
+              if (first) {
+                pulseRef.current = gsap.to(first, {
+                  scale: 1.12,
+                  duration: 1.2,
+                  ease: 'sine.inOut',
+                  repeat: -1,
+                  yoyo: true,
+                  delay: 0.7,
+                })
+              }
+            } else {
+              // Re-entering after having left the viewport: resume the pulse
+              // instead of leaving it paused forever.
+              pulseRef.current?.resume()
+            }
+          } else {
+            // Off-screen: pause the `repeat: -1` pulse rather than letting it
+            // run forever while scrolled out of view.
+            pulseRef.current?.pause()
           }
         }
       },
@@ -96,9 +110,9 @@ export function AnimatedOutcomes({
 
   return (
     <ScrambleStagger delay={0.34}>
-      <Reveal as="section" stagger className="bg-surface dark:bg-neutral-900 py-16 md:py-24">
+      <Reveal as="section" stagger className="bg-surface dark:bg-white/[0.05] py-16 md:py-24">
         <div ref={rootRef} className="max-w-7xl mx-auto px-6 md:px-12">
-          <h2 data-reveal-item className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-12">
+          <h2 data-reveal-item className={`${EYEBROW_MUTED} mb-12`}>
             <ScrambleText text={outcomesLabel} />
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -111,7 +125,7 @@ export function AnimatedOutcomes({
                   data-reveal-item
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
-                  className={`group relative overflow-hidden border border-neutral-200 dark:border-neutral-700 p-8 min-h-[260px] flex flex-col transition-colors duration-300 ${on ? accentBg : 'bg-transparent'}`}
+                  className={`group relative overflow-hidden rounded-[20px] ring-1 ring-black/[0.06] dark:ring-white/10 p-8 min-h-[260px] flex flex-col transition-colors duration-300 ${on ? accentBg : 'bg-canvas dark:bg-white/[0.04]'}`}
                 >
                   <div className="flex items-center justify-between mb-8">
                     <span
@@ -121,14 +135,14 @@ export function AnimatedOutcomes({
                     >
                       <Icon size={i === 0 ? 38 : 34} strokeWidth={1.5} />
                     </span>
-                    <span className={`font-mono text-[11px] ${on ? 'text-white/60' : 'text-neutral-300 dark:text-neutral-600'} transition-colors`}>
+                    <span className={`font-mono text-[11px] ${on ? 'text-white/60' : 'text-black/20 dark:text-white/20'} transition-colors`}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                   </div>
-                  <p className={`font-serif text-2xl md:text-3xl mb-4 leading-tight transition-colors ${on ? 'text-white' : 'text-neutral-900 dark:text-white'}`}>
+                  <p className={`text-2xl md:text-3xl font-semibold tracking-[-0.02em] mb-4 leading-tight transition-colors ${on ? 'text-white' : 'text-graphite dark:text-white'}`}>
                     <ScrambleText text={o.title} />
                   </p>
-                  <p className={`font-mono text-xs leading-relaxed transition-colors ${on ? 'text-white/85' : 'text-neutral-500 dark:text-neutral-400'}`}>
+                  <p className={`text-[13px] leading-relaxed transition-colors ${on ? 'text-white/85' : 'text-muted dark:text-neutral-400'}`}>
                     <ScrambleText text={o.detail} />
                   </p>
                 </div>
@@ -136,7 +150,7 @@ export function AnimatedOutcomes({
             })}
           </div>
           {note && (
-            <p data-reveal-item className="font-mono text-[11px] text-neutral-400 mt-8 max-w-2xl leading-relaxed">
+            <p data-reveal-item className="text-[13px] text-muted dark:text-neutral-400 mt-8 max-w-2xl leading-relaxed">
               <ScrambleText text={note} />
             </p>
           )}

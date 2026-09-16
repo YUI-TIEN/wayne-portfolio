@@ -6,7 +6,7 @@ export interface MathCurveLoaderProps {
   colorClass?: string;
 }
 
-export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, colorClass = 'fill-brand-lime' }) => {
+export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, colorClass = 'fill-accent-soft' }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -69,14 +69,15 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
       }
 
       const colorName = targetClass.replace('fill-', '');
-      if (colorName === 'brand-orange') return '#F94E0A';
-      if (colorName === 'brand-lime') return '#C4FF3D';
-      if (colorName === 'brand-blue') return '#3B5BFC';
-      if (colorName === 'brand-peach') return '#F9D4C4';
-      if (colorName === 'brand-violet') return '#5B1FF0';
-      if (colorName === 'brand-teal') return '#206A6E';
-      if (colorName === 'brand-limeBg') return '#9BBE3D';
-      return '#C4FF3D';
+      // Current design-language tokens (see src/index.css @theme).
+      if (colorName === 'accent') return '#F94E0A';
+      if (colorName === 'accent-ink') return '#C2410C';
+      if (colorName === 'accent-soft') return '#FF8A4C';
+      if (colorName === 'graphite') return '#1d1d1f';
+      if (colorName === 'canvas') return '#fbfbfd';
+      if (colorName === 'surface') return '#f5f5f7';
+      if (colorName === 'ink') return '#0f0f10';
+      return '#FF8A4C';
     };
 
     const render = (time: number) => {

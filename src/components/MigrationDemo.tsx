@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { Cloud, Server, ArrowRight } from 'lucide-react'
-import { Magnetic } from './Magnetic'
 import { skipsScrollAnimation } from './motionGuards'
+import { TILE_RING, TILE_INVERTED, RULE } from './caseStudyTokens'
 
 interface MigrationDemoProps {
   accentText: string
@@ -25,8 +25,8 @@ const DEFAULT_CONSTRAINTS = ['Chinese only', 'Per-usage cost', 'Network latency'
 function Bar({ label, color, refCb, restFill }: { label: string; color: string; refCb: (el: HTMLSpanElement | null) => void; restFill: number }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="font-mono text-[9px] uppercase tracking-wider text-neutral-400 w-14 shrink-0">{label}</span>
-      <span className="flex-1 h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+      <span className="font-mono text-[11px] uppercase tracking-wider text-muted dark:text-neutral-400 w-14 shrink-0">{label}</span>
+      <span className="flex-1 h-1.5 bg-black/[0.06] dark:bg-white/10 rounded-full overflow-hidden">
         <span ref={refCb} className={`block h-full ${color} rounded-full`} style={{ width: '100%', transform: `scaleX(${restFill})`, transformOrigin: 'left center' }} />
       </span>
     </div>
@@ -119,24 +119,24 @@ export function MigrationDemo({
 
   return (
     <div ref={rootRef}>
-      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-10">{pathLabel}</p>
+      <p className="font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-400 mb-10">{pathLabel}</p>
 
       <div className="flex flex-col md:flex-row md:items-stretch gap-4 md:gap-8 mb-14">
         {/* Cloud card: retiring, with cost/latency bars + falling constraints */}
-        <div className="flex-1 border-2 border-neutral-200 dark:border-neutral-800 p-6 md:p-8">
-          <Cloud size={28} className="text-neutral-400 mb-5" strokeWidth={1.75} />
-          <p className="font-serif text-xl md:text-2xl text-neutral-400 dark:text-neutral-500 mb-3 line-through decoration-neutral-300 dark:decoration-neutral-700">{cloudTitle}</p>
-          <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500 leading-relaxed mb-6">{cloudBody}</p>
+        <div className={`flex-1 ${TILE_RING}`}>
+          <Cloud size={28} className="text-muted dark:text-neutral-500 mb-5" strokeWidth={1.75} />
+          <p className="text-xl md:text-2xl font-semibold tracking-[-0.02em] text-muted dark:text-neutral-500 mb-3 line-through decoration-black/20 dark:decoration-white/20">{cloudTitle}</p>
+          <p className="text-[13px] text-muted dark:text-neutral-500 leading-relaxed mb-6">{cloudBody}</p>
           <div className="space-y-2.5 mb-5">
-            <Bar label="cost" color="bg-brand-red" refCb={(el) => { cloudBarRefs.current[0] = el }} restFill={0.18} />
-            <Bar label="latency" color="bg-brand-red" refCb={(el) => { cloudBarRefs.current[1] = el }} restFill={0.18} />
+            <Bar label="cost" color="bg-black/25 dark:bg-white/25" refCb={(el) => { cloudBarRefs.current[0] = el }} restFill={0.18} />
+            <Bar label="latency" color="bg-black/25 dark:bg-white/25" refCb={(el) => { cloudBarRefs.current[1] = el }} restFill={0.18} />
           </div>
           <div className="flex flex-wrap gap-2">
             {constraints.map((c, i) => (
               <span
                 key={c}
                 ref={(el) => { chipRefs.current[i] = el }}
-                className="font-mono text-[9px] uppercase tracking-wider px-2 py-1 border border-neutral-300 dark:border-neutral-700 text-neutral-400"
+                className="font-mono text-[11px] uppercase tracking-wider rounded-full px-2.5 py-1 ring-1 ring-black/[0.08] dark:ring-white/15 text-muted dark:text-neutral-500"
                 style={{ opacity: 0 }}
               >
                 {c}
@@ -149,43 +149,42 @@ export function MigrationDemo({
           <ArrowRight size={26} className={`${accentText} rotate-90 md:rotate-0`} />
         </div>
 
-        {/* Local card: arriving, bars rising */}
-        <div className="flex-1 border-2 p-6 md:p-8 border-brand-teal/40">
-          <Server size={28} className={`${accentText} mb-5`} strokeWidth={1.75} />
-          <p className="font-serif text-xl md:text-2xl text-neutral-900 dark:text-white mb-3">{localTitle}</p>
-          <p className="font-mono text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6">{localBody}</p>
+        {/* Local card: arriving, bars rising — the one-per-section inverted
+            emphasis surface, since this is the state the migration lands on. */}
+        <div className={`flex-1 ${TILE_INVERTED}`}>
+          <Server size={28} className="mb-5 opacity-90" strokeWidth={1.75} />
+          <p className="text-xl md:text-2xl font-semibold tracking-[-0.02em] mb-3">{localTitle}</p>
+          <p className="text-[13px] leading-relaxed mb-6 opacity-75">{localBody}</p>
           <div className="space-y-2.5">
-            <Bar label="speed" color="bg-brand-teal" refCb={(el) => { localBarRefs.current[0] = el }} restFill={1} />
-            <Bar label="languages" color="bg-brand-teal" refCb={(el) => { localBarRefs.current[1] = el }} restFill={1} />
+            <Bar label="speed" color="bg-accent" refCb={(el) => { localBarRefs.current[0] = el }} restFill={1} />
+            <Bar label="languages" color="bg-accent" refCb={(el) => { localBarRefs.current[1] = el }} restFill={1} />
           </div>
         </div>
       </div>
 
       {/* Spec comparison rows, revealed in sequence on play */}
-      <div className="border-t border-neutral-200 dark:border-neutral-800">
+      <div className={`border-t ${RULE}`}>
         {specRows.map((row, i) => (
           <div
             key={row.k}
             ref={(el) => { rowRefs.current[i] = el }}
-            className="grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_1.4fr] gap-1 sm:gap-4 py-4 border-b border-neutral-200 dark:border-neutral-800 sm:items-baseline"
+            className={`grid grid-cols-1 sm:grid-cols-[1fr_1.4fr_1.4fr] gap-1 sm:gap-4 py-4 border-b sm:items-baseline ${RULE}`}
             style={{ opacity: 1 }}
           >
-            <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">{row.k}</span>
-            <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-300 dark:decoration-neutral-700">{row.cloud}</span>
-            <span className={`font-mono text-xs ${accentText} font-medium`}>{row.local}</span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-400">{row.k}</span>
+            <span className="text-[13px] text-muted dark:text-neutral-500 line-through decoration-black/20 dark:decoration-white/20">{row.cloud}</span>
+            <span className={`text-[13px] ${accentText} font-medium`}>{row.local}</span>
           </div>
         ))}
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Magnetic scaleOnHover={1.08}>
-          <button
-            onClick={play}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-          >
-            <span aria-hidden>▶</span> {replayLabel}
-          </button>
-        </Magnetic>
+        <button
+          onClick={play}
+          className="inline-flex items-center gap-2 rounded-full bg-surface dark:bg-white/[0.07] px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-400 hover:bg-surface-strong dark:hover:bg-white/[0.12] hover:text-graphite dark:hover:text-white transition-colors"
+        >
+          <span aria-hidden>▶</span> {replayLabel}
+        </button>
       </div>
     </div>
   )

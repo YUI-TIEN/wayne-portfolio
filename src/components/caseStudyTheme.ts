@@ -1,7 +1,12 @@
-// Per-case-study visual identity. Each project gets its own accent so the
-// four case studies don't all read as the same orange/blue/cream template —
-// the accent threads through the stat numbers, section bands, and outcome
-// icons of that one page. `iconSet` maps to the named sets in OutcomeIcon.
+// Per-case-study visual data. This used to carry a distinct accent hue per
+// project (orange/violet/teal/blue) so each case study felt like its own
+// identity. The site's new design language ("field manual on an Apple-style
+// light ground, with liquid glass" — see HowIWorkPage.tsx / App.tsx) enforces
+// a single accent everywhere, so per-project hues were retired: all four
+// entries below now share the same orange accent tokens. The four case
+// studies still read as distinct pages, but that distinction now comes from
+// structure (the stage tracker vs. the live roster vs. the migration demo)
+// and from each project's own interactive demo, not from color.
 //
 // Kept in its own (component-free) file so CaseStudyLayouts can stay a
 // components-only module for Fast Refresh.
@@ -15,47 +20,34 @@ export interface CaseStudyTheme {
   iconSet: 'product' | 'live' | 'voice' | 'meta'
 }
 
+const SHARED_ACCENT = {
+  accentText: 'text-accent-ink dark:text-accent-soft',
+  accentBandBg: 'bg-graphite',
+  accentBandText: 'text-accent-soft',
+  accentBandBody: 'text-white/70',
+  accentTileBg: 'bg-white/10',
+  accentInteractBg: 'bg-accent',
+} as const
+
 const THEMES: Record<string, CaseStudyTheme> = {
   // Warm product-builder feel.
   'morphus-website': {
-    accentText: 'text-brand-orange',
-    accentBandBg: 'bg-brand-orange',
-    accentBandText: 'text-white/70',
-    accentBandBody: 'text-white/85',
-    accentTileBg: 'bg-white/10',
-    accentInteractBg: 'bg-brand-orange',
+    ...SHARED_ACCENT,
     iconSet: 'product',
   },
-  // Stage-lit live-performance feel. Violet is the single identity color
-  // (big bands, hero numbers, structural accents); pink is reserved purely
-  // for interaction/hover so the two don't scatter as competing accents.
+  // Stage-lit live-performance feel.
   'persona-workflows': {
-    accentText: 'text-brand-violet',
-    accentBandBg: 'bg-brand-violet',
-    accentBandText: 'text-white/70',
-    accentBandBody: 'text-white/85',
-    accentTileBg: 'bg-white/10',
-    accentInteractBg: 'bg-brand-pink',
+    ...SHARED_ACCENT,
     iconSet: 'live',
   },
   // Cool technical-infrastructure feel.
   'voice-migration': {
-    accentText: 'text-brand-teal',
-    accentBandBg: 'bg-brand-teal',
-    accentBandText: 'text-brand-lime/80',
-    accentBandBody: 'text-white/85',
-    accentTileBg: 'bg-white/10',
-    accentInteractBg: 'bg-brand-teal',
+    ...SHARED_ACCENT,
     iconSet: 'voice',
   },
-  // Meta / self-referential feel (electric blue).
+  // Meta / self-referential feel.
   'portfolio-site': {
-    accentText: 'text-brand-blue',
-    accentBandBg: 'bg-brand-blue',
-    accentBandText: 'text-brand-lime/70',
-    accentBandBody: 'text-white/80',
-    accentTileBg: 'bg-white/10',
-    accentInteractBg: 'bg-brand-blue',
+    ...SHARED_ACCENT,
     iconSet: 'meta',
   },
 }

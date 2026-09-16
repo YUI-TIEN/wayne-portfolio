@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { Magnetic } from './Magnetic'
 import { skipsScrollAnimation } from './motionGuards'
+import { RULE, ACCENT_HEX } from './caseStudyTokens'
 
 interface IdeaPipelineProps {
   stages: string[] // ['Idea', 'Prototype', 'POC', 'Demo'] (localized)
@@ -35,11 +35,11 @@ const FINAL = STAGE_X.length - 1
 // (which are stroke-only, no fill) would otherwise let the track line show
 // through their transparent interior instead of looking like a solid token.
 function maturityGlyph(level: number, color: string) {
-  // fill-brand-bg / dark:fill-brand-ink matches the page's own light/dark
+  // fill-canvas / dark:fill-ink matches the page's own light/dark
   // background, so the backing rect reads as "opaque token surface", not an
   // off-shade patch — Tailwind class instead of an inline fill so it tracks
   // the dark mode toggle without re-rendering this glyph.
-  const backing = <rect x={-14} y={-14} width={28} height={28} rx={5} className="fill-brand-bg dark:fill-brand-ink" />
+  const backing = <rect x={-14} y={-14} width={28} height={28} rx={5} className="fill-canvas dark:fill-ink" />
   switch (level) {
     case 0: // empty frame
       return (
@@ -90,16 +90,10 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
   const playedRef = useRef(false)
   const [showHint, setShowHint] = useState(false)
 
-  // Resolve the accent class to a concrete stroke/fill color for SVG (SVG
-  // can't use tailwind text-* on stroke), keyed off the same class string the
-  // layouts already pass around. Falls back to brand-orange.
-  const ACCENT_HEX: Record<string, string> = {
-    'text-brand-orange': '#F94E0A',
-    'text-brand-pink': '#F50A8C',
-    'text-brand-teal': '#206A6E',
-    'text-brand-blue': '#3B5BFC',
-  }
-  const accent = ACCENT_HEX[accentText] ?? '#F94E0A'
+  // SVG stroke/fill can't take a Tailwind text-* class, so the accent is
+  // needed as a concrete hex here as well as the class the rest of the
+  // component applies.
+  const accent = ACCENT_HEX
 
   // Settled default: token at the final stage, fully matured, track full.
   const [tokenStage, setTokenStage] = useState(FINAL)
@@ -214,7 +208,7 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
           hide them from assistive tech. */}
       <svg viewBox={`0 0 ${VB.w} ${VB.h}`} className="w-full h-auto block" role="group" aria-label={`Idea pipeline: ${stages.join(' to ')}`}>
         {/* Track base */}
-        <line x1={STAGE_X[0]} y1={TRACK_Y} x2={STAGE_X[FINAL]} y2={TRACK_Y} stroke="currentColor" strokeWidth={2} className="text-neutral-200 dark:text-neutral-700" />
+        <line x1={STAGE_X[0]} y1={TRACK_Y} x2={STAGE_X[FINAL]} y2={TRACK_Y} stroke="currentColor" strokeWidth={2} className="text-black/10 dark:text-white/10" />
         {/* Track fill (accent, grows as token advances) — uses a thin rect so
             it can be scaled cleanly from the left. */}
         <rect ref={trackFillRef} x={STAGE_X[0]} y={TRACK_Y - 1} width={STAGE_X[FINAL] - STAGE_X[0]} height={2} fill={accent} />
@@ -258,11 +252,11 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
                   while the pulse tween (started from runTo's onComplete) is
                   actually running. */}
               <circle ref={(el) => { nudgeRefs.current[i] = el }} r={8} fill="none" stroke={accent} strokeWidth={1.5} opacity={0} />
-              <circle r={active ? 6.5 : 5} fill={reached || active ? accent : 'currentColor'} className={`transition-all duration-200 ${reached || active ? '' : 'text-neutral-300 dark:text-neutral-600'}`} />
+              <circle r={active ? 6.5 : 5} fill={reached || active ? accent : 'currentColor'} className={`transition-all duration-200 ${reached || active ? '' : 'text-black/15 dark:text-white/15'}`} />
               <text y={34} textAnchor="middle" className="font-mono" fontSize={11} fill="currentColor">
-                <tspan className={reached || active ? accentText : 'text-neutral-400'}>{String(i + 1).padStart(2, '0')}</tspan>
+                <tspan className={reached || active ? accentText : 'text-muted dark:text-neutral-500'}>{String(i + 1).padStart(2, '0')}</tspan>
               </text>
-              <text y={50} textAnchor="middle" className={`font-serif transition-opacity duration-200 ${active ? 'opacity-100' : 'opacity-80'}`} fontSize={15} fill="currentColor">{stage}</text>
+              <text y={50} textAnchor="middle" className={`font-sans font-semibold transition-opacity duration-200 ${active ? 'opacity-100' : 'opacity-80'}`} fontSize={15} fill="currentColor">{stage}</text>
             </g>
           )
         })}
@@ -274,15 +268,15 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
       </svg>
 
       {/* Hover detail: before/after for the hovered (or token's current) stage */}
-      <div className="mt-4 min-h-[3.5rem] border-t border-neutral-200 dark:border-neutral-800 pt-4">
+      <div className={`mt-4 min-h-[3.5rem] border-t pt-4 ${RULE}`}>
         {(() => {
           const i = hovered >= 0 ? hovered : tokenStage
           return (
             <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-x-4 gap-y-1 items-baseline">
-              <span className={`font-mono text-[10px] uppercase tracking-widest ${accentText}`}>{stages[i]}</span>
-              {after[i] && <p className="font-mono text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">{after[i]}</p>}
+              <span className={`font-mono text-[11px] uppercase tracking-widest ${accentText}`}>{stages[i]}</span>
+              {after[i] && <p className="text-[13px] text-graphite dark:text-neutral-200 leading-relaxed">{after[i]}</p>}
               {before[i] && (
-                <p className="font-mono text-[11px] text-neutral-400 dark:text-neutral-500 leading-relaxed sm:col-start-2 line-through decoration-neutral-300 dark:decoration-neutral-600">
+                <p className="text-[13px] text-muted dark:text-neutral-500 leading-relaxed sm:col-start-2 line-through decoration-black/20 dark:decoration-white/20">
                   {before[i]}
                 </p>
               )}
@@ -293,18 +287,16 @@ export function IdeaPipeline({ stages, before, after, accentText, replayLabel, i
 
       <div className="mt-4 flex items-center justify-between gap-3">
         {interactHint && (
-          <p className={`font-mono text-[10px] uppercase tracking-widest transition-opacity duration-300 ${showHint ? 'opacity-100' : 'opacity-60'} ${accentText}`}>
+          <p className={`font-mono text-[11px] uppercase tracking-widest transition-opacity duration-300 ${showHint ? 'opacity-100' : 'opacity-60'} ${accentText}`}>
             <span aria-hidden>↖</span> {interactHint}
           </p>
         )}
-        <Magnetic scaleOnHover={1.08}>
-          <button
-            onClick={() => runTo(FINAL)}
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors shrink-0"
-          >
-            <span aria-hidden>▶</span> {replayLabel}
-          </button>
-        </Magnetic>
+        <button
+          onClick={() => runTo(FINAL)}
+          className="inline-flex items-center gap-2 rounded-full bg-surface dark:bg-white/[0.07] px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-400 hover:bg-surface-strong dark:hover:bg-white/[0.12] hover:text-graphite dark:hover:text-white transition-colors shrink-0"
+        >
+          <span aria-hidden>▶</span> {replayLabel}
+        </button>
       </div>
     </div>
   )

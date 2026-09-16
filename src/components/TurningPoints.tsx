@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import gsap from 'gsap'
 import { ScrambleText } from './ScrambleText'
 import { isPrerendering, prefersReducedMotion } from './motionGuards'
+import { RULE, BODY, BODY_STRONG, EYEBROW_MUTED, ACCENT_HEX } from './caseStudyTokens'
 
 export interface GovernanceCase {
   blindspot: string // named cognitive blind spot, e.g. "Localized Optimization"
@@ -36,22 +37,15 @@ interface GovernanceBandProps {
 // proof present in static markup. Collapse + click-to-expand attaches only
 // once JS runs with motion allowed.
 
-const ACCENT_HEX: Record<string, string> = {
-  'text-brand-orange': '#F94E0A',
-  'text-brand-pink': '#F50A8C',
-  'text-brand-teal': '#206A6E',
-  'text-brand-blue': '#3B5BFC',
-  'text-brand-violet': '#7C3AED',
-}
 
 function Beat({ label, body, accent, emphasize }: { label: string; body: string; accent: string; emphasize?: boolean }) {
   return (
     <div className="relative">
       <span className="absolute -left-[2.65rem] md:-left-[3.6rem] top-1.5 w-2 h-2 rounded-full" style={{ background: accent }} aria-hidden />
-      <p className="font-mono text-[10px] uppercase tracking-widest mb-1.5" style={{ color: accent }}>
+      <p className="font-mono text-[11px] uppercase tracking-widest mb-1.5" style={{ color: accent }}>
         <ScrambleText text={label} />
       </p>
-      <p className={`font-sans text-sm md:text-base leading-relaxed ${emphasize ? 'text-neutral-900 dark:text-neutral-100 font-medium' : 'text-neutral-700 dark:text-neutral-300'}`}>
+      <p className={emphasize ? BODY_STRONG : BODY}>
         <ScrambleText text={body} />
       </p>
     </div>
@@ -60,7 +54,6 @@ function Beat({ label, body, accent, emphasize }: { label: string; body: string;
 
 function Case({
   c,
-  accentText,
   startExpanded,
   expandHint,
   beatPatternLabel,
@@ -68,7 +61,6 @@ function Case({
   beatValueLabel,
 }: {
   c: GovernanceCase
-  accentText: string
   startExpanded: boolean
   expandHint: string
   beatPatternLabel: string
@@ -78,7 +70,7 @@ function Case({
   const [open, setOpen] = useState(startExpanded)
   const bodyRef = useRef<HTMLDivElement>(null)
   const didMount = useRef(false)
-  const accent = ACCENT_HEX[accentText] ?? '#F94E0A'
+  const accent = ACCENT_HEX
 
   // The parent computes startExpanded synchronously (true only while
   // prerendering, see GovernanceBand below) and it never changes after mount
@@ -100,14 +92,18 @@ function Case({
     if (open) {
       gsap.set(el, { height: 'auto', opacity: 1 })
       const h = el.offsetHeight
-      gsap.fromTo(el, { height: 0, opacity: 0 }, { height: h, opacity: 1, duration: 0.45, ease: 'power2.out', onComplete: () => gsap.set(el, { height: 'auto' }) })
+      gsap.fromTo(
+        el,
+        { height: 0, opacity: 0 },
+        { height: h, opacity: 1, duration: 0.45, ease: 'power2.out', overwrite: 'auto', onComplete: () => gsap.set(el, { height: 'auto' }) },
+      )
     } else {
-      gsap.to(el, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.in' })
+      gsap.to(el, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.in', overwrite: 'auto' })
     }
   }, [open])
 
   return (
-    <div className="border-t border-neutral-200 dark:border-neutral-800">
+    <div className={`border-t ${RULE}`}>
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
@@ -115,12 +111,12 @@ function Case({
       >
         <span className="flex-1 min-w-0">
           {/* first-glance layer: blind-spot chip + governance claim, no click needed */}
-          <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest mb-3" style={{ color: accent }}>
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest mb-3" style={{ color: accent }}>
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} aria-hidden />
             <ScrambleText text={c.blindspot} />
           </span>
           <span
-            className="font-serif text-xl md:text-3xl leading-tight text-neutral-900 dark:text-white block transition-colors group-hover:text-[var(--accent)] group-focus-visible:text-[var(--accent)]"
+            className="text-xl md:text-3xl font-semibold tracking-[-0.02em] leading-tight text-graphite dark:text-white block transition-colors group-hover:text-[var(--accent)] group-focus-visible:text-[var(--accent)]"
             style={{ '--accent': accent } as CSSProperties}
           >
             <ScrambleText text={c.claim} />
@@ -128,7 +124,7 @@ function Case({
           {/* affordance: only shown while collapsed, so hovering a closed card
               says "there's evidence behind this" without cluttering the open state */}
           {!open && (
-            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mt-3 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-500 mt-3 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
               <ScrambleText text={expandHint} />
               <span aria-hidden>→</span>
             </span>
@@ -191,30 +187,29 @@ export function GovernanceBand({
   return (
     <div>
       {/* page-level governance banner — the core axis, stated once, big */}
-      <p className={`font-mono text-[10px] uppercase tracking-widest ${accentText} mb-4`}>
+      <p className={`font-mono text-[11px] uppercase tracking-[0.14em] ${accentText} mb-4`}>
         <ScrambleText text={bannerLabel} />
       </p>
-      <p className="font-serif text-2xl sm:text-3xl md:text-5xl leading-tight text-neutral-900 dark:text-white max-w-4xl mb-14 md:mb-20">
+      <p className="text-2xl sm:text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-tight text-graphite dark:text-white max-w-4xl mb-14 md:mb-20">
         <ScrambleText text={bannerClaim} />
       </p>
 
       <div className="flex items-baseline justify-between gap-3 mb-1">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+        <p className={EYEBROW_MUTED}>
           <ScrambleText text={gridLabel} />
         </p>
         {hint && (
-          <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+          <p className={EYEBROW_MUTED}>
             <span aria-hidden>+ </span>
             <ScrambleText text={hint} />
           </p>
         )}
       </div>
-      <div className="border-b border-neutral-200 dark:border-neutral-800">
+      <div className={`border-b ${RULE}`}>
         {cases.map((c, i) => (
           <Case
             key={i}
             c={c}
-            accentText={accentText}
             startExpanded={!collapsed}
             expandHint={hint ?? 'View the evidence'}
             beatPatternLabel={beatPatternLabel}

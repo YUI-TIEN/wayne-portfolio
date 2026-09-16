@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ShieldCheck } from 'lucide-react'
 import type { Lang } from '../i18n/locales'
 import { skipsScrollAnimation } from './motionGuards'
+import { TILE_RING, EYEBROW_MUTED, ACCENT_TEXT } from './caseStudyTokens'
 
 interface GuardGateProps {
   caption: string
@@ -88,21 +89,19 @@ export function GuardGate({ caption, lang }: GuardGateProps) {
   }, [lang])
 
   const verdictPill = (a: (typeof ACTIONS)[number], s: Status) => {
-    if (s === 'idle') return { text: '·', cls: 'text-neutral-300 dark:text-neutral-600 border-neutral-200 dark:border-neutral-700' }
-    if (s === 'checking') return { text: '● held', cls: 'text-amber-500 border-amber-500/50' }
-    if (s === 'pass') return { text: `✓ pass · ${a.reason}`, cls: 'text-brand-orange border-brand-orange/50' }
-    return { text: `✗ blocked · ${a.reason}`, cls: 'text-brand-red border-brand-red/50' }
+    if (s === 'idle') return { text: '·', cls: 'text-muted/50 dark:text-neutral-600 bg-black/[0.03] dark:bg-white/[0.05]' }
+    if (s === 'checking') return { text: '● held', cls: 'text-amber-600 dark:text-amber-400 bg-amber-500/10' }
+    if (s === 'pass') return { text: `✓ pass · ${a.reason}`, cls: `${ACCENT_TEXT} bg-accent/10 dark:bg-accent-soft/10` }
+    return { text: `✗ blocked · ${a.reason}`, cls: `${ACCENT_TEXT} bg-black/[0.04] dark:bg-white/[0.06]` }
   }
 
   return (
-    <div ref={rootRef} className="border-2 border-neutral-900/10 dark:border-white/10 bg-surface dark:bg-neutral-900 p-5 md:p-6 max-w-2xl">
-      <div className="flex items-center gap-2 mb-4">
-        <ShieldCheck size={16} className="text-brand-orange shrink-0" />
-        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
-          {caption}
-        </span>
+    <div ref={rootRef} className={`${TILE_RING} max-w-2xl`}>
+      <div className="flex items-center gap-2 mb-5">
+        <ShieldCheck size={16} className={`${ACCENT_TEXT} shrink-0`} />
+        <span className={EYEBROW_MUTED}>{caption}</span>
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-2.5">
         {ACTIONS.map((a, i) => {
           const s = statuses[i]
           const pill = verdictPill(a, s)
@@ -110,12 +109,12 @@ export function GuardGate({ caption, lang }: GuardGateProps) {
             <li key={a.label} className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
               <span
                 className={`font-mono text-[12px] sm:w-44 shrink-0 transition-colors ${
-                  s === 'idle' ? 'text-neutral-400 dark:text-neutral-600' : 'text-neutral-900 dark:text-neutral-100'
+                  s === 'idle' ? 'text-muted/60 dark:text-neutral-600' : 'text-graphite dark:text-neutral-100'
                 }`}
               >
                 {a.label}
               </span>
-              <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-1 border self-start transition-colors ${pill.cls}`}>
+              <span className={`font-mono text-[11px] uppercase tracking-wider px-3 py-1 rounded-full self-start transition-colors ${pill.cls}`}>
                 {pill.text}
               </span>
             </li>

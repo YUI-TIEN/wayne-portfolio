@@ -126,7 +126,7 @@ export function PersonaTransition({
           stations" metaphor intact on narrow screens instead of splitting
           into a 2x2 grid the line can't fully reach. md+: horizontal line
           above a 4-up row, the original layout. */}
-      <div className="absolute left-0 top-0 bottom-0 w-[3px] md:w-auto md:bottom-auto md:left-0 md:right-0 md:top-0 md:h-[3px] bg-neutral-200 dark:bg-neutral-800 my-[12.5%] md:my-0 md:mx-[12.5%]">
+      <div className="absolute left-0 top-0 bottom-0 w-[3px] md:w-auto md:bottom-auto md:left-0 md:right-0 md:top-0 md:h-[3px] rounded-full overflow-hidden bg-black/[0.08] dark:bg-white/10 my-[12.5%] md:my-0 md:mx-[12.5%]">
         {/* Settled default = fully filled (scale 1) so prerender / no-JS /
             reduced-motion always show the resolved line; the entrance effect
             scales it down from 1 first, matching the axis for the active
@@ -147,25 +147,25 @@ export function PersonaTransition({
                   top line down into the card. */}
               <div
                 ref={(el) => { dotRefs.current[i] = el }}
-                className={`w-2.5 h-2.5 rounded-full -ml-[13px] mr-1 md:-ml-0 md:-mt-[13px] md:mr-0 md:mb-1 shrink-0 transition-colors ${on ? accentBg : 'bg-neutral-300 dark:bg-neutral-700'}`}
+                className={`w-2.5 h-2.5 rounded-full -ml-[13px] mr-1 md:-ml-0 md:-mt-[13px] md:mr-0 md:mb-1 shrink-0 transition-colors ${on ? accentBg : 'bg-black/15 dark:bg-white/15'}`}
               />
               <div
                 ref={(el) => { dropRefs.current[i] = el }}
-                className={`w-4 h-px md:w-px md:h-4 shrink-0 transition-colors ${on ? accentBg : 'bg-neutral-200 dark:bg-neutral-700'}`}
+                className={`w-4 h-px md:w-px md:h-4 shrink-0 transition-colors ${on ? accentBg : 'bg-black/10 dark:bg-white/10'}`}
               />
               <div
                 ref={(el) => { cardRefs.current[i] = el }}
                 onMouseEnter={() => lift(i)}
-                className="group relative flex-1 w-full bg-brand-bg dark:bg-brand-ink border border-neutral-200 dark:border-neutral-800 px-4 py-5 flex flex-col items-center gap-1 cursor-default text-center"
+                className="group relative flex-1 w-full rounded-[16px] bg-canvas dark:bg-ink ring-1 ring-black/[0.06] dark:ring-white/10 px-4 py-5 flex flex-col items-center gap-1 cursor-default text-center"
               >
-                <span className={`font-mono text-[11px] uppercase tracking-wider transition-colors ${on ? accentText : 'text-neutral-700 dark:text-neutral-300'}`}>{label}</span>
+                <span className={`font-mono text-[11px] uppercase tracking-wider transition-colors ${on ? accentText : 'text-muted dark:text-neutral-400'}`}>{label}</span>
               </div>
             </div>
           )
         })}
       </div>
 
-      <p className="relative mt-5 font-mono text-[10px] uppercase tracking-widest text-neutral-400 text-center">
+      <p className="relative mt-5 font-mono text-[11px] uppercase tracking-widest text-muted dark:text-neutral-500 text-center">
         {spineLabel}
       </p>
     </div>
