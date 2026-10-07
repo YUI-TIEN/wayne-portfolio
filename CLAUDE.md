@@ -114,6 +114,9 @@ When you touch any of these, change every listed location in the same commit:
    ⇄ `src/seo/designSeo.ts`. Artwork lives in `public/design/` as
    `{id}-sm.webp` / `{id}-lg.webp`; `src/components/designImages.ts` holds
    their intrinsic sizes — regenerate both together.
+10. **Trailing slash**: every route key and hreflang path in `seoData.mjs`
+   ends in `/`, and so do in-app `Link`s and `Seo path`s in `App.tsx`.
+   GitHub Pages 301s the slashless form, so canonicals must not use it.
 
 If the check fails, fix the drift — never weaken the check to make it pass.
 If a legitimate refactor breaks its parsers, update the parser in the same

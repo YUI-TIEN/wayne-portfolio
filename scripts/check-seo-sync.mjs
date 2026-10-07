@@ -74,7 +74,7 @@ for (const lang of LANGS) {
 // Same rule as contract 1, for the methodology page that now carries its own
 // FAQPage node. Those files hold no other q/a pairs, so the same parser works.
 const howIWorkFaqOf = (lang) =>
-  routeSeo[`/${lang}/how-i-work`].jsonLd.find((s) => s['@type'] === 'FAQPage')
+  routeSeo[`/${lang}/how-i-work/`].jsonLd.find((s) => s['@type'] === 'FAQPage')
 for (const lang of LANGS) {
   const src = read(`src/i18n/howIWork.${lang}.ts`)
   const items = [...src.matchAll(/q:\s*'([^']*)',\s*a:\s*'([^']*)'/g)].map((m) => ({
@@ -148,7 +148,7 @@ for (const [constName, field] of [
   const projSrc = read('src/seo/projectSeo.ts')
   for (const id of PROJECT_IDS) {
     for (const lang of LANGS) {
-      const { title, description } = routeSeo[`/${lang}/project/${id}`]
+      const { title, description } = routeSeo[`/${lang}/project/${id}/`]
       if (!projSrc.includes(title))
         fail(`[project:${id}:${lang}] title missing from src/seo/projectSeo.ts:\n  ${title}`)
       if (!projSrc.includes(description))
@@ -161,7 +161,7 @@ for (const [constName, field] of [
 {
   const src = read('src/seo/howIWorkSeo.ts')
   for (const lang of LANGS) {
-    const { title, description } = routeSeo[`/${lang}/how-i-work`]
+    const { title, description } = routeSeo[`/${lang}/how-i-work/`]
     if (!src.includes(title))
       fail(`[how-i-work:${lang}] title missing from src/seo/howIWorkSeo.ts:\n  ${title}`)
     if (!src.includes(description))
@@ -173,7 +173,7 @@ for (const [constName, field] of [
 {
   const src = read('src/seo/designSeo.ts')
   for (const lang of LANGS) {
-    const route = routeSeo[`/${lang}/design`]
+    const route = routeSeo[`/${lang}/design/`]
     if (!route) {
       fail(`[design:${lang}] no /${lang}/design route in seoData.mjs`)
       continue
@@ -199,10 +199,20 @@ for (const [constName, field] of [
   const ogSrc = read('scripts/generate-og.mjs')
   for (const id of PROJECT_IDS) {
     const m = ogSrc.match(new RegExp(`id:\\s*'${id}',\\s*title:\\s*'([^']*)'`))
-    const expected = routeSeo[`/en/project/${id}`].title
+    const expected = routeSeo[`/en/project/${id}/`].title
     if (!m) fail(`[og:${id}] no card in scripts/generate-og.mjs CARDS`)
     else if (!expected.startsWith(`${m[1]} |`))
       fail(`[og:${id}] OG card title no longer matches seoData en title\n  card: ${m[1]}\n  seoData: ${expected}`)
+  }
+}
+
+// ── Contract 10: every route and hreflang target ends in "/" ──────────────
+// GitHub Pages serves each route as {route}/index.html and 301s the slashless
+// form, so a slashless canonical/hreflang/sitemap URL points crawlers at a
+// redirect instead of the page.
+for (const [route, seo] of Object.entries(routeSeo)) {
+  for (const p of [route, ...seo.alternates.map((a) => a.path)]) {
+    if (!p.endsWith('/')) fail(`[trailing-slash] ${p} (on ${route}) must end in "/" — GitHub Pages 301s it`)
   }
 }
 

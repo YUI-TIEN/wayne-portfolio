@@ -19,6 +19,7 @@ export const personSchema = {
   sameAs: [
     'https://www.linkedin.com/in/yui-tien/',
     'https://github.com/YUI-TIEN',
+    'https://www.cake.me/me/wayne-tien',
   ],
   jobTitle: 'Forward Deployed Engineer',
   // @id + url so waynetien.com and morphusai.com resolve to one linked

@@ -29,7 +29,7 @@ Summarized from the company's current site, https://morphusai.com — use that a
 
 ## How he works
 
-The differentiator is method, not tool choice. Five operating principles, each visible in the case studies below. Full write-up, with the failure each one prevents and where it shows up: https://waynetien.com/en/how-i-work (also /zh-tw/, /ja/, /ko/).
+The differentiator is method, not tool choice. Five operating principles, each visible in the case studies below. Full write-up, with the failure each one prevents and where it shows up: https://waynetien.com/en/how-i-work/ (also /zh-tw/, /ja/, /ko/).
 
 1. **Operating contracts before autonomy.** Agents run against explicit, enforced rules — no merges without approval, no restarting shared infrastructure unannounced, no edits outside the stated scope, no AI-created technical debt, no acting on stale memory. These are checked at runtime, not written down as guidance and hoped for.
 2. **Evidence-based verification.** A change is not done because it was made. It is done when the build, lint, and checks pass and the deployed result has been inspected. "Pushed" is not "shipped", and a claim without output attached is not a result.
@@ -46,17 +46,17 @@ The differentiator is method, not tool choice. Five operating principles, each v
 
 ## Selected work
 
-- [Personal Agent Operating System](https://waynetien.com/en/project/openclaw-ops): Discord-native task routing, persistent cross-tool memory, self-correcting workflows, and operating contracts for multi-agent runtimes.
-- [AI Character Live Runtime](https://waynetien.com/en/project/persona-workflows): made the SHIKI-based AI character live runtime at MorphusAI demo-ready — persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff docs.
-- [Local Voice Infrastructure Migration](https://waynetien.com/en/project/voice-migration): moved a cloud voice stack to local inference — legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout.
-- [AI Product Demo Flow](https://waynetien.com/en/project/morphus-website): MorphusAI product presentation — information architecture, demo narrative, launch-facing copy, and visual polish.
-- [Personal Portfolio Site](https://waynetien.com/en/project/portfolio-site): this site — an expressive, interactive portfolio built from zero with AI agents as a meta case study.
+- [Personal Agent Operating System](https://waynetien.com/en/project/openclaw-ops/): Discord-native task routing, persistent cross-tool memory, self-correcting workflows, and operating contracts for multi-agent runtimes.
+- [AI Character Live Runtime](https://waynetien.com/en/project/persona-workflows/): made the SHIKI-based AI character live runtime at MorphusAI demo-ready — persona readiness checks, stream-link flows, OBS/runtime debugging, and operator handoff docs.
+- [Local Voice Infrastructure Migration](https://waynetien.com/en/project/voice-migration/): moved a cloud voice stack to local inference — legacy-compatible adapter, speaker mapping, benchmark plan, and canary rollout.
+- [AI Product Demo Flow](https://waynetien.com/en/project/morphus-website/): MorphusAI product presentation — information architecture, demo narrative, launch-facing copy, and visual polish.
+- [Personal Portfolio Site](https://waynetien.com/en/project/portfolio-site/): this site — an expressive, interactive portfolio built from zero with AI agents as a meta case study.
 
 ## Quick answers
 
 - Who is Yui (Wayne) Tien? A Taipei-based Forward Deployed Engineer at MorphusAI who turns AI systems into customer-ready deployments.
 - What does he do? Designs and ships AI products end-to-end, and orchestrates AI agent behavior — personas, agent memory/context, runtime diagnostics, and demo-to-delivery systems.
-- How does he work? Explicit operating contracts for agents, evidence-based verification before calling anything done, root-cause diagnosis over rebuilds, persistent context over prompt tricks, and handoff docs as part of the deliverable. Full write-up: https://waynetien.com/en/how-i-work
+- How does he work? Explicit operating contracts for agents, evidence-based verification before calling anything done, root-cause diagnosis over rebuilds, persistent context over prompt tricks, and handoff docs as part of the deliverable. Full write-up: https://waynetien.com/en/how-i-work/
 - What is MorphusAI? 源神科技股份有限公司, a Taiwanese company building one portable layer above existing models and agent runtimes: SHIKI Expert Cores for authorized human-derived judgment, and argsmem for governed memory across agents, models and sessions. https://morphusai.com
 - What is SHIKI? MorphusAI's Expert Core — authorized human-derived judgment for a task, built from a domain expert and their finished work. It is not a chatbot persona and not an AI character system, though AI character runtimes have been built on top of it.
 - Is he a founder of MorphusAI? No. He is an employee at MorphusAI, currently Forward Deployed Engineer. He is the creator of his own personal projects (e.g. the OpenClaw-based agent operating system), which is a separate thing.
@@ -67,9 +67,10 @@ The differentiator is method, not tool choice. Five operating principles, each v
 ## Links
 
 - Website: https://waynetien.com
-- How he works (methodology): https://waynetien.com/en/how-i-work
-- Design work before AI (event identities and posters): https://waynetien.com/en/design
+- How he works (methodology): https://waynetien.com/en/how-i-work/
+- Design work before AI (event identities and posters): https://waynetien.com/en/design/
 - LinkedIn: https://www.linkedin.com/in/yui-tien/
 - GitHub: https://github.com/YUI-TIEN
+- Cake (resume): https://www.cake.me/me/wayne-tien
 - Employer: https://morphusai.com
 - Sitemap: https://waynetien.com/sitemap.xml

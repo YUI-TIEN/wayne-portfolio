@@ -181,7 +181,7 @@ function Home() {
     // Navigate straight away; the real loading indicator is ProjectDetail's
     // Suspense fallback while the lazy ProjectPage chunk downloads — no fixed
     // fake delay. Scroll reset is handled in LangLayout on route change.
-    navigate(`/${lang}/project/${projectId}`)
+    navigate(`/${lang}/project/${projectId}/`)
   }
 
   // First-ever visit only: no locale's copy resolved yet. Same placeholder
@@ -206,7 +206,7 @@ function Home() {
           <>
             <button onClick={() => scrollTo('work')} className={navLink}><ScrambleText text={t.nav.work} /></button>
             <button onClick={() => scrollTo('about')} className={navLink}><ScrambleText text={t.nav.about} /></button>
-            <Link to={`/${lang}/how-i-work`} className={navLink}><ScrambleText text={t.about.methodologyCta} /></Link>
+            <Link to={`/${lang}/how-i-work/`} className={navLink}><ScrambleText text={t.about.methodologyCta} /></Link>
             <button onClick={() => scrollTo('contact')} className={navLink}><ScrambleText text={t.nav.contact} /></button>
             <LangSwitcher lang={lang} />
           </>
@@ -245,7 +245,7 @@ function Home() {
               </p>
               <div data-reveal-item className="mt-10 flex flex-wrap items-center gap-3">
                 <Link
-                  to={`/${lang}/how-i-work`}
+                  to={`/${lang}/how-i-work/`}
                   className="inline-flex h-12 items-center gap-2 rounded-full bg-graphite text-white dark:bg-white dark:text-graphite px-6 text-[15px] font-medium hover:bg-black dark:hover:bg-neutral-200 active:scale-[0.98] transition"
                 >
                   <ScrambleText text={t.about.methodologyCta} /> <ArrowRight size={16} />
@@ -337,7 +337,7 @@ function Home() {
                     <p className="mt-3 text-[15px] leading-relaxed text-muted dark:text-neutral-400 max-w-xl">{e.detail}</p>
                     {e.designLink && (
                       <Link
-                        to={`/${lang}/design`}
+                        to={`/${lang}/design/`}
                         className="mt-3 inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
                       >
                         <ScrambleText text={e.designLink} /> <ArrowRight size={15} />
@@ -404,7 +404,7 @@ function Home() {
             return (
               <a
                 key={p.id}
-                href={`/${lang}/project/${p.id}`}
+                href={`/${lang}/project/${p.id}/`}
                 onClick={(e) => triggerProjectLoad(e, p.id)}
                 data-reveal-item
                 className={`group relative isolate overflow-hidden rounded-[28px] p-8 md:p-10 flex flex-col min-h-[380px] transition duration-500 ease-out hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgb(29_29_31/0.35)] active:scale-[0.99] ${feature ? 'md:col-span-2 md:min-h-[520px] bg-graphite text-white' : 'bg-surface dark:bg-white/[0.05]'}`}
@@ -441,7 +441,7 @@ function Home() {
         </div>
         <Link
           data-reveal-item
-          to={`/${lang}/design`}
+          to={`/${lang}/design/`}
           className="group mt-5 md:mt-6 flex items-center justify-between gap-6 rounded-[28px] ring-1 ring-inset ring-black/10 dark:ring-white/15 px-8 md:px-10 py-7 hover:bg-surface dark:hover:bg-white/[0.05] transition"
         >
           <span className="text-lg md:text-xl font-medium tracking-[-0.01em]"><ScrambleText text={t.work.designCta} /></span>
@@ -466,7 +466,7 @@ function Home() {
                 <ScrambleText text={t.faq.heading} />
               </h2>
               <Link
-                to={`/${lang}/how-i-work`}
+                to={`/${lang}/how-i-work/`}
                 className="mt-8 inline-flex items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
               >
                 <ScrambleText text={t.faq.moreLabel} /> <ArrowRight size={15} />
@@ -511,7 +511,7 @@ function Home() {
             <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
               GitHub <ArrowUpRight size={14} />
             </a>
-            <Link to={`/${lang}/design`} className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
+            <Link to={`/${lang}/design/`} className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
               <ScrambleText text={t.footer.design} /> <ArrowRight size={14} />
             </Link>
           </div>
@@ -574,19 +574,19 @@ function ProjectDetail() {
         <Seo
           title={seo.title}
           description={seo.description}
-          path={`/${lang}/project/${projectId}`}
+          path={`/${lang}/project/${projectId}/`}
           ogImage={`/og/${projectId}.jpg`}
           jsonLd={[
             projectCreativeWorkSchema({
               name: seo.title,
               description: seo.description,
-              path: `/${lang}/project/${projectId}`,
+              path: `/${lang}/project/${projectId}/`,
               keywords: project?.tags ?? [],
               lang,
             }),
             breadcrumbSchema({
               lang,
-              path: `/${lang}/project/${projectId}`,
+              path: `/${lang}/project/${projectId}/`,
               name: seo.title,
             }),
           ]}
@@ -598,7 +598,7 @@ function ProjectDetail() {
         <Seo
           title={NOT_FOUND_SEO[lang].title}
           description={NOT_FOUND_SEO[lang].description}
-          path={`/${lang}/project/${projectId}`}
+          path={`/${lang}/project/${projectId}/`}
           noindex
         />
       )}
@@ -623,15 +623,15 @@ function HowIWork() {
       <Seo
         title={seo.title}
         description={seo.description}
-        path={`/${lang}/how-i-work`}
+        path={`/${lang}/how-i-work/`}
         jsonLd={[
           articleSchema({
             lang,
             headline: seo.title,
             description: seo.description,
-            path: `/${lang}/how-i-work`,
+            path: `/${lang}/how-i-work/`,
           }),
-          breadcrumbSchema({ lang, path: `/${lang}/how-i-work`, name: seo.title }),
+          breadcrumbSchema({ lang, path: `/${lang}/how-i-work/`, name: seo.title }),
           ...(t ? [faqPageSchema(t.faq.items)] : []),
         ]}
       />
@@ -653,11 +653,11 @@ function Design() {
       <Seo
         title={seo.title}
         description={seo.description}
-        path={`/${lang}/design`}
+        path={`/${lang}/design/`}
         ogImage="/og/design.jpg"
         jsonLd={[
-          collectionPageSchema({ lang, name: seo.title, description: seo.description, path: `/${lang}/design` }),
-          breadcrumbSchema({ lang, path: `/${lang}/design`, name: seo.title }),
+          collectionPageSchema({ lang, name: seo.title, description: seo.description, path: `/${lang}/design/` }),
+          breadcrumbSchema({ lang, path: `/${lang}/design/`, name: seo.title }),
         ]}
       />
       <Suspense fallback={<PageLoader />}>
