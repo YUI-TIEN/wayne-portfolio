@@ -19,10 +19,14 @@ const ProjectPage = lazy(() =>
 const HowIWorkPage = lazy(() =>
   import('./components/HowIWorkPage').then(m => ({ default: m.HowIWorkPage })),
 )
+const DesignPage = lazy(() =>
+  import('./components/DesignPage').then(m => ({ default: m.DesignPage })),
+)
 import { Seo } from './seo/Seo'
 import { projectSeo } from './seo/projectSeo'
 import { howIWorkSeo } from './seo/howIWorkSeo'
-import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema, websiteSchema, articleSchema } from './seo/schema'
+import { designSeo } from './seo/designSeo'
+import { profilePageSchema, projectCreativeWorkSchema, breadcrumbSchema, faqPageSchema, websiteSchema, articleSchema, collectionPageSchema } from './seo/schema'
 import { LangContext, useLang } from './i18n/LangContext'
 import { isLang, DEFAULT_LANG, LANGS, LANG_LABEL, type Lang } from './i18n/locales'
 import { useHomeCopy } from './i18n/homeLoader'
@@ -331,6 +335,14 @@ function Home() {
                     <h3 className="mt-2 text-2xl md:text-[28px] leading-tight font-semibold tracking-[-0.02em]"><ScrambleText text={e.role} /></h3>
                     <p className="mt-1.5 text-[15px] text-accent-ink dark:text-accent-soft"><ScrambleText text={e.org} /></p>
                     <p className="mt-3 text-[15px] leading-relaxed text-muted dark:text-neutral-400 max-w-xl">{e.detail}</p>
+                    {e.designLink && (
+                      <Link
+                        to={`/${lang}/design`}
+                        className="mt-3 inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
+                      >
+                        <ScrambleText text={e.designLink} /> <ArrowRight size={15} />
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ol>
@@ -427,6 +439,16 @@ function Home() {
             )
           })}
         </div>
+        <Link
+          data-reveal-item
+          to={`/${lang}/design`}
+          className="group mt-5 md:mt-6 flex items-center justify-between gap-6 rounded-[28px] ring-1 ring-inset ring-black/10 dark:ring-white/15 px-8 md:px-10 py-7 hover:bg-surface dark:hover:bg-white/[0.05] transition"
+        >
+          <span className="text-lg md:text-xl font-medium tracking-[-0.01em]"><ScrambleText text={t.work.designCta} /></span>
+          <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-graphite text-white dark:bg-white dark:text-graphite transition duration-300 group-hover:rotate-45" aria-hidden="true">
+            <ArrowUpRight size={18} />
+          </span>
+        </Link>
       </Reveal>
       </ScrambleStagger>
 
@@ -489,6 +511,9 @@ function Home() {
             <a href="https://github.com/YUI-TIEN" target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
               GitHub <ArrowUpRight size={14} />
             </a>
+            <Link to={`/${lang}/design`} className="inline-flex h-10 items-center gap-1.5 rounded-full ring-1 ring-inset ring-white/20 px-4 text-[14px] hover:bg-white/10 transition">
+              <ScrambleText text={t.footer.design} /> <ArrowRight size={14} />
+            </Link>
           </div>
           <p data-reveal-item className="mt-20 max-w-md text-[15px] leading-relaxed text-white/60">{t.footer.tagline}</p>
           <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-white/45">
@@ -617,6 +642,31 @@ function HowIWork() {
   )
 }
 
+// ── /{lang}/design ──────────────────────────────────────────────────────────
+// Lazy like the other destinations; its images are lazy too, so none of the
+// archive touches the home page's critical path.
+function Design() {
+  const lang = useLang()
+  const seo = designSeo[lang]
+  return (
+    <div className="min-h-screen bg-canvas dark:bg-ink">
+      <Seo
+        title={seo.title}
+        description={seo.description}
+        path={`/${lang}/design`}
+        ogImage="/og/design.jpg"
+        jsonLd={[
+          collectionPageSchema({ lang, name: seo.title, description: seo.description, path: `/${lang}/design` }),
+          breadcrumbSchema({ lang, path: `/${lang}/design`, name: seo.title }),
+        ]}
+      />
+      <Suspense fallback={<PageLoader />}>
+        <DesignPage lang={lang} />
+      </Suspense>
+    </div>
+  )
+}
+
 // ── Language-scoped layout: validates :lang param and provides context ──────
 function LangLayout() {
   const { lang: langParam } = useParams<{ lang: string }>()
@@ -670,6 +720,7 @@ function LangLayout() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="how-i-work" element={<HowIWork />} />
+        <Route path="design" element={<Design />} />
         <Route path="project/:projectId" element={<ProjectDetail />} />
       </Routes>
     </LangContext.Provider>

@@ -176,6 +176,28 @@ export function articleSchema(opts: {
   }
 }
 
+// The design archive is a gallery of the person's own work, so it is a
+// CollectionPage authored by and about the Person, not an Article.
+export function collectionPageSchema(opts: {
+  lang: string
+  name: string
+  description: string
+  path: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}${opts.path}#collection`,
+    name: opts.name,
+    description: opts.description,
+    url: `${SITE_URL}${opts.path}`,
+    inLanguage: opts.lang,
+    author: { '@id': `${SITE_URL}/#person` },
+    about: { '@id': `${SITE_URL}/#person` },
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+  }
+}
+
 const HOME_CRUMB: Record<string, string> = {
   en: 'Home',
   'zh-tw': '首頁',

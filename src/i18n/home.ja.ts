@@ -101,6 +101,7 @@ export const ja: HomeCopy = {
         role: 'UI/UX & AI-UX Designer',
         org: 'MorphusAI · 源神科技',
         detail: 'プロダクトのUIと、人とAIのインタラクションを設計。会話UI、AI応答の見せ方、AIへの信頼とコントロール感を担当し、アイデアをMVP・POC・デモへ素早く落とし込むAI活用フローも構築しました。',
+        designLink: 'この時期のデザイン作品',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const ja: HomeCopy = {
       collaboratedDesc: 'はチームが主導するプロジェクトの中で、プロダクト・ワークフロー・デバッグ・運用・実装などを担当したことを指します。',
     },
     viewProject: 'プロジェクトを見る',
+    designCta: 'それ以前のデザイン作品：イベント識別とポスター',
   },
   faq: {
     moreLabel: '仕事の進め方を読む',
@@ -148,7 +150,7 @@ export const ja: HomeCopy = {
       { q: 'Yui（Wayne）Tienとは？', a: '台北を拠点とするMorphusAIのForward Deployed Engineer。AIペルソナとエージェントワークフローを、顧客環境で使えて納品できるProductionへ展開しています。' },
       { q: '何に取り組んでいますか？', a: 'AIペルソナ・キャラクターシステム、エージェントのメモリと文脈の保持、ランタイム診断、そしてアイデアをPOCからMVP、ローンチへと運ぶデモ・トゥ・デリバリーのワークフロー。' },
       { q: 'AIエージェントとはどう仕事をしていますか？', a: '実際に運用している五つの規則に沿って進めます。自律の前に運用規約、証拠にもとづく検証、作り直す前に診断、プロンプトの工夫より持続する文脈、そして引き継ぎまでが成果物。どれも、それが無くて事故ったから足したものです。' },
-      { q: 'MorphusAIでは何を作っていますか？', a: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入し、あわせてランタイム診断とエージェント運用規約も担当しています。2026年より前は、同社でDigital Persona Technical Directorとして、AIペルソナとバーチャルキャラクターシステムを主導していました。' },
+      { q: 'MorphusAIでは何を作っていますか？', a: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入し、あわせてランタイム診断とエージェント運用規約も担当しています。2024年にUI/UX & AI-UX Designerとして入社し、2025年から2026年まではDigital Persona Technical Directorとして、AIペルソナとバーチャルキャラクターシステムを主導していました。' },
       { q: '拠点はどこですか？', a: '台湾・台北。英語と中国語（北京語）で対応します。' },
       { q: '連絡方法は？', a: 'メール（youwei0112@gmail.com）、またはLinkedIn（/in/yui-tien）とGitHub（@YUI-TIEN）から。' },
     ],
@@ -163,5 +165,6 @@ export const ja: HomeCopy = {
     roseCurveLabel: 'rose curve（バラ曲線）',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: 'デザイン作品',
   },
 }

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { newestCommitISO, oldestCommitISO } from './gitDates.mjs'
 
 const SITE_URL = 'https://waynetien.com'
@@ -195,7 +197,7 @@ const homeFaq = {
     { q: 'Who is Yui (Wayne) Tien?', a: 'A Taipei-based Forward Deployed Engineer at MorphusAI. He turns AI persona systems and agent workflows into customer-ready deployments.' },
     { q: 'What does he work on?', a: 'AI persona and character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery workflows that take ideas from POC to MVP to launch.' },
     { q: 'How does he work with AI agents?', a: 'Through five enforced rules: operating contracts before autonomy, evidence-based verification, diagnosis before rebuild, persistent context over clever prompting, and handoff as part of the deliverable. Each one exists because something broke without it.' },
-    { q: 'What does he build at MorphusAI?', a: 'He deploys the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, along with runtime diagnostics and agent operating contracts. Before 2026 he led AI persona and virtual character systems there as Digital Persona Technical Director.' },
+    { q: 'What does he build at MorphusAI?', a: 'He deploys the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, along with runtime diagnostics and agent operating contracts. From 2025 to 2026 he led AI persona and virtual character systems there as Digital Persona Technical Director, after joining in 2024 as a UI/UX & AI-UX Designer.' },
     { q: 'Where is he based?', a: 'Taipei, Taiwan. He works in English and Mandarin Chinese.' },
     { q: 'How can you reach him?', a: 'By email at youwei0112@gmail.com, or on LinkedIn (/in/yui-tien) and GitHub (@YUI-TIEN).' },
   ],
@@ -203,7 +205,7 @@ const homeFaq = {
     { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 MorphusAI Forward Deployed Engineer，負責把 AI 人格系統與 Agent 工作流部署成客戶現場可用、可交付的 Production。' },
     { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
     { q: '他跟 AI agent 協作的方式是什麼？', a: '靠五條會被實際執行的規則：先有操作規範再談自主、用證據驗收、先診斷再重建、用持久脈絡取代提示詞技巧、交接算在交付範圍內。每一條都是因為少了它出過事，才補上去的。' },
-    { q: '他在 MorphusAI 做什麼？', a: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。2026 年之前，他在那裡以數位人格技術總監（Digital Persona Technical Director）的身分，主導 AI 人格與虛擬角色系統。' },
+    { q: '他在 MorphusAI 做什麼？', a: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。2024 年他以 UI/UX & AI-UX 設計師的身分加入；2025 到 2026 年擔任數位人格技術總監（Digital Persona Technical Director），主導 AI 人格與虛擬角色系統。' },
     { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
     { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },
   ],
@@ -211,7 +213,7 @@ const homeFaq = {
     { q: 'Yui（Wayne）Tienとは？', a: '台北を拠点とするMorphusAIのForward Deployed Engineer。AIペルソナとエージェントワークフローを、顧客環境で使えて納品できるProductionへ展開しています。' },
     { q: '何に取り組んでいますか？', a: 'AIペルソナ・キャラクターシステム、エージェントのメモリと文脈の保持、ランタイム診断、そしてアイデアをPOCからMVP、ローンチへと運ぶデモ・トゥ・デリバリーのワークフロー。' },
     { q: 'AIエージェントとはどう仕事をしていますか？', a: '実際に運用している五つの規則に沿って進めます。自律の前に運用規約、証拠にもとづく検証、作り直す前に診断、プロンプトの工夫より持続する文脈、そして引き継ぎまでが成果物。どれも、それが無くて事故ったから足したものです。' },
-    { q: 'MorphusAIでは何を作っていますか？', a: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入し、あわせてランタイム診断とエージェント運用規約も担当しています。2026年より前は、同社でDigital Persona Technical Directorとして、AIペルソナとバーチャルキャラクターシステムを主導していました。' },
+    { q: 'MorphusAIでは何を作っていますか？', a: 'SHIKI Expert Coreとargsmemの統制されたメモリ層を、チームがすでに使っているエージェントランタイムへ導入し、あわせてランタイム診断とエージェント運用規約も担当しています。2024年にUI/UX & AI-UX Designerとして入社し、2025年から2026年まではDigital Persona Technical Directorとして、AIペルソナとバーチャルキャラクターシステムを主導していました。' },
     { q: '拠点はどこですか？', a: '台湾・台北。英語と中国語（北京語）で対応します。' },
     { q: '連絡方法は？', a: 'メール（youwei0112@gmail.com）、またはLinkedIn（/in/yui-tien）とGitHub（@YUI-TIEN）から。' },
   ],
@@ -219,7 +221,7 @@ const homeFaq = {
     { q: 'Yui(Wayne) Tien은 누구인가요?', a: '타이베이를 기반으로 MorphusAI에서 일하는 Forward Deployed Engineer입니다. AI 페르소나와 에이전트 워크플로우를 고객 현장에서 사용하고 전달할 수 있는 Production으로 배포합니다.' },
     { q: '주로 어떤 일을 하나요?', a: 'AI 페르소나·캐릭터 시스템, 에이전트 메모리와 컨텍스트 보존, 런타임 진단, 그리고 아이디어를 POC에서 MVP, 출시까지 잇는 데모-투-딜리버리 워크플로우.' },
     { q: 'AI 에이전트와는 어떻게 일하나요?', a: '실제로 강제하는 다섯 가지 규칙을 따릅니다. 자율성보다 운영 규약, 증거 기반 검증, 재구축 전 진단, 프롬프트 요령보다 지속되는 맥락, 그리고 결과물에 포함되는 인수인계. 전부 그게 없어서 사고가 난 뒤에 추가된 것들입니다.' },
-    { q: 'MorphusAI에서는 무엇을 만드나요?', a: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포하고, 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다. 2026년 이전에는 같은 회사에서 Digital Persona Technical Director로 AI 페르소나와 버추얼 캐릭터 시스템을 주도했습니다.' },
+    { q: 'MorphusAI에서는 무엇을 만드나요?', a: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포하고, 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다. 2024년 UI/UX & AI-UX Designer로 입사했고, 2025년부터 2026년까지는 Digital Persona Technical Director로 AI 페르소나와 버추얼 캐릭터 시스템을 주도했습니다.' },
     { q: '어디에 있나요?', a: '대만 타이베이. 영어와 중국어(만다린)로 소통합니다.' },
     { q: '어떻게 연락하나요?', a: '이메일 youwei0112@gmail.com, 또는 LinkedIn(/in/yui-tien)과 GitHub(@YUI-TIEN).' },
   ],
@@ -309,6 +311,73 @@ function howIWorkSchema({ lang, title, description, datePublished, dateModified 
     isPartOf: { '@id': `${SITE_URL}/#website` },
     datePublished,
     dateModified,
+  }
+}
+
+// Crawler-facing copy for /{lang}/design. Mirrors src/seo/designSeo.ts
+// (SYNC CONTRACT 9 in scripts/check-seo-sync.mjs).
+const designSeo = {
+  en: {
+    title: 'Design Work: Event Identity & Posters | Yui (Wayne) Tien',
+    description:
+      'Pre-AI design work by Yui (Wayne) Tien: a tarot camp identity across posters, shirts and merch, a hand-drawn heraldic camp identity, and eight posters.',
+  },
+  'zh-tw': {
+    title: '設計作品：活動識別與海報 | Yui (Wayne) Tien',
+    description:
+      '田祐維（Yui / Wayne Tien）進入 AI 領域前的設計作品：以塔羅「愚者」為題、延伸到海報與營服的營隊識別系統，手繪紋章的聯合宿營識別，以及八張活動海報。',
+  },
+  ja: {
+    title: 'デザイン作品：イベント識別とポスター | Yui (Wayne) Tien',
+    description:
+      'Yui (Wayne) TienがAIの仕事に移る前に手がけたビジュアルデザイン。タロット「愚者」をテーマにポスター、Tシャツ、グッズまで展開したキャンプの識別システム、手描きの中世紋章によるキャンプ識別、そして8枚のイベントポスター。',
+  },
+  ko: {
+    title: '디자인 작업: 행사 아이덴티티와 포스터 | Yui (Wayne) Tien',
+    description:
+      'Yui (Wayne) Tien이 AI 분야로 오기 전에 만든 비주얼 디자인. 타로 「광대」를 주제로 포스터, 티셔츠, 굿즈까지 확장한 캠프 아이덴티티, 손으로 그린 중세 문장 캠프 아이덴티티, 그리고 여덟 장의 행사 포스터.',
+  },
+}
+
+// Every artwork on /design, read from the same size table the page uses
+// (src/components/designImages.ts) so the two cannot drift. Parsed rather than
+// imported because this file is plain .mjs; fail loudly if the shape changes.
+const DESIGN_IMAGES = [
+  ...readFileSync(path.join(import.meta.dirname, '..', 'src', 'components', 'designImages.ts'), 'utf8').matchAll(
+    /'([a-z-]+)': \{ sm: \[\d+, \d+\], lg: \[(\d+), (\d+)\] \}/g,
+  ),
+].map(([, id, w, h]) => ({ id, width: Number(w), height: Number(h) }))
+if (DESIGN_IMAGES.length === 0) throw new Error('seoData: could not parse src/components/designImages.ts')
+
+// The design archive is a gallery of the person's own work: a CollectionPage
+// authored by and about the Person, not an Article. The ImageObjects carry
+// creator/credit so image search attributes the artwork to him.
+function designSchema({ lang, title, description }) {
+  const image = (id, width, height) => ({
+    '@type': 'ImageObject',
+    contentUrl: `${SITE_URL}/design/${id}-lg.webp`,
+    thumbnailUrl: `${SITE_URL}/design/${id}-sm.webp`,
+    width,
+    height,
+    encodingFormat: 'image/webp',
+    creator: { '@id': `${SITE_URL}/#person` },
+    creditText: 'Yui (Wayne) Tien',
+    copyrightNotice: '© Yui (Wayne) Tien',
+  })
+  const primary = DESIGN_IMAGES.find((i) => i.id === 'fool-board')
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/${lang}/design#collection`,
+    name: title,
+    description,
+    url: `${SITE_URL}/${lang}/design`,
+    inLanguage: lang,
+    author: { '@id': `${SITE_URL}/#person` },
+    about: { '@id': `${SITE_URL}/#person` },
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    primaryImageOfPage: image(primary.id, primary.width, primary.height),
+    associatedMedia: DESIGN_IMAGES.map(({ id, width, height }) => image(id, width, height)),
   }
 }
 
@@ -505,6 +574,21 @@ for (const lang of LANGS) {
     alternates: buildAlternates(l => `/${l}/how-i-work`),
   }
 
+  const designPath = `/${lang}/design`
+  const designDates = routeDates(`src/i18n/design.${lang}.ts`)
+  routeSeo[designPath] = {
+    title: designSeo[lang].title,
+    description: designSeo[lang].description,
+    ogLocale: OG_LOCALE[lang],
+    ogImage: `${SITE_URL}/og/design.jpg`,
+    lastmod: designDates.modified,
+    jsonLd: [
+      designSchema({ lang, title: designSeo[lang].title, description: designSeo[lang].description }),
+      breadcrumbSchema({ lang, routePath: designPath, name: designSeo[lang].title }),
+    ],
+    alternates: buildAlternates(l => `/${l}/design`),
+  }
+
   const projectDates = routeDates(`src/i18n/projectPage.${lang}.ts`)
 
   for (const id of PROJECT_IDS) {
@@ -544,7 +628,7 @@ export function buildSitemap() {
     .map(([route, seo]) => {
       const loc = `${SITE_URL}${route}`
       const lastmod = seo.lastmod
-      const priority = route.includes('/project/') ? '0.8' : route.includes('/how-i-work') ? '0.9' : '1.0'
+      const priority = route.includes('/project/') || route.includes('/design') ? '0.8' : route.includes('/how-i-work') ? '0.9' : '1.0'
       const alts = seo.alternates
         .map(a => `    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${SITE_URL}${a.path}" />`)
         .join('\n')

@@ -101,6 +101,7 @@ export const ko: HomeCopy = {
         role: 'UI/UX & AI-UX Designer',
         org: 'MorphusAI · 源神科技',
         detail: '제품 UI와 사람-AI 인터랙션을 설계했습니다. 대화형 UI, AI 응답의 표현 방식, AI에 대한 신뢰와 통제감을 다루고, 아이디어를 MVP·POC·데모로 빠르게 만드는 AI 활용 플로우도 구축했습니다.',
+        designLink: '이 시기의 디자인 작업',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const ko: HomeCopy = {
       collaboratedDesc: '은 팀이 주도한 프로젝트에서 제품, 워크플로우, 디버깅, 운영, 구현 작업을 맡았다는 의미입니다.',
     },
     viewProject: '프로젝트 보기',
+    designCta: '이전 디자인 작업: 행사 아이덴티티와 포스터',
   },
   faq: {
     moreLabel: '일하는 방식 읽기',
@@ -148,7 +150,7 @@ export const ko: HomeCopy = {
       { q: 'Yui(Wayne) Tien은 누구인가요?', a: '타이베이를 기반으로 MorphusAI에서 일하는 Forward Deployed Engineer입니다. AI 페르소나와 에이전트 워크플로우를 고객 현장에서 사용하고 전달할 수 있는 Production으로 배포합니다.' },
       { q: '주로 어떤 일을 하나요?', a: 'AI 페르소나·캐릭터 시스템, 에이전트 메모리와 컨텍스트 보존, 런타임 진단, 그리고 아이디어를 POC에서 MVP, 출시까지 잇는 데모-투-딜리버리 워크플로우.' },
       { q: 'AI 에이전트와는 어떻게 일하나요?', a: '실제로 강제하는 다섯 가지 규칙을 따릅니다. 자율성보다 운영 규약, 증거 기반 검증, 재구축 전 진단, 프롬프트 요령보다 지속되는 맥락, 그리고 결과물에 포함되는 인수인계. 전부 그게 없어서 사고가 난 뒤에 추가된 것들입니다.' },
-      { q: 'MorphusAI에서는 무엇을 만드나요?', a: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포하고, 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다. 2026년 이전에는 같은 회사에서 Digital Persona Technical Director로 AI 페르소나와 버추얼 캐릭터 시스템을 주도했습니다.' },
+      { q: 'MorphusAI에서는 무엇을 만드나요?', a: 'SHIKI Expert Core와 argsmem 거버넌스 메모리 레이어를 팀이 이미 쓰고 있는 에이전트 런타임에 배포하고, 런타임 진단과 에이전트 운영 규약도 함께 맡고 있습니다. 2024년 UI/UX & AI-UX Designer로 입사했고, 2025년부터 2026년까지는 Digital Persona Technical Director로 AI 페르소나와 버추얼 캐릭터 시스템을 주도했습니다.' },
       { q: '어디에 있나요?', a: '대만 타이베이. 영어와 중국어(만다린)로 소통합니다.' },
       { q: '어떻게 연락하나요?', a: '이메일 youwei0112@gmail.com, 또는 LinkedIn(/in/yui-tien)과 GitHub(@YUI-TIEN).' },
     ],
@@ -163,5 +165,6 @@ export const ko: HomeCopy = {
     roseCurveLabel: 'rose curve (로즈 커브)',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: '디자인 작업',
   },
 }
