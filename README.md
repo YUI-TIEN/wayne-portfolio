@@ -22,7 +22,7 @@ Let's connect if you're interested in AI agent infrastructure, persona systems, 
 ## Experience
 
 **MorphusAI** (源神科技股份有限公司) — Forward Deployed Engineer
-*Jul 2024 – Present · Taipei, Taiwan · previously Digital Persona Technical Director & Virtual Character Systems Engineer, 2024–2026*
+*Jul 2024 – Present · Taipei, Taiwan · previously Digital Persona Technical Director & Virtual Character Systems Engineer, 2025–2026, and UI/UX & AI-UX Designer, 2024–2025*
 
 MorphusAI ships one portable layer above the models and agent runtimes a team already uses: SHIKI Expert Cores carry authorized human-derived judgment for a task, and argsmem keeps governed context across agents, models, and sessions.
 
@@ -46,7 +46,7 @@ MorphusAI ships one portable layer above the models and agent runtimes a team al
 ## Education
 
 **National Taipei University of Technology** — B.S., Information & Finance Management
-*Sep 2021 – Jun 2025 · Graduated, B.S. conferred Jun 2025*
+*Sep 2021 – Sep 2025 · Graduated, B.S. conferred Sep 2025*
 
 ---
 
