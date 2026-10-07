@@ -70,14 +70,14 @@ export const personSchema = {
   nationality: { '@type': 'Country', name: 'Taiwan' },
   mainEntityOfPage: { '@id': `${SITE_URL}/en/#profilepage` },
   description:
-    'Yui (Wayne) Tien (Chinese name: 田祐維) is a Taipei-based product builder and Forward Deployed Engineer at MorphusAI, specializing in AI workflows, agent operations, AI persona/character systems, and demo-to-delivery systems.',
+    'Yui (Wayne) Tien (Chinese name: 田祐維) is a Taipei-based Forward Deployed Engineer at MorphusAI, turning AI persona systems, agent workflows, models, APIs, and tools into customer-ready deployments.',
   knowsAbout: [
     'AI agent workflow operations',
     'AI persona and character systems',
-    '0-to-1 product execution',
+    'frontline workflow discovery',
     'runtime diagnostics',
-    'demo-to-delivery systems',
-    'UI/UX engineering',
+    'production deployment and acceptance',
+    'API and tool configuration',
   ],
   homeLocation: {
     '@type': 'Place',

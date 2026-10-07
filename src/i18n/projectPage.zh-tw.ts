@@ -200,8 +200,8 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     subheadline: '一套給 AI Vtuber 風格角色用的直播 runtime，可以開台、發影片跟短影音、記得觀眾、照腳本走、全自動開show。',
     role: '專案主導 · 人格設計 · Runtime 除錯 · 直播流程負責人 · 工具整合',
     stats: [
-      { value: '4', label: '個活躍 AI Vtuber' },
-      { value: '3000+', label: '小時觀看時數' },
+      { value: '多個', label: '運作中的 AI Vtuber' },
+      { value: '公開', label: '直播觀看紀錄' },
       { value: '24h', label: '可直播潛力' },
       { value: 'Auto', label: '全自動演出' },
     ],
@@ -262,10 +262,10 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
     ],
     liveRosterLabel: 'AI 直播主',
     liveRosterIllustrative: '示意圖，非真實畫面截圖',
-    liveRosterRealNote: '這 4 個角色是真實、目前正在營運中的角色——畫面是重現示意，但角色陣容跟數字都是真的。',
+    liveRosterRealNote: '角色有真實營運；畫面為重現示意，不在此宣稱精確角色數或觀看數字。',
     transitionPieces: ['人格', '工具', 'Runtime', '直播流程'],
     transitionSpineLabel: '同一套穩定 runtime',
-    watchHoursCaption: '小時觀看時數——來自真實觀眾累積，不是實驗室 demo。',
+    watchHoursCaption: '觀眾驗證——來自真實觀看紀錄，不是實驗室 demo。',
   },
   'voice-migration': {
     label: '本地語音架構遷移',
@@ -367,7 +367,7 @@ const caseStudiesZhTw: Record<string, CaseStudyContent> = {
       '養成每次改完都明確講「這是改手機版還是桌機版」的習慣，我驗證時也主動切 F12 手機尺寸再回報，不是看 diff 就信了。',
     ],
     contributions: [
-      '定義圍繞 AI/產品建構能力的定位。',
+      '定義圍繞 Forward Deployed Engineering、Agent 維運與現場交付的定位。',
       '指揮視覺語言、版面、深色模式、專案卡片、互動打磨，美感取捨全部自己拍板。',
       '透過 agent 協作從零建構網站，不是用無代碼範本或 PDF。',
       '建立 RWD 改動前先講清楚斷點跟語言範圍的驗證規則，把一次性的修 bug 變成下次不會再犯的流程要求。',

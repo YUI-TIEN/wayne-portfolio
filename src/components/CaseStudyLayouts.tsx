@@ -313,8 +313,8 @@ export function PersonaLayout({ p, t, lang, projectId, theme, nav, onBack }: Lay
       <Hero p={p} theme={theme} statsVariant="emphasis" />
 
       <ProblemBand p={p} t={t}>
-        {/* On-air roster, styled as a YouTube-style video grid so "4 AI
-            characters streaming simultaneously" reads instantly to anyone
+        {/* On-air roster, styled as a YouTube-style video grid so concurrent
+            character operation reads instantly to anyone
             who has used a video site — illustrative recreation, not a real
             screenshot or logo, same convention as OpsDemo's Discord UI. */}
         <LiveRoster
