@@ -150,7 +150,7 @@ export const zhTw: HomeCopy = {
       { q: 'Yui（Wayne）Tien 是誰？', a: '本名田祐維，常駐台北的 MorphusAI Forward Deployed Engineer，負責把 AI 人格系統與 Agent 工作流部署成客戶現場可用、可交付的 Production。' },
       { q: '他主要在做什麼？', a: 'AI 人格與角色系統、agent 記憶與情境保存、執行階段除錯，還有把點子從 POC 一路帶到 MVP、上線的 demo-to-delivery 工作流。' },
       { q: '他跟 AI agent 協作的方式是什麼？', a: '靠五條會被實際執行的規則：先有操作規範再談自主、用證據驗收、先診斷再重建、用持久脈絡取代提示詞技巧、交接算在交付範圍內。每一條都是因為少了它出過事，才補上去的。' },
-      { q: '他在 MorphusAI 做什麼？', a: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。2026 年之前，他在那裡以數位人格技術總監（Digital Persona Technical Director）的身分，主導 AI 人格與虛擬角色系統。' },
+      { q: '他在 MorphusAI 做什麼？', a: '把 SHIKI Expert Core 跟 argsmem 受治理記憶層，部署進團隊原本就在用的 agent runtime，另外負責 runtime 診斷與 agent 操作規範。2024 年他以 UI/UX & AI-UX 設計師的身分加入；2025 到 2026 年擔任數位人格技術總監（Digital Persona Technical Director），主導 AI 人格與虛擬角色系統。' },
       { q: '他在哪裡？', a: '台灣台北。中文、英文都能溝通。' },
       { q: '怎麼聯絡他？', a: '寫信到 youwei0112@gmail.com，或在 LinkedIn（/in/yui-tien）和 GitHub（@YUI-TIEN）上找他。' },
     ],

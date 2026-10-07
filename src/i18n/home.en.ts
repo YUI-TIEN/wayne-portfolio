@@ -150,7 +150,7 @@ export const en: HomeCopy = {
       { q: 'Who is Yui (Wayne) Tien?', a: 'A Taipei-based Forward Deployed Engineer at MorphusAI. He turns AI persona systems and agent workflows into customer-ready deployments.' },
       { q: 'What does he work on?', a: 'AI persona and character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery workflows that take ideas from POC to MVP to launch.' },
       { q: 'How does he work with AI agents?', a: 'Through five enforced rules: operating contracts before autonomy, evidence-based verification, diagnosis before rebuild, persistent context over clever prompting, and handoff as part of the deliverable. Each one exists because something broke without it.' },
-      { q: 'What does he build at MorphusAI?', a: 'He deploys the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, along with runtime diagnostics and agent operating contracts. Before 2026 he led AI persona and virtual character systems there as Digital Persona Technical Director.' },
+      { q: 'What does he build at MorphusAI?', a: 'He deploys the SHIKI Expert Core and the argsmem governed-memory layer into the agent runtimes teams already run, along with runtime diagnostics and agent operating contracts. From 2025 to 2026 he led AI persona and virtual character systems there as Digital Persona Technical Director, after joining in 2024 as a UI/UX & AI-UX Designer.' },
       { q: 'Where is he based?', a: 'Taipei, Taiwan. He works in English and Mandarin Chinese.' },
       { q: 'How can you reach him?', a: 'By email at youwei0112@gmail.com, or on LinkedIn (/in/yui-tien) and GitHub (@YUI-TIEN).' },
     ],
