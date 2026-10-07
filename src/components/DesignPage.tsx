@@ -104,12 +104,12 @@ export function DesignPage({ lang }: { lang: Lang }) {
                     key={id}
                     type="button"
                     onClick={() => show(id)}
-                    aria-label={`${t.lightbox.open}: ${altOf(id)}`}
+                    title={t.lightbox.open}
                     className={`group relative overflow-hidden rounded-[20px] bg-surface dark:bg-white/[0.05] cursor-zoom-in ${i === 0 ? 'col-span-2 row-span-2' : ''}`}
                   >
                     <Artwork
                       id={id}
-                      alt=""
+                      alt={altOf(id)}
                       eager={i < 2}
                       className="size-full object-cover aspect-square transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                     />
@@ -128,11 +128,21 @@ export function DesignPage({ lang }: { lang: Lang }) {
           <ScrambleStagger key={c.n} delay={0.12 + ci * 0.04}>
             <section className={ci % 2 === 0 ? 'bg-surface dark:bg-white/[0.03]' : ''}>
               <Reveal stagger className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
-                <div data-reveal-item className="flex flex-wrap items-baseline gap-x-4 gap-y-2 mb-10 md:mb-12">
-                  <span className="font-mono text-[12px] text-accent-ink dark:text-accent-soft">{c.n}</span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400">
-                    <ScrambleText text={`${t.identitiesLabel} · ${c.kind}`} />
-                  </span>
+                {/* Title sits above the grid so a stacked (phone/tablet) layout
+                    names the project before showing two screens of imagery. */}
+                <div data-reveal-item className="mb-10 md:mb-12 max-w-4xl">
+                  <p className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                    <span className="font-mono text-[12px] text-accent-ink dark:text-accent-soft">{c.n}</span>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted dark:text-neutral-400">
+                      <ScrambleText text={`${t.identitiesLabel} · ${c.kind}`} />
+                    </span>
+                  </p>
+                  <h2 className="mt-4 text-3xl md:text-[44px] leading-[1.08] font-semibold tracking-[-0.03em]">
+                    <ScrambleText text={c.title} />
+                  </h2>
+                  <p className="mt-3 text-[15px] text-accent-ink dark:text-accent-soft">
+                    <ScrambleText text={c.role} />
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -140,31 +150,25 @@ export function DesignPage({ lang }: { lang: Lang }) {
                     <button
                       type="button"
                       onClick={() => show(c.hero.id)}
-                      aria-label={`${t.lightbox.open}: ${c.hero.alt}`}
+                      title={t.lightbox.open}
                       className="overflow-hidden rounded-[28px] bg-canvas dark:bg-white/[0.05] cursor-zoom-in"
                     >
-                      <Artwork id={c.hero.id} size="lg" alt="" className="w-full h-auto" />
+                      <Artwork id={c.hero.id} size="lg" alt={c.hero.alt} className="w-full h-auto" />
                     </button>
                     {c.detail && (
                       <button
                         type="button"
                         onClick={() => show(c.detail!.id)}
-                        aria-label={`${t.lightbox.open}: ${c.detail.alt}`}
+                        title={t.lightbox.open}
                         className="group flex items-center justify-center overflow-hidden rounded-[28px] bg-white ring-1 ring-black/[0.06] aspect-[16/9] cursor-zoom-in"
                       >
-                        <Artwork id={c.detail.id} alt="" className="h-full w-auto object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
+                        <Artwork id={c.detail.id} alt={c.detail.alt} className="h-full w-auto object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                       </button>
                     )}
                   </div>
 
                   <div data-reveal-item className="lg:col-span-5">
-                    <h2 className="text-3xl md:text-[44px] leading-[1.08] font-semibold tracking-[-0.03em]">
-                      <ScrambleText text={c.title} />
-                    </h2>
-                    <p className="mt-3 text-[15px] text-accent-ink dark:text-accent-soft">
-                      <ScrambleText text={c.role} />
-                    </p>
-                    <p className="mt-6 text-[16px] leading-relaxed text-muted dark:text-neutral-400">{c.concept}</p>
+                    <p className="text-[16px] leading-relaxed text-muted dark:text-neutral-400">{c.concept}</p>
                     <dl className="mt-8 space-y-4">
                       {c.notes.map((note) => (
                         <div key={note.label} className="rounded-[20px] bg-canvas dark:bg-white/[0.04] ring-1 ring-black/[0.05] dark:ring-white/10 p-5">
@@ -184,13 +188,13 @@ export function DesignPage({ lang }: { lang: Lang }) {
                       <button
                         type="button"
                         onClick={() => show(item.id)}
-                        aria-label={`${t.lightbox.open}: ${item.alt}`}
+                        title={t.lightbox.open}
                         className="group block w-full text-left cursor-zoom-in"
                       >
                         <span className="block overflow-hidden rounded-[18px] bg-canvas dark:bg-white/[0.05]">
                           <Artwork
                             id={item.id}
-                            alt=""
+                            alt={item.alt}
                             className="w-full aspect-[4/3] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                           />
                         </span>
@@ -225,13 +229,13 @@ export function DesignPage({ lang }: { lang: Lang }) {
                   <button
                     type="button"
                     onClick={() => show(p.id)}
-                    aria-label={`${t.lightbox.open}: ${p.alt}`}
+                    title={t.lightbox.open}
                     className="group block w-full text-left cursor-zoom-in"
                   >
                     <span className="block overflow-hidden rounded-[18px] bg-surface dark:bg-white/[0.05]">
                       <Artwork
                         id={p.id}
-                        alt=""
+                        alt={p.alt}
                         className="w-full h-auto transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                       />
                     </span>

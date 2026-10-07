@@ -338,7 +338,7 @@ function Home() {
                     {e.designLink && (
                       <Link
                         to={`/${lang}/design`}
-                        className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
+                        className="mt-3 inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-accent-ink dark:text-accent-soft hover:underline underline-offset-4"
                       >
                         <ScrambleText text={e.designLink} /> <ArrowRight size={15} />
                       </Link>
@@ -654,6 +654,7 @@ function Design() {
         title={seo.title}
         description={seo.description}
         path={`/${lang}/design`}
+        ogImage="/og/design.jpg"
         jsonLd={[
           collectionPageSchema({ lang, name: seo.title, description: seo.description, path: `/${lang}/design` }),
           breadcrumbSchema({ lang, path: `/${lang}/design`, name: seo.title }),

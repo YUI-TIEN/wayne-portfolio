@@ -68,6 +68,7 @@ The differentiator is method, not tool choice. Five operating principles, each v
 
 - Website: https://waynetien.com
 - How he works (methodology): https://waynetien.com/en/how-i-work
+- Design work before AI (event identities and posters): https://waynetien.com/en/design
 - LinkedIn: https://www.linkedin.com/in/yui-tien/
 - GitHub: https://github.com/YUI-TIEN
 - Employer: https://morphusai.com
