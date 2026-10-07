@@ -101,6 +101,7 @@ export const zhTw: HomeCopy = {
         role: 'UI/UX & AI-UX 設計師',
         org: 'MorphusAI · 源神科技',
         detail: '負責產品介面與人機互動設計：對話介面、AI 回應的呈現方式，以及使用者對 AI 的信任與控制感；並建立 AI 輔助流程，把原始想法快速做成 MVP、POC 與 Demo。',
+        designLink: '看這段時期的設計作品',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const zhTw: HomeCopy = {
       collaboratedDesc: '在團隊主導的專案裡，負責產品、工作流、除錯、維運或實作的部分。',
     },
     viewProject: '看這個專案',
+    designCta: '更早的設計作品：活動識別與海報',
   },
   faq: {
     moreLabel: '看完整的做事方法',
@@ -163,5 +165,6 @@ export const zhTw: HomeCopy = {
     roseCurveLabel: 'rose curve（玫瑰線）',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: '設計作品',
   },
 }

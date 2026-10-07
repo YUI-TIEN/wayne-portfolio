@@ -101,6 +101,7 @@ export const ko: HomeCopy = {
         role: 'UI/UX & AI-UX Designer',
         org: 'MorphusAI · 源神科技',
         detail: '제품 UI와 사람-AI 인터랙션을 설계했습니다. 대화형 UI, AI 응답의 표현 방식, AI에 대한 신뢰와 통제감을 다루고, 아이디어를 MVP·POC·데모로 빠르게 만드는 AI 활용 플로우도 구축했습니다.',
+        designLink: '이 시기의 디자인 작업',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const ko: HomeCopy = {
       collaboratedDesc: '은 팀이 주도한 프로젝트에서 제품, 워크플로우, 디버깅, 운영, 구현 작업을 맡았다는 의미입니다.',
     },
     viewProject: '프로젝트 보기',
+    designCta: '이전 디자인 작업: 행사 아이덴티티와 포스터',
   },
   faq: {
     moreLabel: '일하는 방식 읽기',
@@ -163,5 +165,6 @@ export const ko: HomeCopy = {
     roseCurveLabel: 'rose curve (로즈 커브)',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: '디자인 작업',
   },
 }

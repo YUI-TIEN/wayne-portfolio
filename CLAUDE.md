@@ -9,12 +9,12 @@ Four locales: `en` (default), `zh-tw`, `ja`, `ko`.
 ## Commands
 
 - `npm run dev` — Vite dev server
-- `npm run build` — typecheck (`tsc -b`) → vite build → prerender all 24 routes
+- `npm run build` — typecheck (`tsc -b`) → vite build → prerender every route in `seoData.mjs`
   (puppeteer) → regenerate `dist/sitemap.xml` → **SEO sync check** (fails the
   build on any contract drift; see SYNC CONTRACTS)
 - `npm run check:seo` — SEO sync check alone (needs a prior build for the dist
   half)
-- `npm run check:responsive` — loads all 28 built routes at 390px in puppeteer
+- `npm run check:responsive` — loads every built route at 390px in puppeteer
   and fails if the document scrolls sideways, or if any element overflows the
   viewport without its own scroll container. Needs a prior build; ~90s, so it
   is a CI step of its own rather than part of `npm run build`. It catches the
@@ -58,7 +58,8 @@ A change is NOT done until, in this order:
 
 ## Architecture map
 
-- **Routing**: SPA (react-router) at `/{lang}/` and `/{lang}/project/{id}`.
+- **Routing**: SPA (react-router) at `/{lang}/`, `/{lang}/how-i-work`,
+  `/{lang}/design` and `/{lang}/project/{id}`.
   GitHub Pages serves `public/404.html`, which stashes the path in
   sessionStorage and redirects to `/`; `index.html` restores it. Project ids
   live in `scripts/seoData.mjs` (`PROJECT_IDS`) and `src/App.tsx` (`projects`).
@@ -109,6 +110,10 @@ When you touch any of these, change every listed location in the same commit:
    copy telling the same story).
 5. **OG cards**: `scripts/generate-og.mjs CARDS` titles must prefix the
    `seoData.mjs` en project titles; rerun the script after title changes.
+9. **Design archive title/description** (per lang): `seoData.mjs designSeo`
+   ⇄ `src/seo/designSeo.ts`. Artwork lives in `public/design/` as
+   `{id}-sm.webp` / `{id}-lg.webp`; `src/components/designImages.ts` holds
+   their intrinsic sizes — regenerate both together.
 
 If the check fails, fix the drift — never weaken the check to make it pass.
 If a legitimate refactor breaks its parsers, update the parser in the same

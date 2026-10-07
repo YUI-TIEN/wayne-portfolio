@@ -101,6 +101,7 @@ export const ja: HomeCopy = {
         role: 'UI/UX & AI-UX Designer',
         org: 'MorphusAI · 源神科技',
         detail: 'プロダクトのUIと、人とAIのインタラクションを設計。会話UI、AI応答の見せ方、AIへの信頼とコントロール感を担当し、アイデアをMVP・POC・デモへ素早く落とし込むAI活用フローも構築しました。',
+        designLink: 'この時期のデザイン作品',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const ja: HomeCopy = {
       collaboratedDesc: 'はチームが主導するプロジェクトの中で、プロダクト・ワークフロー・デバッグ・運用・実装などを担当したことを指します。',
     },
     viewProject: 'プロジェクトを見る',
+    designCta: 'それ以前のデザイン作品：イベント識別とポスター',
   },
   faq: {
     moreLabel: '仕事の進め方を読む',
@@ -163,5 +165,6 @@ export const ja: HomeCopy = {
     roseCurveLabel: 'rose curve（バラ曲線）',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: 'デザイン作品',
   },
 }

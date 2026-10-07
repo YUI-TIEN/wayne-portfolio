@@ -169,6 +169,22 @@ for (const [constName, field] of [
   }
 }
 
+// ── Contract 9: seoData designSeo ⇄ src/seo/designSeo.ts ───────────────────
+{
+  const src = read('src/seo/designSeo.ts')
+  for (const lang of LANGS) {
+    const route = routeSeo[`/${lang}/design`]
+    if (!route) {
+      fail(`[design:${lang}] no /${lang}/design route in seoData.mjs`)
+      continue
+    }
+    if (!src.includes(route.title))
+      fail(`[design:${lang}] title missing from src/seo/designSeo.ts:\n  ${route.title}`)
+    if (!src.includes(route.description))
+      fail(`[design:${lang}] description missing from src/seo/designSeo.ts:\n  ${route.description}`)
+  }
+}
+
 // ── Contract 5: index.html static <title> ⇄ seoData en home title ──────────
 {
   const m = read('index.html').match(/<title>([^<]*)<\/title>/)

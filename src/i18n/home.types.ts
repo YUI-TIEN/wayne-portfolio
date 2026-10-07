@@ -39,7 +39,9 @@ export interface HomeCopy {
     // Visible career spine. Mirrors Person.hasOccupation in seoData.mjs /
     // src/seo/schema.ts, and is the page-text home of the previous job
     // title — LLMs weight visible text above JSON-LD.
-    entries: { period: string; role: string; org: string; detail: string }[]
+    // designLink (optional) renders a link into /{lang}/design under the entry
+    // whose work the design archive documents.
+    entries: { period: string; role: string; org: string; detail: string; designLink?: string }[]
   }
   now: {
     eyebrow: string
@@ -56,6 +58,7 @@ export interface HomeCopy {
     heading: string
     legend: { owned: string; ownedDesc: string; collaborated: string; collaboratedDesc: string }
     viewProject: string
+    designCta: string // links the work grid into /{lang}/design
   }
   faq: {
     eyebrow: string
@@ -73,5 +76,6 @@ export interface HomeCopy {
     roseCurveLabel: string
     copyright: string
     meta: string
+    design: string // footer link into /{lang}/design
   }
 }

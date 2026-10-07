@@ -312,6 +312,48 @@ function howIWorkSchema({ lang, title, description, datePublished, dateModified 
   }
 }
 
+// Crawler-facing copy for /{lang}/design. Mirrors src/seo/designSeo.ts
+// (SYNC CONTRACT 9 in scripts/check-seo-sync.mjs).
+const designSeo = {
+  en: {
+    title: 'Design Work | Yui (Wayne) Tien',
+    description:
+      'Event identity systems and posters Yui (Wayne) Tien designed before moving into AI: a tarot-themed camp identity carried across posters, shirts and merchandise, a hand-drawn medieval crest identity, and eight event posters.',
+  },
+  'zh-tw': {
+    title: '設計作品 | Yui (Wayne) Tien',
+    description:
+      '田祐維（Yui / Wayne Tien）進入 AI 領域前的視覺設計作品：以塔羅「愚者」為題、延伸到海報、營服與周邊的營隊識別系統，手繪中世紀紋章的聯合宿營識別，以及八張活動海報。',
+  },
+  ja: {
+    title: 'デザイン作品 | Yui (Wayne) Tien',
+    description:
+      'Yui (Wayne) TienがAIの仕事に移る前に手がけたビジュアルデザイン。タロット「愚者」をテーマにポスター、Tシャツ、グッズまで展開したキャンプの識別システム、手描きの中世紋章によるキャンプ識別、そして8枚のイベントポスター。',
+  },
+  ko: {
+    title: '디자인 작업 | Yui (Wayne) Tien',
+    description:
+      'Yui (Wayne) Tien이 AI 분야로 오기 전에 만든 비주얼 디자인. 타로 「광대」를 주제로 포스터, 티셔츠, 굿즈까지 확장한 캠프 아이덴티티, 손으로 그린 중세 문장 캠프 아이덴티티, 그리고 여덟 장의 행사 포스터.',
+  },
+}
+
+// The design archive is a gallery of the person's own work: a CollectionPage
+// authored by and about the Person, not an Article.
+function designSchema({ lang, title, description }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/${lang}/design#collection`,
+    name: title,
+    description,
+    url: `${SITE_URL}/${lang}/design`,
+    inLanguage: lang,
+    author: { '@id': `${SITE_URL}/#person` },
+    about: { '@id': `${SITE_URL}/#person` },
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+  }
+}
+
 // Per-language project copy, keyed by project id.
 // Keep in sync with src/i18n/projectPage.ts and src/App.tsx's `projects` array.
 const projectSeo = {
@@ -505,6 +547,21 @@ for (const lang of LANGS) {
     alternates: buildAlternates(l => `/${l}/how-i-work`),
   }
 
+  const designPath = `/${lang}/design`
+  const designDates = routeDates(`src/i18n/design.${lang}.ts`)
+  routeSeo[designPath] = {
+    title: designSeo[lang].title,
+    description: designSeo[lang].description,
+    ogLocale: OG_LOCALE[lang],
+    ogImage: `${SITE_URL}/og-image.jpg`,
+    lastmod: designDates.modified,
+    jsonLd: [
+      designSchema({ lang, title: designSeo[lang].title, description: designSeo[lang].description }),
+      breadcrumbSchema({ lang, routePath: designPath, name: designSeo[lang].title }),
+    ],
+    alternates: buildAlternates(l => `/${l}/design`),
+  }
+
   const projectDates = routeDates(`src/i18n/projectPage.${lang}.ts`)
 
   for (const id of PROJECT_IDS) {
@@ -544,7 +601,7 @@ export function buildSitemap() {
     .map(([route, seo]) => {
       const loc = `${SITE_URL}${route}`
       const lastmod = seo.lastmod
-      const priority = route.includes('/project/') ? '0.8' : route.includes('/how-i-work') ? '0.9' : '1.0'
+      const priority = route.includes('/project/') || route.includes('/design') ? '0.8' : route.includes('/how-i-work') ? '0.9' : '1.0'
       const alts = seo.alternates
         .map(a => `    <xhtml:link rel="alternate" hreflang="${a.lang}" href="${SITE_URL}${a.path}" />`)
         .join('\n')

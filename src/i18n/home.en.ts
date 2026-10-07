@@ -101,6 +101,7 @@ export const en: HomeCopy = {
         role: 'UI/UX & AI-UX Designer',
         org: 'MorphusAI · 源神科技',
         detail: 'Designed product interfaces and human-AI interaction: conversational UI, how AI responses are presented, and how much trust and control users feel. Built an AI-assisted flow for turning raw ideas into MVPs, POCs, and demos.',
+        designLink: 'Design work from this period',
       },
       {
         period: '2021 — 2025',
@@ -139,6 +140,7 @@ export const en: HomeCopy = {
       collaboratedDesc: 'means product, workflow, debugging, ops, or implementation work inside a team-owned project.',
     },
     viewProject: 'View Project',
+    designCta: 'Earlier design work: event identities and posters',
   },
   faq: {
     eyebrow: 'faq',
@@ -163,5 +165,6 @@ export const en: HomeCopy = {
     roseCurveLabel: 'rose curve (玫瑰線)',
     copyright: 'copyright © 2026 YUI TIEN',
     meta: 'ANALYTICS · SOURCE · LAST COMMIT: 01ec181',
+    design: 'Design work',
   },
 }
