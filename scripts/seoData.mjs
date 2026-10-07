@@ -300,10 +300,10 @@ function howIWorkSchema({ lang, title, description, datePublished, dateModified 
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    '@id': `${SITE_URL}/${lang}/how-i-work#article`,
+    '@id': `${SITE_URL}/${lang}/how-i-work/#article`,
     headline: title,
     description,
-    url: `${SITE_URL}/${lang}/how-i-work`,
+    url: `${SITE_URL}/${lang}/how-i-work/`,
     inLanguage: lang,
     author: { '@id': `${SITE_URL}/#person` },
     publisher: { '@id': `${SITE_URL}/#person` },
@@ -368,10 +368,10 @@ function designSchema({ lang, title, description }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    '@id': `${SITE_URL}/${lang}/design#collection`,
+    '@id': `${SITE_URL}/${lang}/design/#collection`,
     name: title,
     description,
-    url: `${SITE_URL}/${lang}/design`,
+    url: `${SITE_URL}/${lang}/design/`,
     inLanguage: lang,
     author: { '@id': `${SITE_URL}/#person` },
     about: { '@id': `${SITE_URL}/#person` },
@@ -552,7 +552,7 @@ for (const lang of LANGS) {
     alternates: buildAlternates(l => `/${l}/`),
   }
 
-  const howIWorkPath = `/${lang}/how-i-work`
+  const howIWorkPath = `/${lang}/how-i-work/`
   const howIWorkDates = routeDates(`src/i18n/howIWork.${lang}.ts`)
   routeSeo[howIWorkPath] = {
     title: howIWorkSeo[lang].title,
@@ -571,10 +571,10 @@ for (const lang of LANGS) {
       faqPageSchema(howIWorkFaq[lang]),
       breadcrumbSchema({ lang, routePath: howIWorkPath, name: howIWorkSeo[lang].title }),
     ],
-    alternates: buildAlternates(l => `/${l}/how-i-work`),
+    alternates: buildAlternates(l => `/${l}/how-i-work/`),
   }
 
-  const designPath = `/${lang}/design`
+  const designPath = `/${lang}/design/`
   const designDates = routeDates(`src/i18n/design.${lang}.ts`)
   routeSeo[designPath] = {
     title: designSeo[lang].title,
@@ -586,13 +586,13 @@ for (const lang of LANGS) {
       designSchema({ lang, title: designSeo[lang].title, description: designSeo[lang].description }),
       breadcrumbSchema({ lang, routePath: designPath, name: designSeo[lang].title }),
     ],
-    alternates: buildAlternates(l => `/${l}/design`),
+    alternates: buildAlternates(l => `/${l}/design/`),
   }
 
   const projectDates = routeDates(`src/i18n/projectPage.${lang}.ts`)
 
   for (const id of PROJECT_IDS) {
-    const path = `/${lang}/project/${id}`
+    const path = `/${lang}/project/${id}/`
     const copy = projectSeo[id][lang]
     routeSeo[path] = {
       title: copy.title,
@@ -612,7 +612,7 @@ for (const lang of LANGS) {
         }),
         breadcrumbSchema({ lang, routePath: path, name: copy.title }),
       ],
-      alternates: buildAlternates(l => `/${l}/project/${id}`),
+      alternates: buildAlternates(l => `/${l}/project/${id}/`),
     }
   }
 }

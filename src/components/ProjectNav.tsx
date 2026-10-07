@@ -85,7 +85,7 @@ export function MoreWork({
         {siblings.map(({ id, label }) => (
           <li key={id}>
             <Link
-              to={`/${lang}/project/${id}`}
+              to={`/${lang}/project/${id}/`}
               className="group flex items-center justify-between gap-4 rounded-[28px] bg-surface dark:bg-white/[0.05] p-6 md:p-8 transition duration-500 ease-out hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgb(29_29_31/0.35)] active:scale-[0.99]"
             >
               <span className="text-xl md:text-2xl font-semibold tracking-[-0.02em]">{label}</span>
