@@ -59,7 +59,14 @@ const personSchema = {
       name: 'Digital Persona Technical Director',
       occupationalCategory: '15-1252.00',
       description:
-        'MorphusAI (源神科技), 2024–2026. Led AI persona and virtual character systems, agent workflow standardization, and demo-to-delivery operations.',
+        'MorphusAI (源神科技), 2025–2026. Led AI persona and virtual character systems, agent workflow standardization, and demo-to-delivery operations.',
+    },
+    {
+      '@type': 'Occupation',
+      name: 'UI/UX & AI-UX Designer',
+      occupationalCategory: '15-1255.00',
+      description:
+        'MorphusAI (源神科技), 2024–2025. Designed product interfaces and human-AI interaction, and built an AI-assisted flow for turning raw ideas into MVPs, POCs, and demos.',
     },
   ],
   alumniOf: {
