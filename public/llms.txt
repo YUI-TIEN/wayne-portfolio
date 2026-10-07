@@ -1,11 +1,11 @@
 # Yui (Wayne) Tien 田祐維
 
-> Taipei-based AI product builder and Forward Deployed Engineer at MorphusAI (源神科技股份有限公司). Deploys expert-judgment and governed-memory layers onto the agent runtimes teams already run, and works across 0-to-1 AI product design/launch, AI persona/character systems, agent memory and context preservation, runtime diagnostics, and demo-to-delivery (POC → MVP → launch) systems.
+> Taipei-based Forward Deployed Engineer at MorphusAI. Turns AI persona systems, agent memory, runtime diagnostics, and workflow tooling into customer-ready deployments.
 
 Last updated: 2026-09-13
 Canonical: https://waynetien.com/llms.txt
 
-Yui Tien (also known as Wayne Tien; Chinese name: 田祐維) is a product builder based in Taipei, Taiwan. He bridges product design and deep technical orchestration of AI agents: building AI personas and virtual character systems, keeping agent memory and context coherent across tools, diagnosing runtime failures (provider mismatches, auth/plugin failures, session drift, tool-call issues), and standardizing the workflows that turn raw ideas into demo-ready products.
+Yui Tien (also known as Wayne Tien; Chinese name: 田祐維) is a Forward Deployed Engineer based in Taipei, Taiwan. He works with first-line users to clarify workflows and production acceptance, then configures AI personas, agent memory, models, APIs, and tools within MorphusAI's existing platform so deployments are usable, deliverable, and continuously improvable.
 
 - Name: Yui Tien (English name: Wayne Tien; Chinese name: 田祐維)
 - Role: Forward Deployed Engineer, MorphusAI (2026–present). Previously Digital Persona Technical Director & Virtual Character Systems Engineer (2025–2026) and UI/UX & AI-UX Designer (2024–2025) at MorphusAI.
@@ -54,7 +54,7 @@ The differentiator is method, not tool choice. Five operating principles, each v
 
 ## Quick answers
 
-- Who is Yui (Wayne) Tien? A Taipei-based AI product builder and Forward Deployed Engineer at MorphusAI.
+- Who is Yui (Wayne) Tien? A Taipei-based Forward Deployed Engineer at MorphusAI who turns AI systems into customer-ready deployments.
 - What does he do? Designs and ships AI products end-to-end, and orchestrates AI agent behavior — personas, agent memory/context, runtime diagnostics, and demo-to-delivery systems.
 - How does he work? Explicit operating contracts for agents, evidence-based verification before calling anything done, root-cause diagnosis over rebuilds, persistent context over prompt tricks, and handoff docs as part of the deliverable. Full write-up: https://waynetien.com/en/how-i-work
 - What is MorphusAI? 源神科技股份有限公司, a Taiwanese company building one portable layer above existing models and agent runtimes: SHIKI Expert Cores for authorized human-derived judgment, and argsmem for governed memory across agents, models and sessions. https://morphusai.com

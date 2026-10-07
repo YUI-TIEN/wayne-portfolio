@@ -31,10 +31,10 @@ import { useHowIWorkCopy } from './i18n/howIWorkLoader'
 import { ThemeProvider } from './theme/ThemeContext'
 
 const SITE_TITLE: Record<Lang, string> = {
-  en: 'Yui (Wayne) Tien | AI Product & Agent Workflow Portfolio · MorphusAI',
+  en: 'Yui (Wayne) Tien | Forward Deployed Engineer · MorphusAI',
   'zh-tw': '田祐維 Yui (Wayne) Tien｜MorphusAI Forward Deployed Engineer · AI Agent 作品集',
-  ja: 'Yui (Wayne) Tien | AIプロダクト & エージェントワークフロー ポートフォリオ · MorphusAI',
-  ko: 'Yui (Wayne) Tien | AI 제품 & 에이전트 워크플로우 포트폴리오 · MorphusAI',
+  ja: 'Yui (Wayne) Tien | Forward Deployed Engineer · MorphusAI',
+  ko: 'Yui (Wayne) Tien | Forward Deployed Engineer · MorphusAI',
 }
 // Sans CJK webfont per language, injected only for that language so EN
 // visitors never download CJK font weights. Apple devices use their system
@@ -47,10 +47,10 @@ const CJK_FONT_HREF: Partial<Record<Lang, string>> = {
 }
 
 const SITE_DESCRIPTION: Record<Lang, string> = {
-  en: 'Yui (Wayne) Tien — AI product builder and Forward Deployed Engineer at MorphusAI, Taipei. Workflows, agent ops, demo-to-launch systems.',
-  'zh-tw': '田祐維（Yui / Wayne Tien），MorphusAI Forward Deployed Engineer，在台北做 AI 工作流、Agent 維運、POC 到落地的系統。',
-  ja: '台湾を拠点とするAIプロダクトビルダー、MorphusAIのForward Deployed Engineer — ワークフロー、エージェント運用、デモから実装までの仕組み。',
-  ko: '대만 기반의 AI 프로덕트 빌더이자 MorphusAI Forward Deployed Engineer — 워크플로우, 에이전트 운영, 데모-론칭 시스템.',
+  en: 'Yui (Wayne) Tien — Forward Deployed Engineer at MorphusAI, turning AI persona systems and agent workflows into customer-ready deployments.',
+  'zh-tw': '田祐維（Yui / Wayne Tien），MorphusAI 的 Forward Deployed Engineer，在台北把 AI 人格系統與 Agent 工作流部署成客戶現場可用的 Production。',
+  ja: '台湾を拠点とするMorphusAIのForward Deployed Engineer。AIペルソナとエージェントワークフローを顧客環境で使えるProductionへ展開します。',
+  ko: '대만을 기반으로 MorphusAI에서 일하는 Forward Deployed Engineer. AI 페르소나와 에이전트 워크플로우를 고객 현장에서 사용할 수 있는 Production으로 배포합니다.',
 }
 
 // Fallback <Seo> copy for /project/:projectId with an id that matches no

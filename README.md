@@ -1,23 +1,23 @@
 # Yui (Wayne) Tien
 
-Forward Deployed Engineer @ [MorphusAI](https://morphusai.com) (源神科技股份有限公司) — deploying an expert-judgment and governed-memory layer onto the agent runtimes teams already run. Specialized in agent memory, runtime diagnostics, and tech-ops. Based in Taipei, Taiwan.
+Forward Deployed Engineer @ [MorphusAI](https://morphusai.com) — turning AI persona systems and governable agent workflows into customer-ready deployments. Specialized in agent memory, runtime diagnostics, and tech-ops. Based in Taipei, Taiwan.
 
 [waynetien.com](https://waynetien.com) · [LinkedIn](https://www.linkedin.com/in/yui-tien/) · [youwei0112@gmail.com](mailto:youwei0112@gmail.com)
 
 ## About
 
-I bridge the gap between 0-to-1 product design, AI workflow implementation, and small-team execution. My expertise lies in transforming vague, early-stage AI concepts into stable, demo-ready, and handoff-ready systems that teams can consistently operate and scale.
+I work between frontline users and MorphusAI's existing platform: clarifying the real workflow and production acceptance criteria, then configuring AI persona, memory, models, APIs, tools, and content into a deployment people can actually use.
 
-Having navigated both the visual/narrative side of product launches and the deep technical orchestration of AI behavior, I make sure complex AI systems don't just work once as a novelty — they stay governable, repeatable, and persistent.
+I work within the existing platform, making it succeed in the field: verify the real flow with evidence, document operating decisions, hand the deployment over cleanly, and bring field feedback back to the product team.
 
 **Core pillars of my work:**
 
-- **0-to-1 Product Execution** — From UI/UX, graphic, and web design to launching official corporate and product platforms from scratch. I translate abstract AI value propositions into high-converting, tangible stakeholder narratives.
-- **AI Workflow & Architecture** — Turning one-off AI demos and POCs into robust operational workflows, focused on agent identity, context preservation, managed memory, and persona behavior across environments.
+- **Frontline Discovery & Acceptance** — Translating user needs, operating workflows, and expectations into explicit production acceptance criteria.
+- **AI Workflow Configuration** — Adapting persona behavior, memory, models, APIs, tools, and content on top of the existing platform.
 - **Runtime Diagnostics & Ops** — Troubleshooting "black-box" agent issues: provider mismatches, authentication/plugin failures, session drift, agent non-responses, and tool-call chaos.
-- **Execution Management** — Coordinating cross-functional efforts between engineers and operational teammates; breaking down abstract goals into milestones, KPIs, and repeatable SOPs.
+- **Deployment & Handoff** — Verifying real flows, documenting decisions and runbooks, and making each deployment transferable and continuously improvable.
 
-Let's connect if you're interested in AI agent infrastructure, persona systems, or building high-execution product teams.
+Let's connect if you're interested in deploying AI persona systems and agent workflows into real operating environments.
 
 ## Experience
 
