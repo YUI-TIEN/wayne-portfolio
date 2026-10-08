@@ -8,6 +8,7 @@ import { ScrollTrigger } from './scrollReveal'
 import type { LayoutProps } from './CaseStudyLayouts'
 import { BackLink } from './ProjectNav'
 import { CONTAINER, EYEBROW_MUTED, BODY } from './caseStudyTokens'
+import { PageLoader } from './PageLoader'
 
 interface CaseStudyLayoutsProps {
   projectId: string
@@ -56,11 +57,11 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
   }, [t])
 
   // First-ever visit: the locale chunk is still in flight and there's no
-  // previously-loaded copy (any language) to keep showing. Same minimal
-  // placeholder as the Suspense fallbacks below, so there's no visible seam
+  // previously-loaded copy (any language) to keep showing. Same loader as
+  // the Suspense fallbacks below, so there's no visible seam
   // between "chunk loading" and "copy loading".
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-ink" />
+    return <PageLoader />
   }
 
   // Fixed glass nav plus a spacer standing in for the in-flow nav bar the
@@ -74,7 +75,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
 
   if (projectId === 'openclaw-ops') {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-canvas dark:bg-ink" />}>
+      <Suspense fallback={<PageLoader />}>
         <OpenClawLayout c={t.openClaw} t={t} lang={lang} onBack={onBack} header={header} />
       </Suspense>
     )
@@ -93,7 +94,7 @@ export function ProjectPage({ projectId, lang, onBack }: ProjectPageProps) {
     // doesn't ship these demos; a minimal loader covers the brief chunk fetch.
     return (
       <Suspense
-        fallback={<div className="min-h-screen bg-canvas dark:bg-ink" />}
+        fallback={<PageLoader />}
       >
         <CaseStudyLayouts projectId={projectId} layoutProps={layoutProps} />
       </Suspense>

@@ -8,6 +8,7 @@ import { Reveal } from './Reveal'
 import { SiteHeader } from './SiteHeader'
 import { ScrollTrigger } from './scrollReveal'
 import { skipsScrollAnimation } from './motionGuards'
+import { PageLoader } from './PageLoader'
 
 const EYEBROW = 'font-mono text-[11px] uppercase tracking-[0.14em] text-accent-ink dark:text-accent-soft'
 
@@ -42,7 +43,7 @@ export function HowIWorkPage({ lang }: { lang: Lang }) {
   }, [ready])
 
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-ink" />
+    return <PageLoader />
   }
 
   return (
