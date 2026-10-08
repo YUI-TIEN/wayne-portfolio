@@ -8,6 +8,9 @@ import { DESIGN_IMAGES, type DesignImageId } from './designImages'
 import { ScrambleText, ScrambleStagger } from './ScrambleText'
 import { Reveal } from './Reveal'
 import { SiteHeader } from './SiteHeader'
+import { PageLoader } from './PageLoader'
+import { MathCurveLoader } from './MathCurveLoader'
+import { isPrerendering } from './motionGuards'
 
 const EYEBROW = 'font-mono text-[11px] uppercase tracking-[0.14em] text-accent-ink dark:text-accent-soft'
 
@@ -31,17 +34,43 @@ function Artwork({
   className?: string
 }) {
   const [w, h] = DESIGN_IMAGES[id][size]
+  // The prerender snapshot must ship visible images: lazy ones below the fold
+  // have not loaded when it is taken, and the static HTML paints before JS.
+  const [loaded, setLoaded] = useState(isPrerendering)
+  // A cached image can finish before React attaches onLoad, so check
+  // `complete` once the element exists. Errors also clear the loader: a
+  // spinning curve over a broken image would read as "still coming".
+  const ref = useCallback((img: HTMLImageElement | null) => {
+    if (img?.complete) setLoaded(true)
+  }, [])
+  // The loader overlay is absolutely positioned; every call site wraps
+  // Artwork in a `relative` frame.
   return (
-    <img
-      src={`/design/${id}-${size}.webp`}
-      alt={alt}
-      width={w}
-      height={h}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchPriority={eager ? 'high' : 'auto'}
-      decoding="async"
-      className={className}
-    />
+    <>
+      <img
+        ref={ref}
+        src={`/design/${id}-${size}.webp`}
+        alt={alt}
+        width={w}
+        height={h}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+        className={className}
+        // Inline so it composes with the call sites' hover-scale transition
+        // instead of fighting it for transition-property.
+        style={{ opacity: loaded ? 1 : 0, transition: 'opacity 500ms ease, transform 700ms cubic-bezier(0, 0, 0.2, 1)' }}
+      />
+      {!loaded && (
+        <span aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="loader-fade block size-12 md:size-14">
+            <MathCurveLoader type="rose" size="md" colorClass="fill-accent" />
+          </span>
+        </span>
+      )}
+    </>
   )
 }
 
@@ -64,7 +93,7 @@ export function DesignPage({ lang }: { lang: Lang }) {
   const show = useCallback((id: DesignImageId) => setOpen(indexOf(id)), [indexOf])
 
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-ink" />
+    return <PageLoader />
   }
 
   const altOf = (id: DesignImageId) => gallery.find((g) => g.id === id)?.alt ?? ''
@@ -151,7 +180,7 @@ export function DesignPage({ lang }: { lang: Lang }) {
                       type="button"
                       onClick={() => show(c.hero.id)}
                       title={t.lightbox.open}
-                      className="overflow-hidden rounded-[28px] bg-canvas dark:bg-white/[0.05] cursor-zoom-in"
+                      className="relative overflow-hidden rounded-[28px] bg-canvas dark:bg-white/[0.05] cursor-zoom-in"
                     >
                       <Artwork id={c.hero.id} size="lg" alt={c.hero.alt} className="w-full h-auto" />
                     </button>
@@ -160,7 +189,7 @@ export function DesignPage({ lang }: { lang: Lang }) {
                         type="button"
                         onClick={() => show(c.detail!.id)}
                         title={t.lightbox.open}
-                        className="group flex items-center justify-center overflow-hidden rounded-[28px] bg-white ring-1 ring-black/[0.06] aspect-[16/9] cursor-zoom-in"
+                        className="group relative flex items-center justify-center overflow-hidden rounded-[28px] bg-white ring-1 ring-black/[0.06] aspect-[16/9] cursor-zoom-in"
                       >
                         <Artwork id={c.detail.id} alt={c.detail.alt} className="h-full w-auto object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                       </button>
@@ -191,7 +220,7 @@ export function DesignPage({ lang }: { lang: Lang }) {
                         title={t.lightbox.open}
                         className="group block w-full text-left cursor-zoom-in"
                       >
-                        <span className="block overflow-hidden rounded-[18px] bg-canvas dark:bg-white/[0.05]">
+                        <span className="relative block overflow-hidden rounded-[18px] bg-canvas dark:bg-white/[0.05]">
                           <Artwork
                             id={item.id}
                             alt={item.alt}
@@ -232,7 +261,7 @@ export function DesignPage({ lang }: { lang: Lang }) {
                     title={t.lightbox.open}
                     className="group block w-full text-left cursor-zoom-in"
                   >
-                    <span className="block overflow-hidden rounded-[18px] bg-surface dark:bg-white/[0.05]">
+                    <span className="relative block overflow-hidden rounded-[18px] bg-surface dark:bg-white/[0.05]">
                       <Artwork
                         id={p.id}
                         alt={p.alt}

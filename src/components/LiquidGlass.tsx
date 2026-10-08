@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
+import { Fragment, useEffect, useId, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
 import { isPrerendering } from './motionGuards'
 
 // Liquid glass surface.
@@ -16,6 +16,14 @@ import { isPrerendering } from './motionGuards'
 // size (nav bars, pills, buttons), not to content cards that reflow.
 
 const REFRACTIVE_INDEX = 1.5
+
+// Per-channel displacement scale relative to green; the spread sets how wide
+// the rainbow fringe at the rim gets.
+const DISPERSION = [
+  { channel: 'r', scale: 0.9, matrix: '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0' },
+  { channel: 'g', scale: 1, matrix: '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0' },
+  { channel: 'b', scale: 1.1, matrix: '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0' },
+] as const
 const SAMPLES = 128
 
 // Apple's preferred convex profile: soft shoulder, flat top.
@@ -170,9 +178,20 @@ export function LiquidGlass({
             colorInterpolationFilters="sRGB"
           >
             <feImage href={map.href} x="0" y="0" width={map.w} height={map.h} preserveAspectRatio="none" result="map" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="soft" />
-            <feDisplacementMap in="soft" in2="map" scale={strength * 2} xChannelSelector="R" yChannelSelector="G" result="bent" />
-            <feColorMatrix in="bent" type="saturate" values="1.7" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="soft" />
+            {/* Dispersion: glass bends short wavelengths more, so each channel
+                is displaced by its own scale and recombined. The map is
+                neutral away from the rim, so the channels only separate at
+                the edge — that is the rainbow fringe on Apple's material. */}
+            {DISPERSION.map(({ channel, scale, matrix }) => (
+              <Fragment key={channel}>
+                <feDisplacementMap in="soft" in2="map" scale={strength * 2 * scale} xChannelSelector="R" yChannelSelector="G" result={`bent-${channel}`} />
+                <feColorMatrix in={`bent-${channel}`} type="matrix" values={matrix} result={channel} />
+              </Fragment>
+            ))}
+            <feBlend in="r" in2="g" mode="screen" result="rg" />
+            <feBlend in="rg" in2="b" mode="screen" result="rgb" />
+            <feColorMatrix in="rgb" type="saturate" values="1.5" />
           </filter>
         </svg>
       )}

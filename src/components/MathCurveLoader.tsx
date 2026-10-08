@@ -168,8 +168,19 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
 
       ctx.restore();
 
-      if (!isStatic) animationId = requestAnimationFrame(render);
+      if (!isStatic && visible) animationId = requestAnimationFrame(render);
     };
+
+    // Pause the loop while the canvas is offscreen: a gallery can mount
+    // dozens of per-image loaders at once and only a few are ever visible.
+    let visible = true;
+    const intersectionObserver = new IntersectionObserver(([entry]) => {
+      if (isStatic || entry.isIntersecting === visible) return;
+      visible = entry.isIntersecting;
+      cancelAnimationFrame(animationId);
+      if (visible) animationId = requestAnimationFrame(render);
+    });
+    intersectionObserver.observe(canvas);
 
     if (isStatic) {
       render(staticTime);
@@ -180,6 +191,7 @@ export const MathCurveLoader: React.FC<MathCurveLoaderProps> = ({ type, size, co
     return () => {
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
     };
   }, [type, size, colorClass]);
 

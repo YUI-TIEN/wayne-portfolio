@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Link, useNavigate, useLocation, useParams } fr
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { gsap } from './components/scrollReveal'
 import { skipsScrollAnimation } from './components/motionGuards'
-import { MathCurveLoader } from './components/MathCurveLoader'
+import { PageLoader } from './components/PageLoader'
 import { ScrambleText, ScrambleStagger } from './components/ScrambleText'
 import { Reveal } from './components/Reveal'
 import { HeroDotGrid } from './components/HeroDotGrid'
@@ -184,10 +184,10 @@ function Home() {
     navigate(`/${lang}/project/${projectId}/`)
   }
 
-  // First-ever visit only: no locale's copy resolved yet. Same placeholder
-  // ProjectPage uses, so "chunk loading" and "copy loading" look identical.
+  // First-ever visit only: no locale's copy resolved yet. Same loader the
+  // lazy routes use, so "chunk loading" and "copy loading" look identical.
   if (!t) {
-    return <div className="min-h-screen bg-canvas dark:bg-ink" />
+    return <PageLoader />
   }
 
   const navLink = 'hidden md:inline-flex h-9 items-center px-1 text-muted hover:text-graphite dark:text-neutral-400 dark:hover:text-white transition-colors cursor-pointer'
@@ -523,17 +523,6 @@ function Home() {
         </Reveal>
       </footer>
       </ScrambleStagger>
-    </div>
-  )
-}
-
-// Shared route-level loading state for the lazy pages.
-function PageLoader() {
-  return (
-    <div className="fixed inset-0 bg-canvas dark:bg-ink flex items-center justify-center select-none">
-      <div className="w-20 h-20 md:w-24 md:h-24">
-        <MathCurveLoader type="rose" size="lg" colorClass="fill-accent" />
-      </div>
     </div>
   )
 }
