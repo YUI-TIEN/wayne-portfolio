@@ -112,6 +112,11 @@
     0 12px 36px -8px rgb(29 29 31 / 0.14);
   -webkit-tap-highlight-color: transparent;
 }
+/* Dragging across the glass should stretch it, not pick up a link. */
+.glass a,
+.glass img {
+  -webkit-user-drag: none;
+}
 .glass::before {
   content: "";
   position: absolute;

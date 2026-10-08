@@ -37,8 +37,8 @@ const DISPERSION = [
   { channel: 'g', offset: 0, matrix: '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0' },
   { channel: 'b', offset: 1, matrix: '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0' },
 ] as const
-const PRESS_DISPERSION = 0.12
-const PRESS_REFRACTION = 0.5
+const PRESS_DISPERSION = 0.2
+const PRESS_REFRACTION = 1
 
 // Apple's preferred convex profile: soft shoulder, flat top.
 const squircle = (t: number) => Math.pow(1 - Math.pow(1 - t, 4), 1 / 4)
@@ -305,18 +305,31 @@ export function LiquidGlass({
     let last = 0
     let originX = 0
     let originY = 0
+    // The finger's offset since press (goal) and the shape's own lagging,
+    // springy copy of it, so the gel trails a fast drag and wobbles.
+    let goalX = 0
+    let goalY = 0
     let pullX = 0
     let pullY = 0
+    let pullVX = 0
+    let pullVY = 0
 
     const apply = () => {
       el.style.setProperty('--lg-p', Math.max(0, p).toFixed(3))
-      const w = el.offsetWidth || 1
-      // Small controls grow visibly, large surfaces barely flex.
-      const grow = Math.min(0.1, 14 / w) * p
       if (!reduced) {
-        const sx = 1 + grow + Math.abs(pullX) / w * 0.12 * p
-        const sy = 1 + grow - Math.abs(pullX) / w * 0.04 * p
-        el.style.transform = p === 0 && pullX === 0 ? '' : `translate(${pullX * 0.1 * p}px, ${pullY * 0.1 * p}px) scale(${sx}, ${sy})`
+        const w = el.offsetWidth || 1
+        const h = el.offsetHeight || 1
+        // Small controls swell a lot, large surfaces only a little.
+        const grow = Math.max(0.03, Math.min(0.22, 36 / w)) * p
+        // Stretch along the drag direction and thin across it, roughly
+        // keeping volume, like a droplet being pulled.
+        const dist = Math.hypot(pullX, pullY)
+        const stretch = Math.min(0.45, dist / Math.min(w, h * 2.5)) * Math.max(0, p)
+        const angle = Math.atan2(pullY, pullX) * 180 / Math.PI
+        const moving = p !== 0 || dist > 0.05
+        el.style.transform = moving
+          ? `translate(${pullX * 0.3}px, ${pullY * 0.3}px) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch * 0.45}) rotate(${-angle}deg) scale(${1 + grow})`
+          : ''
       }
       displaceRefs.current.forEach((node, i) => {
         if (!node) return
@@ -327,17 +340,25 @@ export function LiquidGlass({
     const tick = (now: number) => {
       const dt = Math.min(0.032, (now - last) / 1000 || 0.016)
       last = now
-      const force = 420 * (target - p) - 24 * v
-      v += force * dt
+      // Low damping on purpose: the press overshoots into a bulge and the
+      // release overshoots into a squash before settling.
+      v += (300 * (target - p) - 13 * v) * dt
       p += v * dt
-      if (target === 0) {
-        pullX *= 0.85
-        pullY *= 0.85
-      }
-      if (Math.abs(target - p) < 0.002 && Math.abs(v) < 0.002) {
+      const gx = target ? goalX : 0
+      const gy = target ? goalY : 0
+      pullVX += (260 * (gx - pullX) - 16 * pullVX) * dt
+      pullVY += (260 * (gy - pullY) - 16 * pullVY) * dt
+      pullX += pullVX * dt
+      pullY += pullVY * dt
+      const settled =
+        Math.abs(target - p) < 0.002 && Math.abs(v) < 0.002 &&
+        Math.abs(gx - pullX) < 0.05 && Math.abs(gy - pullY) < 0.05 && Math.abs(pullVX) + Math.abs(pullVY) < 0.05
+      if (settled) {
         p = target
         v = 0
-        if (target === 0) pullX = pullY = 0
+        pullX = gx
+        pullY = gy
+        pullVX = pullVY = 0
         apply()
         raf = 0
         return
@@ -354,28 +375,35 @@ export function LiquidGlass({
       const r = el.getBoundingClientRect()
       el.style.setProperty('--lg-x', `${((e.clientX - r.left) / r.width) * 100}%`)
       el.style.setProperty('--lg-y', `${((e.clientY - r.top) / r.height) * 100}%`)
-      const max = 40
-      pullX = Math.max(-max, Math.min(max, e.clientX - originX))
-      pullY = Math.max(-max, Math.min(max, e.clientY - originY)) * 0.5
+      const max = 90
+      goalX = Math.max(-max, Math.min(max, e.clientX - originX))
+      goalY = Math.max(-max, Math.min(max, e.clientY - originY))
       run()
     }
+    // Any of these ends the press. pointerup alone is not enough: dragging a
+    // link starts a native drag in WebKit, which swallows pointerup and
+    // would leave the glass stretched.
+    const END_EVENTS = ['pointerup', 'pointercancel', 'dragstart', 'blur'] as const
     const onUp = () => {
       target = 0
+      el.style.removeProperty('user-select')
+      el.style.removeProperty('-webkit-user-select')
       window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onUp)
+      END_EVENTS.forEach((t) => window.removeEventListener(t, onUp, true))
       run()
     }
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0) return
       originX = e.clientX
       originY = e.clientY
-      pullX = pullY = 0
+      goalX = goalY = 0
+      // A drag across the glass deforms it; it should not also select text.
+      el.style.setProperty('user-select', 'none')
+      el.style.setProperty('-webkit-user-select', 'none')
       onMove(e)
       target = 1
       window.addEventListener('pointermove', onMove, { passive: true })
-      window.addEventListener('pointerup', onUp)
-      window.addEventListener('pointercancel', onUp)
+      END_EVENTS.forEach((t) => window.addEventListener(t, onUp, true))
       run()
     }
     el.addEventListener('pointerdown', onDown)
