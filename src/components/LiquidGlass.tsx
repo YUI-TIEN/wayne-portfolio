@@ -1,30 +1,44 @@
-import { Fragment, useEffect, useId, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
-import { isPrerendering } from './motionGuards'
+import { useEffect, useId, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
+import { isPrerendering, prefersReducedMotion } from './motionGuards'
 
-// Liquid glass surface.
+// Liquid glass surface, modelled on iOS 26.
 //
-// Every browser gets the `.glass` material from index.css (translucent fill +
-// saturate/blur, the recipe apple.com ships on its own nav). Chromium can
-// additionally take an SVG filter as `backdrop-filter: url(#id)` — outside
-// the CSS spec, and ignored by Safari and Firefox — so there we layer real
-// refraction on top: a displacement map precomputed from a squircle bezel
-// profile and Snell's law, the approach described at
-// https://kube.io/blog/liquid-glass-css-svg/.
+// At rest it is a clear lens: the rim bends what is underneath (a
+// displacement map precomputed from a squircle bezel profile and Snell's
+// law, the approach described at https://kube.io/blog/liquid-glass-css-svg/)
+// and catches a white, light-angle-dependent rim highlight (CSS, see
+// index.css). Colour separation is not a resting state: when pressed the
+// glass "flexes and energizes with light" (WWDC25, Meet Liquid Glass) — it
+// grows, follows the finger like a gel, lights up from the touch point and
+// bends harder, which is when dispersion briefly fringes the rim.
 //
-// The map depends on the element's pixel size, so it is rebuilt when the
-// element resizes. That makes the effect suited to controls with a stable
-// size (nav bars, pills, buttons), not to content cards that reflow.
+// Refraction needs the backdrop as an input, which browsers expose two ways:
+// - 'backdrop' (Chromium, incl. Android): an SVG filter as backdrop-filter.
+// - 'mirror' (WebKit, i.e. every iOS browser, and Firefox): they ignore
+//   url() in backdrop-filter, so a clone of the page is kept aligned behind
+//   the glass and drawn shrunk toward the glass centre, masked to the rim —
+//   the same "rim samples from further in" a convex lens produces. No SVG
+//   filter on purpose: WebKit samples the wrong region when one is applied
+//   to an element with a large overflowing child, and garbles it entirely
+//   once an ancestor is transformed (the press scale). The centre still
+//   shows the live backdrop, so canvases (which clone blank) or in-flight
+//   animations never show up stale there.
+//
+// The maps depend on the element's pixel size and are rebuilt on resize, so
+// the effect suits controls with a stable size (nav bars, pills, cards).
 
 const REFRACTIVE_INDEX = 1.5
-
-// Per-channel displacement scale relative to green; the spread sets how wide
-// the rainbow fringe at the rim gets.
-const DISPERSION = [
-  { channel: 'r', scale: 0.9, matrix: '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0' },
-  { channel: 'g', scale: 1, matrix: '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0' },
-  { channel: 'b', scale: 1.1, matrix: '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0' },
-] as const
 const SAMPLES = 128
+const MIRROR_REBUILD_MS = 300
+
+// Per-channel displacement offset applied at full press. Zero at rest.
+const DISPERSION = [
+  { channel: 'r', offset: -1, matrix: '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0' },
+  { channel: 'g', offset: 0, matrix: '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0' },
+  { channel: 'b', offset: 1, matrix: '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0' },
+] as const
+const PRESS_DISPERSION = 0.12
+const PRESS_REFRACTION = 0.5
 
 // Apple's preferred convex profile: soft shoulder, flat top.
 const squircle = (t: number) => Math.pow(1 - Math.pow(1 - t, 4), 1 / 4)
@@ -56,13 +70,17 @@ function roundedRectSdf(px: number, py: number, w: number, h: number, r: number)
   return outside + inside - r
 }
 
-function buildDisplacementMap(w: number, h: number, radius: number, bezel: number): string {
+// Displacement map, plus (mirror path) an alpha mask covering the bezel and
+// fading out where the displacement does, so the refracted clone hands over
+// to the live backdrop without a seam.
+function buildMaps(w: number, h: number, radius: number, bezel: number, withRimMask: boolean) {
   const canvas = document.createElement('canvas')
   canvas.width = w
   canvas.height = h
   const ctx = canvas.getContext('2d')
-  if (!ctx) return ''
+  if (!ctx) return null
   const img = ctx.createImageData(w, h)
+  const rim = withRimMask ? ctx.createImageData(w, h) : null
   const r = Math.min(radius, w / 2, h / 2)
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -82,6 +100,7 @@ function buildDisplacementMap(w: number, h: number, radius: number, bezel: numbe
         const len = Math.hypot(gx, gy) || 1
         dx = (-gx / len) * magnitude
         dy = (-gy / len) * magnitude
+        if (rim) rim.data[i + 3] = Math.round(255 * Math.min(1, (1 - t) / 0.35))
       }
       img.data[i] = Math.round(128 + dx * 127)
       img.data[i + 1] = Math.round(128 + dy * 127)
@@ -90,16 +109,124 @@ function buildDisplacementMap(w: number, h: number, radius: number, bezel: numbe
     }
   }
   ctx.putImageData(img, 0, 0)
-  return canvas.toDataURL('image/png')
+  const displacement = canvas.toDataURL('image/png')
+  let rimMask = ''
+  if (rim) {
+    ctx.putImageData(rim, 0, 0)
+    rimMask = canvas.toDataURL('image/png')
+  }
+  return { displacement, rimMask }
 }
 
-function supportsBackdropSvgFilter() {
-  if (typeof window === 'undefined' || isPrerendering()) return false
-  if (window.matchMedia('(prefers-reduced-transparency: reduce)').matches) return false
+type Mode = 'backdrop' | 'mirror'
+
+function refractionMode(): Mode | null {
+  if (typeof window === 'undefined' || isPrerendering()) return null
+  if (window.matchMedia('(prefers-reduced-transparency: reduce)').matches) return null
   // Only Chromium exposes navigator.userAgentData, and only Chromium honors
-  // url() in backdrop-filter; CSS.supports() cannot tell the difference.
+  // url() in backdrop-filter; CSS.supports() cannot tell the difference
+  // (WebKit parses the syntax and then renders nothing).
+  // userAgentData can be missing (UA overrides, embedded webviews), so the
+  // UA string backs it up; iOS Chrome says "CriOS" and is WebKit underneath.
   const brands = (navigator as Navigator & { userAgentData?: { brands?: { brand: string }[] } }).userAgentData?.brands
-  return !!brands?.some((b) => /Chromium/i.test(b.brand))
+  const chromium = brands?.some((b) => /Chromium/i.test(b.brand)) || /\bChrome\/\d/.test(navigator.userAgent)
+  return chromium ? 'backdrop' : 'mirror'
+}
+
+// Keeps a clone of #root aligned behind `glass` inside `host`, shrunk about
+// the glass centre so content at the rim is pulled in by about `pull` px.
+// Rebuilt when something under the glass changes, at most every
+// MIRROR_REBUILD_MS.
+function mountMirror(glass: HTMLElement, host: HTMLElement, pull: number) {
+  const root = document.getElementById('root')
+  if (!root) return () => {}
+  let clone: HTMLElement | null = null
+
+  const glassBox = () => {
+    // Layout position, ignoring the press transform on the glass itself: the
+    // clone lives inside that transform, so it grows with it like a lens.
+    const parent = glass.offsetParent as HTMLElement | null
+    const p = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 }
+    return { left: p.left + glass.offsetLeft, top: p.top + glass.offsetTop, w: glass.offsetWidth, h: glass.offsetHeight }
+  }
+  const align = () => {
+    if (!clone) return
+    const r = root.getBoundingClientRect()
+    const g = glassBox()
+    const sx = Math.max(0.8, 1 - pull / (g.w / 2))
+    const sy = Math.max(0.8, 1 - pull / (g.h / 2))
+    const cx = g.w / 2
+    const cy = g.h / 2
+    clone.style.transform = `translate(${cx + sx * (r.left - g.left - cx)}px, ${cy + sy * (r.top - g.top - cy)}px) scale(${sx}, ${sy})`
+  }
+  const build = () => {
+    const c = root.cloneNode(true) as HTMLElement
+    c.querySelectorAll('.glass, script').forEach((n) => n.remove())
+    c.removeAttribute('id')
+    c.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'))
+    c.setAttribute('aria-hidden', 'true')
+    c.inert = true
+    c.style.cssText = `position:absolute;left:0;top:0;margin:0;width:${root.offsetWidth}px;pointer-events:none;transform-origin:0 0`
+    host.replaceChildren(c)
+    clone = c
+    align()
+  }
+
+  let timer = 0
+  let lastBuild = 0
+  const scheduleBuild = () => {
+    if (timer) return
+    timer = window.setTimeout(() => {
+      timer = 0
+      lastBuild = performance.now()
+      build()
+    }, Math.max(0, MIRROR_REBUILD_MS - (performance.now() - lastBuild)))
+  }
+  // Only changes that land under the glass matter; this keeps scroll-driven
+  // animations elsewhere on the page from re-cloning it every frame.
+  const underGlass = (node: Node) => {
+    const el = node instanceof Element ? node : node.parentElement
+    if (!el || el.closest('.glass')) return false
+    const a = el.getBoundingClientRect()
+    const g = glass.getBoundingClientRect()
+    return a.right > g.left && a.left < g.right && a.bottom > g.top && a.top < g.bottom
+  }
+  const mo = new MutationObserver((records) => {
+    if (records.some((rec) => underGlass(rec.target))) scheduleBuild()
+  })
+  mo.observe(root, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['class', 'style', 'src', 'srcset', 'open', 'hidden'],
+  })
+
+  let raf = 0
+  let settle = 0
+  const onScroll = () => {
+    if (!raf) raf = requestAnimationFrame(() => {
+      raf = 0
+      align()
+    })
+    // Content that moved under the glass while scrolling may have animated
+    // since the last clone; refresh once scrolling stops.
+    clearTimeout(settle)
+    settle = window.setTimeout(scheduleBuild, 150)
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', scheduleBuild)
+  build()
+
+  return () => {
+    mo.disconnect()
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', scheduleBuild)
+    cancelAnimationFrame(raf)
+    clearTimeout(timer)
+    clearTimeout(settle)
+    host.replaceChildren()
+  }
 }
 
 interface LiquidGlassProps {
@@ -128,12 +255,15 @@ export function LiquidGlass({
   ...rest
 }: LiquidGlassProps) {
   const ref = useRef<HTMLElement>(null)
+  const mirrorRef = useRef<HTMLDivElement>(null)
+  const displaceRefs = useRef<(SVGFEDisplacementMapElement | null)[]>([])
   const filterId = `lg-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
-  const [map, setMap] = useState<{ href: string; w: number; h: number } | null>(null)
+  const [maps, setMaps] = useState<{ displacement: string; rimMask: string; w: number; h: number; mode: Mode } | null>(null)
 
   useEffect(() => {
     const el = ref.current
-    if (!el || !supportsBackdropSvgFilter()) return
+    const mode = refractionMode()
+    if (!el || !mode) return
     let last = ''
     // Built synchronously rather than on the next animation frame: frames do
     // not run in background tabs, and the map should be ready the moment the
@@ -144,7 +274,8 @@ export function LiquidGlass({
       const key = `${w}x${h}`
       if (!w || !h || key === last) return
       last = key
-      setMap({ href: buildDisplacementMap(w, h, radius, Math.min(bezel, h / 2)), w, h })
+      const built = buildMaps(w, h, radius, Math.min(bezel, h / 2), mode === 'mirror')
+      if (built) setMaps({ ...built, w, h, mode })
     }
     rebuild()
     const ro = new ResizeObserver(rebuild)
@@ -152,48 +283,172 @@ export function LiquidGlass({
     return () => ro.disconnect()
   }, [radius, bezel])
 
-  const refract = map !== null
+  const mirrored = maps?.mode === 'mirror'
+  useEffect(() => {
+    const el = ref.current
+    const host = mirrorRef.current
+    if (!mirrored || !el || !host) return
+    return mountMirror(el, host, strength * 0.35)
+  }, [mirrored, strength])
+
+  // Press: an underdamped spring drives `p` (0 rest → 1 pressed),
+  // so release overshoots and wobbles back like a gel. The loop only runs
+  // while the spring is moving.
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const reduced = prefersReducedMotion()
+    let p = 0
+    let v = 0
+    let target = 0
+    let raf = 0
+    let last = 0
+    let originX = 0
+    let originY = 0
+    let pullX = 0
+    let pullY = 0
+
+    const apply = () => {
+      el.style.setProperty('--lg-p', Math.max(0, p).toFixed(3))
+      const w = el.offsetWidth || 1
+      // Small controls grow visibly, large surfaces barely flex.
+      const grow = Math.min(0.1, 14 / w) * p
+      if (!reduced) {
+        const sx = 1 + grow + Math.abs(pullX) / w * 0.12 * p
+        const sy = 1 + grow - Math.abs(pullX) / w * 0.04 * p
+        el.style.transform = p === 0 && pullX === 0 ? '' : `translate(${pullX * 0.1 * p}px, ${pullY * 0.1 * p}px) scale(${sx}, ${sy})`
+      }
+      displaceRefs.current.forEach((node, i) => {
+        if (!node) return
+        const s = strength * 2 * (1 + PRESS_REFRACTION * p) * (1 + DISPERSION[i].offset * PRESS_DISPERSION * Math.max(0, p))
+        node.setAttribute('scale', s.toFixed(2))
+      })
+    }
+    const tick = (now: number) => {
+      const dt = Math.min(0.032, (now - last) / 1000 || 0.016)
+      last = now
+      const force = 420 * (target - p) - 24 * v
+      v += force * dt
+      p += v * dt
+      if (target === 0) {
+        pullX *= 0.85
+        pullY *= 0.85
+      }
+      if (Math.abs(target - p) < 0.002 && Math.abs(v) < 0.002) {
+        p = target
+        v = 0
+        if (target === 0) pullX = pullY = 0
+        apply()
+        raf = 0
+        return
+      }
+      apply()
+      raf = requestAnimationFrame(tick)
+    }
+    const run = () => {
+      if (raf) return
+      last = performance.now()
+      raf = requestAnimationFrame(tick)
+    }
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--lg-x', `${((e.clientX - r.left) / r.width) * 100}%`)
+      el.style.setProperty('--lg-y', `${((e.clientY - r.top) / r.height) * 100}%`)
+      const max = 40
+      pullX = Math.max(-max, Math.min(max, e.clientX - originX))
+      pullY = Math.max(-max, Math.min(max, e.clientY - originY)) * 0.5
+      run()
+    }
+    const onUp = () => {
+      target = 0
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+      run()
+    }
+    const onDown = (e: PointerEvent) => {
+      if (e.button !== 0) return
+      originX = e.clientX
+      originY = e.clientY
+      pullX = pullY = 0
+      onMove(e)
+      target = 1
+      window.addEventListener('pointermove', onMove, { passive: true })
+      window.addEventListener('pointerup', onUp)
+      window.addEventListener('pointercancel', onUp)
+      run()
+    }
+    el.addEventListener('pointerdown', onDown)
+    return () => {
+      el.removeEventListener('pointerdown', onDown)
+      onUp()
+      cancelAnimationFrame(raf)
+    }
+  }, [strength])
+
   const Component = Tag as ElementType
+  const backdrop = maps?.mode === 'backdrop'
   return (
     <Component
       ref={ref}
       className={`glass ${className}`}
-      data-refract={refract ? 'on' : undefined}
+      data-refract={maps ? (backdrop ? 'on' : 'mirror') : undefined}
       style={{
         borderRadius: radius,
-        ...(refract ? { backdropFilter: `url(#${filterId})`, WebkitBackdropFilter: `url(#${filterId})` } : null),
+        ...(backdrop ? { backdropFilter: `url(#${filterId})`, WebkitBackdropFilter: `url(#${filterId})` } : null),
         ...style,
       }}
       {...rest}
     >
-      {refract && (
+      {maps && backdrop && (
         <svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute', width: 0, height: 0 }}>
           <filter
             id={filterId}
             x="0"
             y="0"
-            width={map.w}
-            height={map.h}
+            width={maps.w}
+            height={maps.h}
             filterUnits="userSpaceOnUse"
             colorInterpolationFilters="sRGB"
           >
-            <feImage href={map.href} x="0" y="0" width={map.w} height={map.h} preserveAspectRatio="none" result="map" />
+            <feImage href={maps.displacement} x="0" y="0" width={maps.w} height={maps.h} preserveAspectRatio="none" result="map" />
             <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="soft" />
-            {/* Dispersion: glass bends short wavelengths more, so each channel
-                is displaced by its own scale and recombined. The map is
-                neutral away from the rim, so the channels only separate at
-                the edge — that is the rainbow fringe on Apple's material. */}
-            {DISPERSION.map(({ channel, scale, matrix }) => (
-              <Fragment key={channel}>
-                <feDisplacementMap in="soft" in2="map" scale={strength * 2 * scale} xChannelSelector="R" yChannelSelector="G" result={`bent-${channel}`} />
+            {/* One pass per channel. At rest all three share a scale and
+                recombine into the plain refracted image; a press spreads
+                the scales so the rim fringes (glass bends blue the most). */}
+            {DISPERSION.map(({ channel, matrix }, i) => (
+              <g key={channel}>
+                <feDisplacementMap
+                  ref={(node) => {
+                    displaceRefs.current[i] = node
+                  }}
+                  in="soft"
+                  in2="map"
+                  scale={strength * 2}
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                  result={`bent-${channel}`}
+                />
                 <feColorMatrix in={`bent-${channel}`} type="matrix" values={matrix} result={channel} />
-              </Fragment>
+              </g>
             ))}
             <feBlend in="r" in2="g" mode="screen" result="rg" />
             <feBlend in="rg" in2="b" mode="screen" result="rgb" />
             <feColorMatrix in="rgb" type="saturate" values="1.5" />
           </filter>
         </svg>
+      )}
+      {mirrored && (
+        <div
+          ref={mirrorRef}
+          data-lg-mirror=""
+          aria-hidden="true"
+          className="glass-mirror"
+          style={{
+            maskImage: `url(${maps.rimMask})`,
+            WebkitMaskImage: `url(${maps.rimMask})`,
+          }}
+        />
       )}
       {children}
     </Component>
