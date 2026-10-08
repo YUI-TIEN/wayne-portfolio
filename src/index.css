@@ -91,10 +91,12 @@
    Clear glass, not frosted: a light blur only keeps text legible.
    Every browser: thin fill, inner sheen, and a white rim highlight whose
    strength follows the angle to a light from the top left — the way iOS 26
-   lights the edge. Refraction is added by <LiquidGlass> (backdrop filter on
-   Chromium, a refracted mirror of the page elsewhere), and a press drives
+   lights the edge. Refraction and colour dispersion are added by
+   <LiquidGlass> (backdrop filter on Chromium, refracted per-channel mirrors
+   of the page elsewhere), and a press drives
    --lg-p: the glass lights up from the touch point (--lg-x/--lg-y) and the
-   rim brightens. There is deliberately no colour on the rim at rest.
+   rim brightens. Colour only ever comes from the backdrop being split,
+   never from a gradient painted on the rim.
    This is a web approximation of Apple's material, not an Apple asset. */
 .glass {
   --lg-p: 0;
@@ -153,7 +155,7 @@
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
 .glass[data-refract] {
-  --glass-tint: rgb(250 250 252 / 0.3);
+  --glass-tint: rgb(250 250 252 / 0.2);
 }
 /* Mirror mode refracts a sharp copy of the page at the rim; match the live
    backdrop's softness in the centre so the two meet without a seam. */
@@ -165,11 +167,27 @@
   position: absolute;
   inset: 0;
   z-index: -2;
+  isolation: isolate;
   overflow: hidden;
   border-radius: inherit;
   pointer-events: none;
   mask-size: 100% 100%;
   -webkit-mask-size: 100% 100%;
+}
+/* One colour channel of the page: the clone multiplied by a primary over a
+   black base, screened with the other two back into full colour. */
+.glass-mirror-channel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #000;
+  mix-blend-mode: screen;
+}
+.glass-mirror-channel > :last-child {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
 }
 .glass-mirror::after {
   content: "";
@@ -192,7 +210,7 @@
   opacity: calc(0.45 + 0.3 * var(--lg-p));
 }
 .dark .glass[data-refract] {
-  --glass-tint: rgb(28 28 30 / 0.32);
+  --glass-tint: rgb(28 28 30 / 0.25);
 }
 @media (prefers-reduced-transparency: reduce) {
   .glass, .glass[data-refract] {
