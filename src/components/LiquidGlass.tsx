@@ -381,6 +381,7 @@ export function LiquidGlass({
     let pullY = 0
     let pullVX = 0
     let pullVY = 0
+    let baseCenter = 0
 
     const apply = () => {
       el.style.setProperty('--lg-p', Math.max(0, p).toFixed(3))
@@ -392,11 +393,19 @@ export function LiquidGlass({
         // Stretch along the drag direction and thin across it, roughly
         // keeping volume, like a droplet being pulled.
         const dist = Math.hypot(pullX, pullY)
-        const stretch = Math.min(0.45, dist / Math.min(w, h * 2.5)) * Math.max(0, p)
+        // On a narrow phone the full stretch would carry the glass off
+        // screen; cap it so the stretched width still fits the viewport.
+        const fit = Math.max(0, (window.innerWidth - 16) / w - 1 - grow)
+        const stretch = Math.min(0.45, fit, dist / Math.min(w, h * 2.5)) * Math.max(0, p)
         const angle = Math.atan2(pullY, pullX) * 180 / Math.PI
+        // Keep the swollen, stretched glass inside the viewport as it follows
+        // the finger (the layout box itself never moves).
+        const half = (w * (1 + grow) * (1 + stretch)) / 2
+        const room = Math.max(0, Math.min(baseCenter - 8 - half, window.innerWidth - 8 - half - baseCenter))
+        const tx = Math.max(-room, Math.min(room, pullX * 0.3))
         const moving = p !== 0 || dist > 0.05
         el.style.transform = moving
-          ? `translate(${pullX * 0.3}px, ${pullY * 0.3}px) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch * 0.45}) rotate(${-angle}deg) scale(${1 + grow})`
+          ? `translate(${tx}px, ${pullY * 0.3}px) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch * 0.45}) rotate(${-angle}deg) scale(${1 + grow})`
           : ''
       }
       displaceRefs.current.forEach((node, i) => {
@@ -454,7 +463,11 @@ export function LiquidGlass({
     // link starts a native drag in WebKit, which swallows pointerup and
     // would leave the glass stretched.
     const END_EVENTS = ['pointerup', 'pointercancel', 'dragstart', 'blur'] as const
+    // A touch that turns into a scroll should not flash the press; it gets
+    // a short grace period, and the browser cancels the pointer first.
+    let touchDelay = 0
     const onUp = () => {
+      clearTimeout(touchDelay)
       target = 0
       el.style.removeProperty('user-select')
       el.style.removeProperty('-webkit-user-select')
@@ -467,14 +480,22 @@ export function LiquidGlass({
       originX = e.clientX
       originY = e.clientY
       goalX = goalY = 0
+      if (!el.style.transform) {
+        const box = el.getBoundingClientRect()
+        baseCenter = box.left + box.width / 2
+      }
       // A drag across the glass deforms it; it should not also select text.
       el.style.setProperty('user-select', 'none')
       el.style.setProperty('-webkit-user-select', 'none')
       onMove(e)
-      target = 1
       window.addEventListener('pointermove', onMove, { passive: true })
       END_EVENTS.forEach((t) => window.addEventListener(t, onUp, true))
-      run()
+      const press = () => {
+        target = 1
+        run()
+      }
+      if (e.pointerType === 'touch') touchDelay = window.setTimeout(press, 90)
+      else press()
     }
     el.addEventListener('pointerdown', onDown)
     return () => {
