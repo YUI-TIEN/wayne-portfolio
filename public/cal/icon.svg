@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2350b8"/>
+  <!-- the attendance sheet -->
+  <rect x="104" y="112" width="304" height="300" rx="36" fill="#f6f5f2"/>
+  <rect x="104" y="112" width="304" height="72" rx="36" fill="#ffffff"/>
+  <rect x="104" y="148" width="304" height="36" fill="#ffffff"/>
+  <rect x="164" y="84" width="24" height="64" rx="12" fill="#f6f5f2"/>
+  <rect x="324" y="84" width="24" height="64" rx="12" fill="#f6f5f2"/>
+  <!-- 3 x 3 lesson cells -->
+  <g fill="#c9d3ec">
+    <rect x="140" y="212" width="64" height="48" rx="10"/>
+    <rect x="224" y="212" width="64" height="48" rx="10"/>
+    <rect x="308" y="212" width="64" height="48" rx="10"/>
+    <rect x="140" y="280" width="64" height="48" rx="10"/>
+    <rect x="308" y="280" width="64" height="48" rx="10"/>
+    <rect x="140" y="348" width="64" height="40" rx="10"/>
+    <rect x="224" y="348" width="64" height="40" rx="10"/>
+  </g>
+  <rect x="224" y="280" width="64" height="48" rx="10" fill="#2350b8"/>
+  <!-- red-pen ring: the exam day -->
+  <ellipse cx="340" cy="368" rx="46" ry="34" fill="none" stroke="#c2361f" stroke-width="12" transform="rotate(-8 340 368)"/>
+</svg>

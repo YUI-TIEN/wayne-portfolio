@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>課程日曆</title>
+<link rel="icon" href="/cal/icon-64.png" type="image/png">
+<link rel="apple-touch-icon" href="/cal/icon-180.png">
+<link rel="manifest" href="/cal/manifest.webmanifest">
+<meta name="theme-color" content="#2350b8">
+<script>
+  // The home-screen shortcut is saved with ?launch=1 (see below), so opening it goes straight to the app.
+  // It opens in the normal browser on purpose: the app needs the browser's Google sign-in.
+  var APP = 'https://script.google.com/macros/s/AKfycbyePhemW2xjfVS-hxhtybDlN5UkHSFNWaj_bSCmMIiOdaY-8SAZ9f-9WHssslqxPqbP/exec';
+  if (/[?&]launch=1/.test(location.search)) location.replace(APP);
+</script>
+<style>
+  :root { --bg: #f6f5f2; --card: #fff; --text: #1f1b16; --text-2: #5b5349; --ink: #2350b8; --line: rgba(31, 27, 22, 0.09); }
+  @media (prefers-color-scheme: dark) { :root { --bg: #161513; --card: #1e1c1a; --text: #efe9de; --text-2: #b4ac9f; --ink: #8fb0ff; --line: rgba(239, 233, 222, 0.08); } }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); color: var(--text);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
+  main { width: 100%; max-width: 380px; text-align: center; }
+  img { width: 96px; height: 96px; display: block; margin: 0 auto 16px; }
+  h1 { margin: 0 0 4px; font-size: 24px; font-weight: 500; }
+  p { margin: 0; color: var(--text-2); }
+  a.open { display: flex; align-items: center; justify-content: center; height: 48px; margin: 24px 0; border-radius: 10px;
+    background: var(--ink); color: #fff; font-size: 17px; font-weight: 500; text-decoration: none; transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1); }
+  @media (prefers-color-scheme: dark) { a.open { color: #161513; } }
+  a.open:active { opacity: 0.85; }
+  .tip { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); text-align: left; font-size: 13px; }
+  .tip { text-wrap: pretty; }
+  .tip b { display: block; margin-bottom: 4px; color: var(--text); font-size: 15px; font-weight: 500; }
+</style>
+</head>
+<body>
+<main>
+  <img src="/cal/icon-180.png" alt="">
+  <h1>課程日曆</h1>
+  <p>用自己的 Google 帳號登入，各班的課自動排進 Google 日曆</p>
+  <a class="open" id="open" href="">打開課程日曆</a>
+  <div class="tip">
+    <b>加到手機主畫面</b>
+    iPhone：Safari 分享 →「加入主畫面」<br>
+    Android：Chrome 選單 →「加到主畫面」
+  </div>
+</main>
+<script>
+  document.getElementById('open').href = APP;
+  // What gets saved to the home screen is this URL, so the shortcut skips this page next time.
+  if (!/[?&]launch=1/.test(location.search)) history.replaceState(null, '', '/cal/?launch=1');
+</script>
+</body>
+</html>
